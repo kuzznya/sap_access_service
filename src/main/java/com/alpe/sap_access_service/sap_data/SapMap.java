@@ -11,7 +11,7 @@ import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
-@SuppressWarnings("unused")
+
 public class SapMap {
     private LinkedList<String> columnLeng = new LinkedList<>();
     private LinkedList<String> fieldName = new LinkedList<>();
@@ -29,7 +29,7 @@ public class SapMap {
     private String group;
     private String fieldNames;
 
-    // конструктор поумолчанию
+    // конструктор по умолчанию
     public SapMap() {
     }
 
@@ -169,10 +169,8 @@ public class SapMap {
                 flag = true;
             }
         }
-        for (String k : dataMap.keySet()) {
+        for (String k : dataMap.keySet())
             dataMap.get(k).remove(0);
-
-        }
     }
 
     public LinkedList<String> getColumnLeng() {

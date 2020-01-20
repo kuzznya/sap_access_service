@@ -17,7 +17,7 @@ The project is under development
 
 * /systems - get the list of available SAP systems;
 
-* /login/{system}/{username}/{password} - authorize in SAP system and get the access token;\n
+* /login/{system}/{username}/{password} - authorize in SAP system and get the access token;<br>
 Example: https://localhost:8443/TS1/admin/changeme
 
 The list will be replenished

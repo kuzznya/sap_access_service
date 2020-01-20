@@ -10,7 +10,7 @@ public class SessionsController {
 
     private Map<String, Session> sessions = new ConcurrentHashMap<>();
 
-    public String createSession(String system, String username, String password) throws IOException {
+    public String createSession(String system, String username, String password) throws AccessDeniedException {
         int id = 0;
         while (sessions.containsKey(Session.hash(system, username, password, id)))
             id++;

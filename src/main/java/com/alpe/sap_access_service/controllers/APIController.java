@@ -36,8 +36,8 @@ public class APIController {
                  @PathVariable String password) {
         try {
             return sessionsController.createSession(systemName, username, password);
-        } catch (AccessDeniedException ex) {
-            //TODO возврат ошибки
+        } catch (Exception ex) {
+            return null;
         }
     }
 

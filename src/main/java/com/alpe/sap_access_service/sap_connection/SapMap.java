@@ -1,5 +1,6 @@
-package com.alpe.sap_access_service.sap_data;
+package com.alpe.sap_access_service.sap_connection;
 
+import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -54,12 +55,14 @@ public class SapMap {
     }
 
     //  retrieving data from SAP
-    public void dataFill(String systemAddress, String login, String password) {
-        XMLresponse xmLresponse = new XMLresponse(table, fieldsQuan, language, where, order, group, fieldNames);
+    public void dataFill(String systemAddress, String login, String password) throws SOAPExceptionImpl {
+        XMLResponse xmLresponse = new XMLResponse(table, fieldsQuan, language, where, order, group, fieldNames);
         xmLresponse.setLogin(login);
         xmLresponse.setPassword(password);
         xmLresponse.setSystemAddress(systemAddress);
         String XMLresponse = xmLresponse.responseToString(systemAddress, login, password);
+        if (XMLresponse == null)
+            throw new SOAPExceptionImpl("Unauthorized");
         Document xmlDoc = null;
         try {
             xmlDoc = loadXMLString(XMLresponse);

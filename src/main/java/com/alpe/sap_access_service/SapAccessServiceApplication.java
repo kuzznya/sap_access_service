@@ -1,42 +1,85 @@
 package com.alpe.sap_access_service;
 
 import com.alpe.sap_access_service.properties.PropertiesHolder;
+import com.alpe.sap_access_service.sessions.Session;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.*;
 
 @SpringBootApplication
 public class SapAccessServiceApplication {
 
+	private static PropertiesHolder systemsProperties;
+
+	static {
+		try {
+			systemsProperties = new PropertiesHolder("systems.properties");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static PropertiesHolder paramsProperties;
+
+	static {
+		try {
+			paramsProperties = new PropertiesHolder("params.properties");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static String getSystemAddress(String systemName) {
+		try {
+			PropertiesHolder systemsProperties = new PropertiesHolder("systems.properties");
+			return systemsProperties.getProperty(systemName);
+		} catch (IOException ex) {
+			return null;
+		}
+	}
+
+	public static Set<String> getSystems() {
+		HashSet<String> result = new HashSet<>();
+		Set<Object> keySet = systemsProperties.getProperties().keySet();
+		for (Object key : keySet) {
+			result.add((String) key);
+		}
+		return result;
+	}
+
+	public static float getSessionLifetime() {
+		return Float.parseFloat(paramsProperties.getProperty("SESSION_LIFETIME"));
+	}
+
 	public static void main(String[] args) {
 		LinkedList<String> otherArgs = new LinkedList<>();
 
+		boolean isTest = false;
 		boolean isConfig = false;
 		boolean addSystem = false;
 		boolean removeSystem = false;
-		boolean setSessionLifetime = false;
 		float sessionLifetime;
 		String systemName = null;
 		String systemAddress = null;
 
-		PropertiesHolder systemsProperties;
-		PropertiesHolder paramsProperties;
-		try {
-			systemsProperties = new PropertiesHolder("systems.properties");
-			paramsProperties = new PropertiesHolder("params.properties");
-		} catch (IOException ex) {
-			ex.printStackTrace();
-			System.err.println("Error while trying to load or create properties");
-			return;
-		}
+//		PropertiesHolder systemsProperties;
+//		PropertiesHolder paramsProperties;
+//		try {
+//			systemsProperties = new PropertiesHolder("systems.properties");
+//			paramsProperties = new PropertiesHolder("params.properties");
+//		} catch (IOException ex) {
+//			ex.printStackTrace();
+//			System.err.println("Error while trying to load or create properties");
+//			return;
+//		}
 
 		try {
 			for (int i = 0; i < args.length; i++) {
-				if (args[i].equals("-config"))
+				if (args[i].equals("-test"))
+					isTest = true;
+				else if (args[i].equals("-config"))
 					isConfig = true;
 				else if (args[i].equals("-add"))
 					addSystem = true;
@@ -59,6 +102,7 @@ public class SapAccessServiceApplication {
 					} catch (IOException ex) {
 						ex.printStackTrace();
 						System.err.println("Error while trying to load or create params properties");
+						return;
 					}
 
 				} else
@@ -72,6 +116,14 @@ public class SapAccessServiceApplication {
 		String[] otherArgsArray = new String[otherArgs.size()];
 		for (int i = 0; i < otherArgs.size(); i++) {
 			otherArgsArray[i] = otherArgs.get(i);
+		}
+
+		//TEST section
+		if (isTest) {
+			Session session = new Session("BL0",
+					"K.GACHECHILA", "Welcome1!", 0);
+			System.out.println(session.auth());
+			return;
 		}
 
 		if (!isConfig)
@@ -88,8 +140,6 @@ public class SapAccessServiceApplication {
 				}
 			}
 		}
-
-
 
 		else if (removeSystem && !addSystem) {
 			if (systemName == null)

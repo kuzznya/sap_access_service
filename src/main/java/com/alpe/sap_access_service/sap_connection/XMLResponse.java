@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.sap_data;
+package com.alpe.sap_access_service.sap_connection;
 
 import javax.xml.soap.*;
 import javax.xml.transform.TransformerException;
@@ -9,8 +9,8 @@ import java.io.StringWriter;
 
 import org.springframework.util.Base64Utils;
 
-@SuppressWarnings("unused")
-public class XMLresponse {
+
+public class XMLResponse {
     private String systemAddress;
     private String login;
     private String password;
@@ -24,10 +24,10 @@ public class XMLresponse {
     private String fieldNames;
     private String response;
 
-    public XMLresponse() {
+    public XMLResponse() {
     }
 
-    XMLresponse(String table, String fieldsQuan, String language, String where,
+    XMLResponse(String table, String fieldsQuan, String language, String where,
                 String order, String group, String fieldNames) {
         this.table = table;
         this.fieldsQuan = fieldsQuan;
@@ -83,7 +83,6 @@ public class XMLresponse {
 
             // авторизация
             String authorization = Base64Utils.encodeToString((username + ":" + password).getBytes());
-
             MimeHeaders hd = message.getMimeHeaders();
             hd.addHeader("Authorization", "Basic " + authorization);
 
@@ -132,6 +131,7 @@ public class XMLresponse {
             connection.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return null;
         }
         return response;
     }

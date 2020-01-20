@@ -1,5 +1,13 @@
 package com.alpe.sap_access_service.sessions;
 
+import com.alpe.sap_access_service.SapAccessServiceApplication;
+import com.alpe.sap_access_service.sap_connection.SapMap;
+import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
+
+import javax.xml.soap.SOAPException;
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 public class Session {
@@ -9,9 +17,20 @@ public class Session {
     private final String password;
     private final int id;
 
+    private String language = null;
+
     private long lastTimeAccessed;
 
     public Session(String system, String username, String password, int id) {
+        this.system = system;
+        this.username = username;
+        this.password = password;
+        this.id = id;
+        lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+    }
+
+    public Session(String system, String username, String password, int id, String language) {
+        this.language = language;
         this.system = system;
         this.username = username;
         this.password = password;
@@ -29,19 +48,38 @@ public class Session {
         return username;
     }
 
-    public String getPassword() {
-        lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-        return password;
-    }
-
     public int getId() {
         lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         return id;
     }
 
+    public String getAccessToken() {
+        return hash(this.system, this.username, this.password, this.id);
+    }
+
+    public static String hash(String system, String username, String password, int id) {
+        String data = system + username + password + id;
+        int result = Math.abs(data.hashCode());
+        return String.valueOf(result);
+    }
+
     public boolean auth() {
-        //TODO authorization
-        return true;
+        try {
+            Object result = requestDataSet(" ", " ", " ", " ", " ", " ", " ");
+            return true;
+        } catch (SOAPExceptionImpl ex) {
+            return false;
+        }
+    }
+
+    public LinkedHashMap<String, LinkedList<String>> requestDataSet(String table, String fieldsQuan, String language,
+                                                                    String where, String order,
+                                                                    String group, String fieldNames)
+            throws SOAPExceptionImpl {
+        SapMap sm = new SapMap(table, fieldsQuan, language, where, order, group, fieldNames);
+        String systemAddress = SapAccessServiceApplication.getSystemAddress(system);
+        sm.dataFill(systemAddress, username, password);
+        return sm.getDataMap();
     }
 
     public long getLastTimeAccessed() {

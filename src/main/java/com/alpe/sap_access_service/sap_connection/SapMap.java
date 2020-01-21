@@ -38,12 +38,12 @@ public class SapMap {
     public SapMap(String table, String fieldsQuan, String language, String where,
                   String order, String group, String fieldNames) {
         this.table = table;
-        this.fieldsQuan = fieldsQuan;
-        this.language = language;
-        this.where = where;
-        this.order = order;
-        this.group = group;
-        this.fieldNames = fieldNames;
+        this.fieldsQuan = fieldsQuan != null ? fieldsQuan : "";
+        this.language = language != null ? language : "";
+        this.where = where != null ? where : "";
+        this.order = order != null ? order : "";
+        this.group = group != null ? group : "";
+        this.fieldNames = fieldNames!= null ? fieldNames : "";
     }
 
     //  construct xml as document for retrieving data
@@ -62,7 +62,7 @@ public class SapMap {
         xmLresponse.setSystemAddress(systemAddress);
         String XMLresponse = xmLresponse.responseToString(systemAddress, login, password);
         if (XMLresponse == null)
-            throw new SOAPExceptionImpl("Unauthorized");
+            throw new SOAPExceptionImpl("SAP connection error");
         Document xmlDoc = null;
         try {
             xmlDoc = loadXMLString(XMLresponse);

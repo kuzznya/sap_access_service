@@ -1,7 +1,6 @@
 package com.alpe.sap_access_service.controllers;
 
-import com.alpe.sap_access_service.properties.PropertiesHolder;
-import com.alpe.sap_access_service.sessions.Session;
+import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.sessions.SessionsController;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.http.HttpStatus;
@@ -10,17 +9,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("/api")
 public class APIController {
-
-    private final PropertiesHolder systemsProperties = new PropertiesHolder("systems.properties");
 
     private final SessionsController sessionsController = new SessionsController();
 
@@ -28,10 +25,8 @@ public class APIController {
 
     @GetMapping("/systems")
     LinkedList<String> getSystemsList() {
-        LinkedList<String> systems = new LinkedList<>();
-        for (Object key : systemsProperties.getProperties().keySet())
-            systems.add((String) key);
-        return systems;
+        Set<String> systemsSet = SapAccessServiceApplication.getSystems();
+        return new LinkedList<>(systemsSet);
     }
 
     @GetMapping("/login")
@@ -68,6 +63,17 @@ public class APIController {
             return new ResponseEntity<LinkedHashMap<String, LinkedList<String>>>(sessionsController.getSession(accessToken).requestDataSet(table,
                     fieldsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
+            ex.setStackTrace(new StackTraceElement[0]);
+            return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/session")
+    ResponseEntity<?> deleteSession(@RequestParam(name = "access_token") String accessToken) {
+        try {
+            sessionsController.killSession(accessToken);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (Exception ex) {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);
         }

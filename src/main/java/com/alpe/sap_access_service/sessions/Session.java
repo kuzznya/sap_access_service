@@ -4,8 +4,6 @@ import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.sap_connection.SapMap;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 
-import javax.xml.soap.SOAPException;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +79,14 @@ public class Session {
         SapMap sm = new SapMap(table, fieldsQuan, language, where, order, group, fieldNames);
         String systemAddress = SapAccessServiceApplication.getSystemAddress(system);
         sm.dataFill(systemAddress, username, password);
+        LinkedHashMap<String, LinkedList<String>> map = sm.getDataMap();
+        map.put("columnLeng", sm.getColumnLeng());
+        map.put("fieldName", sm.getFieldName());
+        map.put("dataType", sm.getDataType());
+        map.put("repText", sm.getRepText());
+        map.put("domName", sm.getDomName());
+        map.put("outputLen", sm.getOutputLen());
+        map.put("decimals", sm.getDecimals());
         return sm.getDataMap();
     }
 

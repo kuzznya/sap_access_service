@@ -32,12 +32,7 @@ public class SapAccessServiceApplication {
 	}
 
 	public static String getSystemAddress(String systemName) {
-		try {
-			PropertiesHolder systemsProperties = new PropertiesHolder("systems.properties");
 			return systemsProperties.getProperty(systemName);
-		} catch (IOException ex) {
-			return null;
-		}
 	}
 
 	public static Set<String> getSystems() {
@@ -49,8 +44,16 @@ public class SapAccessServiceApplication {
 		return result;
 	}
 
-	public static float getSessionLifetime() {
-		return Float.parseFloat(paramsProperties.getProperty("SESSION_LIFETIME"));
+	public static boolean isSessionsInfo() {
+		try {
+			return paramsProperties.getProperty("PRINT_SESSIONS_INFO").equals("TRUE");
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
+	public static int getSessionLifetime() {
+		return Integer.parseInt(paramsProperties.getProperty("SESSION_LIFETIME"));
 	}
 
 	public static void main(String[] args) {
@@ -63,17 +66,6 @@ public class SapAccessServiceApplication {
 		float sessionLifetime;
 		String systemName = null;
 		String systemAddress = null;
-
-//		PropertiesHolder systemsProperties;
-//		PropertiesHolder paramsProperties;
-//		try {
-//			systemsProperties = new PropertiesHolder("systems.properties");
-//			paramsProperties = new PropertiesHolder("params.properties");
-//		} catch (IOException ex) {
-//			ex.printStackTrace();
-//			System.err.println("Error while trying to load or create properties");
-//			return;
-//		}
 
 		try {
 			for (int i = 0; i < args.length; i++) {
@@ -91,7 +83,7 @@ public class SapAccessServiceApplication {
 					removeSystem = true;
 				else if (args[i].equals("-set_session_lifetime")) {
 					try {
-						sessionLifetime = Float.parseFloat(args[i + 1]);
+						sessionLifetime = Integer.parseInt(args[i + 1]);
 					} catch (NumberFormatException ex) {
 						System.err.println("Error while trying to parse new session lifetime value");
 						return;
@@ -105,7 +97,11 @@ public class SapAccessServiceApplication {
 						return;
 					}
 
-				} else
+				}
+				else if (args[i].equals("-print_sessions_info")) {
+					paramsProperties.setProperty("PRINT_SESSIONS_INFO", "TRUE");
+				}
+				else
 					otherArgs.add(args[i]);
 			}
 		} catch (Exception ex) {
@@ -152,6 +148,10 @@ public class SapAccessServiceApplication {
 					System.err.println("Error while trying to load or create system properties");
 				}
 			}
+		}
+
+		else if (removeSystem && addSystem) {
+			System.out.println("Incorrect parameters");
 		}
 
 	}

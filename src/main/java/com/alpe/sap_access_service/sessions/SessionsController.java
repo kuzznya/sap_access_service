@@ -20,8 +20,8 @@ public class SessionsController {
                                    public void run() {
                                        killInactiveSessions();
                                    }
-                               }, Math.round(1000 * 60 * SapAccessServiceApplication.getSessionLifetime() / 4),
-                Math.round(1000 * 60 * SapAccessServiceApplication.getSessionLifetime() / 4));
+                               }, 1000 * SapAccessServiceApplication.getSessionLifetime() / 4,
+                1000 * SapAccessServiceApplication.getSessionLifetime() / 4);
     }
 
     public String createSession(String system, String username, String password) throws AccessDeniedException {
@@ -54,12 +54,27 @@ public class SessionsController {
     }
 
     public void killInactiveSessions() {
+
+        if (SapAccessServiceApplication.isSessionsInfo())
+            System.out.println("=== Sessions life check ===");
+
         for (String key : sessions.keySet()) {
+
             long sessionLifeTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) -
-                    sessions.get(key).getLastTimeAccessed() * 60;
-            if (sessionLifeTime >= SapAccessServiceApplication.getSessionLifetime())
+                    sessions.get(key).getLastTimeAccessed();
+
+            if (SapAccessServiceApplication.isSessionsInfo())
+                System.out.println("Session (access token " + key + "): last time accessed " + sessionLifeTime + " seconds ago");
+
+            if (sessionLifeTime >= SapAccessServiceApplication.getSessionLifetime()) {
                 killSession(key);
+                if (SapAccessServiceApplication.isSessionsInfo())
+                    System.out.println("Session killed");
+            }
         }
+
+        if (SapAccessServiceApplication.isSessionsInfo())
+            System.out.println("Count of active sessions: " + sessions.size() + "\n");
     }
 
     public void killSession(String accessToken) {

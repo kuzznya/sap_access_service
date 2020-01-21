@@ -64,6 +64,7 @@ public class Session {
     }
 
     public boolean auth() {
+        lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         try {
             Object result = requestDataSet(" ", " ", " ", " ", " ", " ", " ");
             return true;
@@ -76,6 +77,7 @@ public class Session {
                                                                     String where, String order,
                                                                     String group, String fieldNames)
             throws SOAPExceptionImpl {
+        lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         SapMap sm = new SapMap(table, fieldsQuan, language, where, order, group, fieldNames);
         String systemAddress = SapAccessServiceApplication.getSystemAddress(system);
         sm.dataFill(systemAddress, username, password);

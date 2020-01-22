@@ -15,9 +15,13 @@ The project is under development
 
 {server address}/api
 
-* /systems - get the list of available SAP systems;
+* GET /systems - get the list of available SAP systems;
 
-* /login/{system}/{username}/{password} - authorize in SAP system and get the access token;<br>
-Example: https://localhost:8443/TS1/admin/changeme
+* GET /login - authorize in SAP system and get the access token;
+<br>Parameters: system (system name), username, password
+<br>Example: https://localhost:8443/api/login?system=TS1&username=admin&password=changeme
+
+* GET /table - get table from SAP
+<br>Parameters:
 
 The list will be replenished

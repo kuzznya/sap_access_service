@@ -70,3 +70,37 @@ Parameters: system
   | `access_token`| Access token of the client  | true     |
 
 *The list will be replenished*
+
+## Configuration
+
+All configuration could be done from the console
+
+* Add new system:  
+  `-config -add -name [system name] -address [address]`
+* Remove system:  
+  `-config -remove -name`
+* Set session lifetime:
+  `-config -set_session_lifetime`
+
+
+## Program launch
+
+* Test some features (for development only):  
+  `-test`
+* Print sessions info when checking active/inactive sessions:  
+  `-print_sessions_info`
+
+## Additional information
+
+Current configuration is now stored in the same folder as the program (*will be changed later (maybe)*)
+in files `systems.properties` (list of available systems with addresses) & `params.properties` (session lifetime and other data)
+
+## TODO
+
+* ~~JAR build attempt~~
+* Set up the period of sessions activity normally
+* PropertiesHolder class refactoring (+-)
+* SapMap and XMLResponse classes refactoring (?)
+* Add token check & token refresh methods to the API
+* ~~API documentation~~
+* ~~Server configuration and launch documentation~~

@@ -44,7 +44,7 @@ public class APIController {
     @GetMapping("/table")
     ResponseEntity<?> getTable(@RequestParam(name = "access_token") String accessToken,
                                                        @RequestParam(name = "name") String table,
-                                                       @RequestParam(name = "fields_count", required = false) Integer fieldsCount,
+                                                       @RequestParam(name = "recs_count", required = false) Integer recordsCount,
                                                        @RequestParam(name = "lang", required = false) String language,
                                                        @RequestParam(required = false) String where,
                                                        @RequestParam(required = false) String order,
@@ -57,11 +57,11 @@ public class APIController {
             return new ResponseEntity<AccessDeniedException>(ex, HttpStatus.UNAUTHORIZED);
         }
 
-        String fieldsCountStr = fieldsCount != null ? String.valueOf(fieldsCount) : null;
+        String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
 
         try {
             return new ResponseEntity<LinkedHashMap<String, LinkedList<String>>>(sessionsController.getSession(accessToken).requestDataSet(table,
-                    fieldsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
+                    recordsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);

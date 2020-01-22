@@ -1,4 +1,6 @@
-# SAP access web service
+# SAP access RESTful Web service
+
+Company: ALPE Consulting
 
 Language: Java
 
@@ -6,22 +8,65 @@ Framework: Spring Boot
 
 The purpose of this project is to provide the access to SAP system through our API.
 
-Net protocol is HTTPS
+Response type: JSON
 
-The project is under development
+For HTTPS connection self-signed certificate is used now
+
+*The project is under development*
 
 
 ## API
 
 {server address}/api
 
-* GET /systems - get the list of available SAP systems;
+* GET /systems - get the list of available SAP systems
+Response: list of systems' names
 
-* GET /login - authorize in SAP system and get the access token;
-<br>Parameters: system (system name), username, password
-<br>Example: https://localhost:8443/api/login?system=TS1&username=admin&password=changeme
+* GET /login - authorize in SAP system and get the access token  
+Parameters: system
 
-* GET /table - get table from SAP
-<br>Parameters:
+  | Parameter  | Description           | Required |
+  |------------|-----------------------|----------|
+  | `system`   | The name of the system| true     |
+  | `username` | -                     | true     |
+  | `password` | -                     | true     |
+  
+  Response: access token (String)
+  
+  Example: `https://localhost:8443/api/login?system=TS1&username=admin&password=changeme`
 
-The list will be replenished
+* GET /table - get table from SAP  
+  Parameters:
+  
+  | Parameter     | Description                 | Required |
+  |---------------|-----------------------------|----------|
+  | `access_token`| Access token of the client  | true     |
+  | `name`        | Name of the table           | true     |
+  | `recs_count`  | Count of the records (lines)| false    |
+  | `lang`        | Language                    | ?        |
+  | `where`       | "WHERE" SAP condition       | false    |
+  | `order`       | The order of the data       | false    |
+  | `group`       | "GROUP" SAP condition       | false    |
+  | `fields_names`| Names of fields (rows)      | false    |
+  
+  Response:  
+  Data map (\<String, List\<String\>\>) with special system fields:
+  
+  | Field        | Description                           |
+  |--------------|---------------------------------------|
+  | `columnLen`  | ?                                     |
+  | `fieldNames` | System names of fields (rows)         |
+  | `dataTypes`  | Field types                           |
+  | `repText`    | Names of fields on requested language |
+  | `domNames`   | ?                                     |
+  | `outputLen`  | ?                                     |
+  | `decimals`   | ?                                     |
+
+* DELETE /session - kill session of this client  
+  Parameters:
+  
+  | Parameter     | Description                 | Required |
+  |---------------|-----------------------------|----------|
+  | `access_token`| Access token of the client  | true     |
+
+*The list will be replenished*

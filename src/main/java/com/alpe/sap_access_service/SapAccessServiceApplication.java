@@ -130,9 +130,18 @@ public class SapAccessServiceApplication {
 		}
 
 		if (!isConfig) {
-			if (paramsProperties == null || systemsProperties == null || paramsProperties.getProperty("SESSION_LIFETIME") == null) {
-				System.out.println("Error: missing params.properties or systems.properties or missing session_lifetime parameter\nTry configuring the program before starting the service");
+			if (paramsProperties == null || systemsProperties == null) {
+				System.out.println("Error: missing params.properties or systems.properties\nTry configuring the program before starting the service");
 				return;
+			}
+			else if (paramsProperties.getProperty("SESSION_LIFETIME") == null) {
+				try {
+					System.out.println("No session lifetime parameter found\nSetting default session lifetime (600 secs)");
+					paramsProperties.setProperty("SESSION_LIFETIME", "600");
+				} catch (IOException ex) {
+					System.out.println("Error setting default session lifetime at params.properties");
+					return;
+				}
 			}
 			SpringApplication.run(SapAccessServiceApplication.class, otherArgsArray);
 		}

@@ -61,6 +61,8 @@ Parameters: system
   | `domNames`   | ?                                     |
   | `outputLen`  | ?                                     |
   | `decimals`   | ?                                     |
+  
+  Example: `https://localhost:8443/api/table?access_token=12345&name=TBL1&fields_names
 
 * DELETE /session - kill session of this client  
   Parameters:
@@ -97,7 +99,8 @@ in files `systems.properties` (list of available systems with addresses) & `para
 
 ## TODO
 
-* ~~JAR build attempt~~
+* Multiple values of the parameters of GET /table (i.e. fields_names) (!)
+* ~~JAR build attempt (!)~~
 * Set up the period of sessions activity normally
 * PropertiesHolder class refactoring (+-)
 * SapMap and XMLResponse classes refactoring (?)

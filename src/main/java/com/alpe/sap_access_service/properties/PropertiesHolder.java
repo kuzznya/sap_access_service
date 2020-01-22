@@ -35,15 +35,9 @@ public class PropertiesHolder {
     }
 
     // добавление или перезапись свойства
-    @SuppressWarnings("unused")
     public void setProperty(String key, String value) throws IOException {
         properties.setProperty(key, value);
-        try {
-            this.commit();
-        } catch (IOException ex) {
-            System.err.println("Error while trying to set the property\nCreating new properties file");
-            this.createProperties();
-        }
+        this.commit();
     }
 
     public void removeProperty(String key) throws IOException {

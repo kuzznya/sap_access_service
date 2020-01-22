@@ -1,7 +1,6 @@
 package com.alpe.sap_access_service;
 
 import com.alpe.sap_access_service.properties.PropertiesHolder;
-import com.alpe.sap_access_service.sessions.Session;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -18,6 +17,7 @@ public class SapAccessServiceApplication {
 			systemsProperties = new PropertiesHolder("systems.properties");
 		} catch (IOException e) {
 			e.printStackTrace();
+			systemsProperties = null;
 		}
 	}
 
@@ -28,6 +28,7 @@ public class SapAccessServiceApplication {
 			paramsProperties = new PropertiesHolder("params.properties");
 		} catch (IOException e) {
 			e.printStackTrace();
+			paramsProperties = null;
 		}
 	}
 
@@ -45,11 +46,7 @@ public class SapAccessServiceApplication {
 	}
 
 	public static boolean isSessionsInfo() {
-		try {
-			return paramsProperties.getProperty("PRINT_SESSIONS_INFO").equals("TRUE");
-		} catch (Exception ex) {
-			return false;
-		}
+		return paramsProperties.getProperty("PRINT_SESSIONS_INFO").equals("TRUE");
 	}
 
 	public static int getSessionLifetime() {
@@ -63,9 +60,15 @@ public class SapAccessServiceApplication {
 		boolean isConfig = false;
 		boolean addSystem = false;
 		boolean removeSystem = false;
-		float sessionLifetime;
+		int sessionLifetime;
 		String systemName = null;
 		String systemAddress = null;
+
+		try {
+			paramsProperties.setProperty("PRINT_SESSIONS_INFO", "FALSE");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 
 		try {
 			for (int i = 0; i < args.length; i++) {
@@ -90,16 +93,21 @@ public class SapAccessServiceApplication {
 					}
 
 					try {
-						paramsProperties.setProperty("SESSION_LIFETIME", Float.toString(sessionLifetime));
+						paramsProperties.setProperty("SESSION_LIFETIME", Integer.toString(sessionLifetime));
 					} catch (IOException ex) {
 						ex.printStackTrace();
-						System.err.println("Error while trying to load or create params properties");
+						System.err.println("Error accessing to params.properties");
 						return;
 					}
 
 				}
 				else if (args[i].equals("-print_sessions_info")) {
 					paramsProperties.setProperty("PRINT_SESSIONS_INFO", "TRUE");
+
+					// Sometimes main is restarted, so the code runs twice
+					// This causes the problem with setting PRINT_SESSIONS_INFO param to false at the beginning
+					// So this argument needs to be passed to SpringApplication.run(...) method
+					otherArgs.add(args[i]);
 				}
 				else
 					otherArgs.add(args[i]);
@@ -116,14 +124,18 @@ public class SapAccessServiceApplication {
 
 		//TEST section
 		if (isTest) {
-			Session session = new Session("BL0",
-					"K.GACHECHILA", "Welcome1!", 0);
-			System.out.println(session.auth());
+			System.out.println(paramsProperties.getProperty("PRINT_SESSIONS_INFO"));
+			System.out.println(isSessionsInfo());
 			return;
 		}
 
-		if (!isConfig)
+		if (!isConfig) {
+			if (paramsProperties == null || systemsProperties == null || paramsProperties.getProperty("SESSION_LIFETIME") == null) {
+				System.out.println("Error: missing params.properties or systems.properties or missing session_lifetime parameter\nTry configuring the program before starting the service");
+				return;
+			}
 			SpringApplication.run(SapAccessServiceApplication.class, otherArgsArray);
+		}
 		else if (addSystem && !removeSystem) {
 			if (systemName == null || systemAddress == null)
 				System.err.println("Incorrect parameters to add new system");
@@ -132,7 +144,7 @@ public class SapAccessServiceApplication {
 				systemsProperties.setProperty(systemName, systemAddress);
 				} catch (IOException ex) {
 					ex.printStackTrace();
-					System.err.println("Error while trying to load or create systems properties");
+					System.err.println("Error accessing to systems.properties");
 				}
 			}
 		}
@@ -145,7 +157,7 @@ public class SapAccessServiceApplication {
 					systemsProperties.removeProperty(systemName);
 				} catch (IOException ex) {
 					ex.printStackTrace();
-					System.err.println("Error while trying to load or create system properties");
+					System.err.println("Error accessing systems.properties");
 				}
 			}
 		}

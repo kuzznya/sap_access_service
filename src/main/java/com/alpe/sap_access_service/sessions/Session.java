@@ -80,11 +80,11 @@ public class Session {
         String systemAddress = SapAccessServiceApplication.getSystemAddress(system);
         sm.dataFill(systemAddress, username, password);
         LinkedHashMap<String, LinkedList<String>> map = sm.getDataMap();
-        map.put("columnLeng", sm.getColumnLeng());
-        map.put("fieldName", sm.getFieldName());
-        map.put("dataType", sm.getDataType());
+        map.put("columnLen", sm.getColumnLeng());
+        map.put("fieldNames", sm.getFieldName());
+        map.put("dataTypes", sm.getDataType());
         map.put("repText", sm.getRepText());
-        map.put("domName", sm.getDomName());
+        map.put("domNames", sm.getDomName());
         map.put("outputLen", sm.getOutputLen());
         map.put("decimals", sm.getDecimals());
         return sm.getDataMap();

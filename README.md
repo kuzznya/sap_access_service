@@ -22,7 +22,7 @@ For HTTPS connection self-signed certificate is used now
 * **GET /systems** - get the list of available SAP systems  
   Response: list of systems' names
 
-* **GET /login** - authorize in SAP system and get the access token  
+* **POST /auth** - authorize in SAP system and get the access token  
   Parameters: system
 
   | Parameter  | Description           | Required |
@@ -34,6 +34,20 @@ For HTTPS connection self-signed certificate is used now
   Response: access token (String)
   
   Example: `https://localhost:8443/api/login?system=TS1&username=admin&password=changeme`
+
+* **PUT /auth** - refresh access token (notify server that the client is active)  
+  Parameters:
+  
+  | Parameter     | Description                 | Required |
+  |---------------|-----------------------------|----------|
+  | `access_token`| Access token of the client  | true     |
+
+* **DELETE /auth** - kill session of this client  
+  Parameters:
+  
+  | Parameter     | Description                 | Required |
+  |---------------|-----------------------------|----------|
+  | `access_token`| Access token of the client  | true     |
 
 * **GET /table** - get table from SAP  
   Parameters:
@@ -63,13 +77,6 @@ For HTTPS connection self-signed certificate is used now
   | `decimals`   | ?                                     |
   
   Example: `https://localhost:8443/api/table?access_token=12345&name=TBL1&fields_names&lang=R`
-
-* **DELETE /session** - kill session of this client  
-  Parameters:
-  
-  | Parameter     | Description                 | Required |
-  |---------------|-----------------------------|----------|
-  | `access_token`| Access token of the client  | true     |
 
 *The list will be replenished*
 

@@ -90,6 +90,10 @@ public class Session {
         return sm.getDataMap();
     }
 
+    public void refresh() {
+        lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+    }
+
     public long getLastTimeAccessed() {
         return lastTimeAccessed;
     }

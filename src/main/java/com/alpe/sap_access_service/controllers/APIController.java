@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
-@SuppressWarnings("unused")
+
 @RestController
 @RequestMapping("/api")
 public class APIController {
@@ -29,8 +29,8 @@ public class APIController {
         return new LinkedList<>(systemsSet);
     }
 
-    @GetMapping("/login")
-    ResponseEntity<?> login(@RequestParam(name = "system") String systemName,
+    @PostMapping("/auth")
+    ResponseEntity<?> authorize(@RequestParam(name = "system") String systemName,
                          @RequestParam String username,
                          @RequestParam String password) {
         try {
@@ -38,6 +38,28 @@ public class APIController {
         } catch (AccessDeniedException ex) {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<AccessDeniedException>(ex, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping("/auth")
+    ResponseEntity<?> updateToken(@RequestParam(name = "access_token") String accessToken) {
+        try {
+            sessionsController.getSession(accessToken).refresh();
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.setStackTrace(new StackTraceElement[0]);
+            return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/auth")
+    ResponseEntity<?> deleteSession(@RequestParam(name = "access_token") String accessToken) {
+        try {
+            sessionsController.killSession(accessToken);
+            return new ResponseEntity<>("Session deleted", HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.setStackTrace(new StackTraceElement[0]);
+            return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -63,17 +85,6 @@ public class APIController {
             return new ResponseEntity<LinkedHashMap<String, LinkedList<String>>>(sessionsController.getSession(accessToken).requestDataSet(table,
                     recordsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
-            ex.setStackTrace(new StackTraceElement[0]);
-            return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @DeleteMapping("/session")
-    ResponseEntity<?> deleteSession(@RequestParam(name = "access_token") String accessToken) {
-        try {
-            sessionsController.killSession(accessToken);
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        } catch (Exception ex) {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);
         }

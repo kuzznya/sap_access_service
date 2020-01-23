@@ -73,6 +73,10 @@ Parameters: system
 
 *The list will be replenished*
 
+## Download
+
+[Latest test build](../blob/master/sap_access_service-0.0.1-SNAPSHOT.jar)
+
 ## Configuration
 
 All configuration could be done from the console

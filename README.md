@@ -94,7 +94,7 @@ All configuration could be done from the console
   `-config -add -name [system name] -address [address]`
 * Remove system:  
   `-config -remove -name`
-* Set session lifetime:
+* Set session lifetime:  
   `-config -set_session_lifetime`
 
 

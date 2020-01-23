@@ -64,7 +64,7 @@ Parameters: system
   
   Example: `https://localhost:8443/api/table?access_token=12345&name=TBL1&fields_names&lang=R`
 
-* DELETE /session - kill session of this client  
+* **DELETE /session** - kill session of this client  
   Parameters:
   
   | Parameter     | Description                 | Required |

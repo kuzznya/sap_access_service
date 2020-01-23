@@ -19,10 +19,10 @@ For HTTPS connection self-signed certificate is used now
 
 {server address}/api
 
-* GET /systems - get the list of available SAP systems
+* **GET /systems** - get the list of available SAP systems
 Response: list of systems' names
 
-* GET /login - authorize in SAP system and get the access token  
+* **GET /login** - authorize in SAP system and get the access token  
 Parameters: system
 
   | Parameter  | Description           | Required |
@@ -35,7 +35,7 @@ Parameters: system
   
   Example: `https://localhost:8443/api/login?system=TS1&username=admin&password=changeme`
 
-* GET /table - get table from SAP  
+* **GET /table** - get table from SAP  
   Parameters:
   
   | Parameter     | Description                 | Required |

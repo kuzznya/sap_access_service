@@ -1,6 +1,7 @@
 package com.alpe.sap_access_service.controllers;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
+import com.alpe.sap_access_service.sessions.Session;
 import com.alpe.sap_access_service.sessions.SessionsController;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,17 @@ public class APIController {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/auth-check")
+    ResponseEntity<?> checkToken(@RequestParam(name = "access_token") String accessToken) {
+        Session session = sessionsController.getSession(accessToken);
+        if (session != null) {
+            session.refresh();
+            return new ResponseEntity<>("Active session found", HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>("Error: session with access token " + accessToken + " not found", HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/table")

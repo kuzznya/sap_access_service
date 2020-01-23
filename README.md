@@ -75,7 +75,7 @@ Parameters: system
 
 ## Download
 
-[Latest test build](../blob/master/sap_access_service-0.0.1-SNAPSHOT.jar)
+[Latest test build](../master/sap_access_service-0.0.1-SNAPSHOT.jar)
 
 ## Configuration
 

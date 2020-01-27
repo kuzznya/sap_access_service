@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.sap_connection;
+package com.alpe.sap_access_service.model.sap_connection;
 
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.w3c.dom.Document;

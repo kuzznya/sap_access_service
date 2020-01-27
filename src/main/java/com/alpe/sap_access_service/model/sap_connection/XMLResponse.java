@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.sap_connection;
+package com.alpe.sap_access_service.model.sap_connection;
 
 import javax.xml.soap.*;
 import javax.xml.transform.TransformerException;

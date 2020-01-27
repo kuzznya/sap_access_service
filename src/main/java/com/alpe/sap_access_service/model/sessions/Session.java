@@ -1,7 +1,8 @@
-package com.alpe.sap_access_service.sessions;
+package com.alpe.sap_access_service.model.sessions;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.sap_connection.SapMap;
+import com.alpe.sap_access_service.model.sap_connection.SapMap;
+import com.alpe.sap_access_service.view.SAPModule;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 
 import java.util.LinkedHashMap;
@@ -71,6 +72,17 @@ public class Session {
         }
     }
 
+    //TODO нормальный список модулей как объектов и с описанием
+    public LinkedList<SAPModule> getAvailableModules() throws SOAPExceptionImpl {
+        LinkedList<String> REPI2Data = requestDataSet(" ", " ", " ", " ", " ", " ", " ").get("REPI2");
+        LinkedList<SAPModule> modules = new LinkedList<>();
+        for (String el : REPI2Data) {
+            if (el.matches("[0-9]{3}[.]+.+"))
+                modules.add(new SAPModule(el, null));
+        }
+        return modules;
+    }
+
     public LinkedHashMap<String, LinkedList<String>> requestDataSet(String table, String fieldsQuan, String language,
                                                                     String where, String order,
                                                                     String group, String fieldNames)
@@ -87,7 +99,7 @@ public class Session {
         map.put("domNames", sm.getDomName());
         map.put("outputLen", sm.getOutputLen());
         map.put("decimals", sm.getDecimals());
-        return sm.getDataMap();
+        return map;
     }
 
     public void refresh() {

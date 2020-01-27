@@ -1,8 +1,8 @@
-package com.alpe.sap_access_service.controllers;
+package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.sessions.Session;
-import com.alpe.sap_access_service.sessions.SessionsController;
+import com.alpe.sap_access_service.model.sessions.Session;
+import com.alpe.sap_access_service.model.sessions.SessionsController;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +30,8 @@ public class APIController {
         return new LinkedList<>(systemsSet);
     }
 
+
+    //TODO change to PostMapping
     @PostMapping("/auth")
     ResponseEntity<?> authorize(@RequestParam(name = "system") String systemName,
                          @RequestParam String username,
@@ -73,6 +75,20 @@ public class APIController {
         }
         else
             return new ResponseEntity<>("Error: session with access token " + accessToken + " not found", HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/modules")
+    ResponseEntity<?> getModules(@RequestParam(name = "access_token") String accessToken) {
+        Session session = sessionsController.getSession(accessToken);
+        try {
+            if (session != null)
+                return new ResponseEntity<>(session.getAvailableModules(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>("No such session", HttpStatus.BAD_REQUEST);
+        } catch (SOAPExceptionImpl ex) {
+            ex.setStackTrace(new StackTraceElement[0]);
+            return new ResponseEntity<>(ex, HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @GetMapping("/table")

@@ -57,8 +57,8 @@ For HTTPS connection self-signed certificate is used now
   |---------------|-----------------------------|----------|
   | `access_token`| Access token of the client  | true     |
 
-* **GET /modules** - returns available SAP modules (see [Modules](#Modules))
-    Parameters:
+* **GET /modules** - returns available SAP modules (see [Modules](#Modules))  
+  Parameters:
     
     | Parameter     | Description                 | Required |
     |---------------|-----------------------------|----------|

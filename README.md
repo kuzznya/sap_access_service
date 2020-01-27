@@ -136,10 +136,12 @@ in files `systems.properties` (list of available systems with addresses) & `para
 
 * ~~Multiple values of the parameters of GET /table (i.e. fields_names) (!)~~
 * ~~JAR build attempt (!)~~
+* ~~API documentation~~
+* ~~Server configuration and launch documentation~~
+* ~~Session language management~~
+* ~~Add token check & token refresh methods to the API~~
+* ~~"get available modules" method~~
 * Set up the period of sessions activity normally
 * PropertiesHolder class refactoring (+-)
 * SapMap and XMLResponse classes refactoring (?)
-* Add token check & token refresh methods to the API
-* ~~API documentation~~
-* ~~Server configuration and launch documentation~~
-* Localization table from SAP
+* Localization table from SAP (need to be added to SAP first)

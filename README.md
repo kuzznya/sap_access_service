@@ -106,7 +106,7 @@ For HTTPS connection self-signed certificate is used now
 
 [Latest test build](../master/builds/sap_access_service-0.0.1-SNAPSHOT.jar)
 
-[View all builds](../builds)
+[View all builds](../master/builds)
 
 ## Configuration
 

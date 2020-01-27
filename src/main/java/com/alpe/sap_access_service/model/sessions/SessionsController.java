@@ -24,10 +24,18 @@ public class SessionsController {
     }
 
     public String createSession(String system, String username, String password) throws AccessDeniedException {
+        return createSession(system, username, password, null);
+    }
+
+    public String createSession(String system, String username, String password, String language) throws AccessDeniedException {
         int id = 0;
         while (sessions.containsKey(Session.hash(system, username, password, id)))
             id++;
-        Session session = new Session(system, username, password, id);
+        Session session;
+        if (language != null)
+            session = new Session(system, username, password, id, language);
+        else
+            session = new Session(system, username, password, id);
 
         boolean authResult = session.auth();
         if (!authResult)

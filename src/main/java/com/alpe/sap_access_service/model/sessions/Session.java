@@ -16,7 +16,7 @@ public class Session {
     private final String password;
     private final int id;
 
-    private String language = null;
+    private String language = " ";
 
     private long lastTimeAccessed;
 
@@ -52,6 +52,18 @@ public class Session {
         return id;
     }
 
+    public String getLanguage() {
+        lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        if (language != null)
+            this.language = language;
+        else
+            this.language = " ";
+    }
+
     public String getAccessToken() {
         return hash(this.system, this.username, this.password, this.id);
     }
@@ -65,7 +77,7 @@ public class Session {
     public boolean auth() {
         lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         try {
-            Object result = requestDataSet(" ", " ", " ", " ", " ", " ", " ");
+            Object result = requestDataSet(" ", " ", language, " ", " ", " ", " ");
             return true;
         } catch (SOAPExceptionImpl ex) {
             return false;
@@ -74,7 +86,7 @@ public class Session {
 
     //TODO нормальный список модулей как объектов и с описанием
     public LinkedList<SAPModule> getAvailableModules() throws SOAPExceptionImpl {
-        LinkedList<String> REPI2Data = requestDataSet(" ", " ", " ", " ", " ", " ", " ").get("REPI2");
+        LinkedList<String> REPI2Data = requestDataSet(" ", " ", language, " ", " ", " ", " ").get("REPI2");
         LinkedList<SAPModule> modules = new LinkedList<>();
         for (String el : REPI2Data) {
             if (el.matches("[0-9]{3}[.]+.+"))
@@ -88,6 +100,7 @@ public class Session {
                                                                     String group, String fieldNames)
             throws SOAPExceptionImpl {
         lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        language = (language != null && !language.equals(" ")) ? language : this.language;
         SapMap sm = new SapMap(table, fieldsQuan, language, where, order, group, fieldNames);
         String systemAddress = SapAccessServiceApplication.getSystemAddress(system);
         sm.dataFill(systemAddress, username, password);

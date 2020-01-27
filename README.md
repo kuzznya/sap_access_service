@@ -56,6 +56,13 @@ For HTTPS connection self-signed certificate is used now
   |---------------|-----------------------------|----------|
   | `access_token`| Access token of the client  | true     |
 
+* **GET /modules** - returns available SAP modules (see [Modules](#Modules))
+    Parameters:
+    
+    | Parameter     | Description                 | Required |
+    |---------------|-----------------------------|----------|
+    | `access_token`| Access token of the client  | true     |
+
 * **GET /table** - get table from SAP  
   Parameters:
   
@@ -70,6 +77,8 @@ For HTTPS connection self-signed certificate is used now
   | `group`       | "GROUP" SAP condition       | false    |
   | `fields_names`| Names of fields (rows)      | false    |
   
+  If multiple values in parameter need to be separated by space code (%20)
+  
   Response:  
   Data map (\<String, List\<String\>\>) with special system fields:
   
@@ -83,9 +92,14 @@ For HTTPS connection self-signed certificate is used now
   | `outputLen`  | ?                                     |
   | `decimals`   | ?                                     |
   
-  Example: `https://localhost:8443/api/table?access_token=12345&name=TBL1&fields_names&lang=R`
+  Example: `https://localhost:8443/api/table?access_token=12345&name=TBL1&fields_names=MANDT%20BUKRS&lang=R`
 
 *The list will be replenished*
+
+## Modules
+
+1. Module A. Table view
+2. Module Z. Add information from QR to SAP
 
 ## Download
 
@@ -119,7 +133,7 @@ in files `systems.properties` (list of available systems with addresses) & `para
 
 ## TODO
 
-* Multiple values of the parameters of GET /table (i.e. fields_names) (!)
+* ~~Multiple values of the parameters of GET /table (i.e. fields_names) (!)~~
 * ~~JAR build attempt (!)~~
 * Set up the period of sessions activity normally
 * PropertiesHolder class refactoring (+-)
@@ -127,4 +141,4 @@ in files `systems.properties` (list of available systems with addresses) & `para
 * Add token check & token refresh methods to the API
 * ~~API documentation~~
 * ~~Server configuration and launch documentation~~
-* 
+* Localization table from SAP

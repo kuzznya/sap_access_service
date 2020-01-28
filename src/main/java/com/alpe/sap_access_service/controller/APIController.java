@@ -32,7 +32,7 @@ public class APIController {
 
 
     //TODO change to PostMapping
-    @GetMapping("/auth")
+    @PostMapping("/auth")
     ResponseEntity<?> authorize(@RequestParam(name = "system") String systemName,
                          @RequestParam String username,
                          @RequestParam String password,
@@ -46,7 +46,7 @@ public class APIController {
     }
 
     @PutMapping("/auth")
-    ResponseEntity<?> updateToken(@RequestParam(name = "access_token") String accessToken) {
+    ResponseEntity<?> refreshToken(@RequestParam(name = "access_token") String accessToken) {
         try {
             sessionsController.getSession(accessToken).refresh();
             return new ResponseEntity<>(null, HttpStatus.OK);
@@ -67,7 +67,7 @@ public class APIController {
         }
     }
 
-    @GetMapping("/auth-check")
+    @GetMapping("/auth")
     ResponseEntity<?> checkToken(@RequestParam(name = "access_token") String accessToken) {
         Session session = sessionsController.getSession(accessToken);
         if (session != null) {
@@ -76,6 +76,11 @@ public class APIController {
         }
         else
             return new ResponseEntity<>("Error: session with access token " + accessToken + " not found", HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/sessions-lifetime")
+    ResponseEntity<?> getSessionsLifetime() {
+        return new ResponseEntity<>(SapAccessServiceApplication.getSessionLifetime(), HttpStatus.OK);
     }
 
     @GetMapping("/modules")

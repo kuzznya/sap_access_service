@@ -50,12 +50,14 @@ For HTTPS connection self-signed certificate is used now
   |---------------|-----------------------------|----------|
   | `access_token`| Access token of the client  | true     |
 
-* **GET /auth-check** - returns HTTP status "OK" (200) if active session with such access token exists  
+* **GET /auth** - returns HTTP status "OK" (200) if active session with such access token exists  
   Parameters:
   
   | Parameter     | Description                 | Required |
   |---------------|-----------------------------|----------|
   | `access_token`| Access token of the client  | true     |
+  
+* **GET /sessions-lifetime** - returns sessions lifetime (default 600 sec)
 
 * **GET /modules** - returns available SAP modules (see [Modules](#Modules))  
   Parameters:

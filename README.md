@@ -59,7 +59,7 @@ For HTTPS connection self-signed certificate is used now
   
 * **GET /sessions-lifetime** - returns sessions lifetime (default 600 sec)
 
-* **GET /modules** - returns available SAP modules (see [Modules](#Modules))  
+* **GET /apps** - returns available SAP modules (see [Applications](#Applications))  
   Parameters:
     
     | Parameter     | Description                 | Required |
@@ -99,10 +99,10 @@ For HTTPS connection self-signed certificate is used now
 
 *The list will be replenished*
 
-## Modules
+## Applications
 
-1. Module A. Table view
-2. Module Z. Add information from QR to SAP
+1. Application A. Table view
+2. Application Z. Add information from QR to SAP
 
 ## Download
 

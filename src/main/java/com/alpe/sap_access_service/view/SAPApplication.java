@@ -1,12 +1,12 @@
 package com.alpe.sap_access_service.view;
 
-public class SAPModule {
+public class SAPApplication {
     private String name;
     private String description;
 
-    public SAPModule() {}
+    public SAPApplication() {}
 
-    public SAPModule(String name, String description) {
+    public SAPApplication(String name, String description) {
         this.name = name;
         this.description = description;
     }

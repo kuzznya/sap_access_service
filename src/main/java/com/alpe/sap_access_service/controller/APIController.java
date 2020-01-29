@@ -83,12 +83,12 @@ public class APIController {
         return new ResponseEntity<>(SapAccessServiceApplication.getSessionLifetime(), HttpStatus.OK);
     }
 
-    @GetMapping("/modules")
-    ResponseEntity<?> getModules(@RequestParam(name = "access_token") String accessToken) {
+    @GetMapping("/apps")
+    ResponseEntity<?> getApplications(@RequestParam(name = "access_token") String accessToken) {
         Session session = sessionsController.getSession(accessToken);
         try {
             if (session != null)
-                return new ResponseEntity<>(session.getAvailableModules(), HttpStatus.OK);
+                return new ResponseEntity<>(session.getAvailableApplications(), HttpStatus.OK);
             else
                 return new ResponseEntity<>("No such session", HttpStatus.BAD_REQUEST);
         } catch (SOAPExceptionImpl ex) {

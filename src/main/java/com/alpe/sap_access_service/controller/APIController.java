@@ -32,7 +32,7 @@ public class APIController {
 
 
     //TODO change to PostMapping
-    @GetMapping("/auth")
+    @PostMapping("/auth")
     ResponseEntity<?> authorize(@RequestParam(name = "system") String systemName,
                          @RequestParam String username,
                          @RequestParam String password,

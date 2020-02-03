@@ -34,7 +34,7 @@ For HTTPS connection self-signed certificate is used now
   
   Response: access token (String)
   
-  Example: `https://localhost:8443/api/login?system=TS1&username=admin&password=changeme`
+  Example: `https://localhost:8443/api/auth?system=TS1&username=admin&password=changeme`
 
 * **PUT /auth** - refresh access token (notify server that the client is active)  
   Parameters:

@@ -30,8 +30,6 @@ public class APIController {
         return new LinkedList<>(systemsSet);
     }
 
-
-    //TODO change to PostMapping
     @PostMapping("/auth")
     ResponseEntity<?> authorize(@RequestParam(name = "system") String systemName,
                          @RequestParam String username,

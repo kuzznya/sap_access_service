@@ -2,6 +2,7 @@ package com.alpe.sap_access_service.model.sessions;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Timer;
@@ -9,6 +10,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+@Component
 public class SessionsController {
 
     private Map<String, Session> sessions = new ConcurrentHashMap<>();

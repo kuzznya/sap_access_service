@@ -4,6 +4,7 @@ import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.model.sessions.Session;
 import com.alpe.sap_access_service.model.sessions.SessionsController;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +21,12 @@ import java.util.Set;
 @RequestMapping("/api")
 public class APIController {
 
-    private final SessionsController sessionsController = new SessionsController();
+    @Autowired
+    private final SessionsController sessionsController;
 
-    public APIController() throws IOException { }
+    public APIController(SessionsController sessionsController) throws IOException {
+        this.sessionsController = sessionsController;
+    }
 
     @GetMapping("/systems")
     LinkedList<String> getSystemsList() {

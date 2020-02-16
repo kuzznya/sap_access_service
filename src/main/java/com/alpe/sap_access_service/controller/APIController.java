@@ -2,7 +2,7 @@ package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.model.sessions.Session;
-import com.alpe.sap_access_service.model.sessions.SessionsController;
+import com.alpe.sap_access_service.model.sessions.SessionsService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +22,10 @@ import java.util.Set;
 @RequestMapping("/api")
 public class APIController {
 
-    @Autowired
-    private final SessionsController sessionsController;
+    private final SessionsService sessionsService;
 
-    public APIController(SessionsController sessionsController) throws IOException {
-        this.sessionsController = sessionsController;
+    public APIController(@Autowired SessionsService sessionsService) throws IOException {
+        this.sessionsService = sessionsService;
     }
 
     @GetMapping("/systems")
@@ -41,7 +40,7 @@ public class APIController {
                          @RequestParam String password,
                                 @RequestParam(required = false) String lang) {
         try {
-            return new ResponseEntity<String>(sessionsController.createSession(systemName, username, password, lang), HttpStatus.OK);
+            return new ResponseEntity<String>(sessionsService.createSession(systemName, username, password, lang), HttpStatus.OK);
         } catch (AccessDeniedException ex) {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<AccessDeniedException>(ex, HttpStatus.UNAUTHORIZED);
@@ -51,7 +50,7 @@ public class APIController {
     @PutMapping("/auth")
     ResponseEntity<?> refreshToken(@RequestParam(name = "access_token") String accessToken) {
         try {
-            sessionsController.getSession(accessToken).refresh();
+            sessionsService.getSession(accessToken).refresh();
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (Exception ex) {
             ex.setStackTrace(new StackTraceElement[0]);
@@ -62,7 +61,7 @@ public class APIController {
     @DeleteMapping("/auth")
     ResponseEntity<?> deleteSession(@RequestParam(name = "access_token") String accessToken) {
         try {
-            sessionsController.killSession(accessToken);
+            sessionsService.killSession(accessToken);
             return new ResponseEntity<>("Session deleted", HttpStatus.OK);
         } catch (Exception ex) {
             ex.setStackTrace(new StackTraceElement[0]);
@@ -72,7 +71,7 @@ public class APIController {
 
     @GetMapping("/auth")
     ResponseEntity<?> checkToken(@RequestParam(name = "access_token") String accessToken) {
-        Session session = sessionsController.getSession(accessToken);
+        Session session = sessionsService.getSession(accessToken);
         if (session != null) {
             session.refresh();
             return new ResponseEntity<>("Active session found", HttpStatus.OK);
@@ -88,7 +87,7 @@ public class APIController {
 
     @GetMapping("/apps")
     ResponseEntity<?> getApplications(@RequestParam(name = "access_token") String accessToken) {
-        Session session = sessionsController.getSession(accessToken);
+        Session session = sessionsService.getSession(accessToken);
         try {
             if (session != null)
                 return new ResponseEntity<>(session.getAvailableApplications(), HttpStatus.OK);
@@ -110,7 +109,7 @@ public class APIController {
                                                        @RequestParam(required = false) String group,
                                                        @RequestParam(name = "fields_names", required = false) String fieldsNames) {
 
-        if (sessionsController.getSession(accessToken) == null) {
+        if (sessionsService.getSession(accessToken) == null) {
             AccessDeniedException ex = new AccessDeniedException("Invalid access token");
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<AccessDeniedException>(ex, HttpStatus.UNAUTHORIZED);
@@ -119,7 +118,7 @@ public class APIController {
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
 
         try {
-            return new ResponseEntity<LinkedHashMap<String, LinkedList<String>>>(sessionsController.getSession(accessToken).requestDataSet(table,
+            return new ResponseEntity<LinkedHashMap<String, LinkedList<String>>>(sessionsService.getSession(accessToken).requestDataSet(table,
                     recordsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             ex.setStackTrace(new StackTraceElement[0]);

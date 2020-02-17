@@ -87,13 +87,13 @@ For HTTPS connection self-signed certificate is used now
   
   | Field        | Description                           |
   |--------------|---------------------------------------|
-  | `columnLen`  | ?                                     |
+  | `columnLen`  | width of column in SAP table          |
   | `fieldNames` | System names of fields (rows)         |
   | `dataTypes`  | Field types                           |
   | `repText`    | Names of fields on requested language |
-  | `domNames`   | ?                                     |
-  | `outputLen`  | ?                                     |
-  | `decimals`   | ?                                     |
+  | `domNames`   | Technical names of fields             |
+  | `outputLen`  | max number of symbols for field       |
+  | `decimals`   | number of floating decimals           |
   
   Example: `https://localhost:8443/api/table?access_token=12345&name=TBL1&fields_names=MANDT%20BUKRS&lang=R`
 

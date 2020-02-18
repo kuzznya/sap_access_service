@@ -78,7 +78,7 @@ For HTTPS connection self-signed certificate is used now
   | `where`       | "WHERE" SAP condition       | false    |
   | `order`       | The order of the data       | false    |
   | `group`       | "GROUP" SAP condition       | false    |
-  | `fields_names`| Names of fields (rows)      | false    |
+  | `fields_names`| Names of fields (cols)      | false    |
   
   Multiple values in parameter need to be separated by space code (%20)
   
@@ -88,7 +88,7 @@ For HTTPS connection self-signed certificate is used now
   | Field        | Description                           |
   |--------------|---------------------------------------|
   | `columnLen`  | width of column in SAP table          |
-  | `fieldNames` | System names of fields (rows)         |
+  | `fieldNames` | System names of fields (cols)         |
   | `dataTypes`  | Field types                           |
   | `repText`    | Names of fields on requested language |
   | `domNames`   | Technical names of fields             |

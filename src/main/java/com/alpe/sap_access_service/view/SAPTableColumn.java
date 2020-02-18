@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.view;
 
-public class SAPColumn {
+public class SAPTableColumn {
 
     private String systemName;
     private String textName;
@@ -10,10 +10,10 @@ public class SAPColumn {
     private String outputLen;
     private String decimals;
 
-    public SAPColumn() {}
+    public SAPTableColumn() {}
 
-    public SAPColumn(String systemName, String textName, String columnLen, String dataType,
-                     String domName, String outputLen, String decimals) {
+    public SAPTableColumn(String systemName, String textName, String columnLen, String dataType,
+                          String domName, String outputLen, String decimals) {
         this.systemName = systemName;
         this.textName = textName;
         this.columnLen = columnLen;

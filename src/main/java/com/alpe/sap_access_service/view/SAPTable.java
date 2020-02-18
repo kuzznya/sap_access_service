@@ -1,12 +1,10 @@
 package com.alpe.sap_access_service.view;
 
-import com.alpe.sap_access_service.model.sap_modules.get_data.SapMap;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 public class SAPTable {
-    private LinkedList<SAPColumn> columns;
+    private LinkedList<SAPTableColumn> columns;
     private int count;
     private LinkedList<LinkedList<String>> records;
 
@@ -36,7 +34,7 @@ public class SAPTable {
 
         columns = new LinkedList<>();
         for (int i = 0; i < systemNames.size(); i++) {
-            columns.add(new SAPColumn(systemNames.get(i), textNames.get(i),
+            columns.add(new SAPTableColumn(systemNames.get(i), textNames.get(i),
                     columnLen.get(i), dataTypes.get(i), domNames.get(i), outputLen.get(i), decimals.get(i)));
         }
 
@@ -51,7 +49,7 @@ public class SAPTable {
         }
     }
 
-    public LinkedList<SAPColumn> getColumns() {
+    public LinkedList<SAPTableColumn> getColumns() {
         return columns;
     }
 

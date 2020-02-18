@@ -6,17 +6,19 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 public class SAPTable {
-    private LinkedList<String> systemNames;
-    private LinkedList<String> textNames;
-    private LinkedList<String> columnLen;
-    private LinkedList<String> dataTypes;
-    private LinkedList<String> domNames;
-    private LinkedList<String> outputLen;
-    private LinkedList<String> decimals;
+    private LinkedList<SAPColumn> columns;
     private int count;
     private LinkedList<LinkedList<String>> records;
 
     public SAPTable(LinkedHashMap<String, LinkedList<String>> map) {
+        LinkedList<String> systemNames;
+        LinkedList<String> textNames;
+        LinkedList<String> columnLen;
+        LinkedList<String> dataTypes;
+        LinkedList<String> domNames;
+        LinkedList<String> outputLen;
+        LinkedList<String> decimals;
+
         systemNames = map.get("fieldNames");
         map.remove("fieldNames");
         textNames = map.get("repText");
@@ -32,6 +34,12 @@ public class SAPTable {
         decimals = map.get("decimals");
         map.remove("decimals");
 
+        columns = new LinkedList<>();
+        for (int i = 0; i < systemNames.size(); i++) {
+            columns.add(new SAPColumn(systemNames.get(i), textNames.get(i),
+                    columnLen.get(i), dataTypes.get(i), domNames.get(i), outputLen.get(i), decimals.get(i)));
+        }
+
         count = map.get(map.keySet().toArray()[0]).size();
 
         records = new LinkedList<>();
@@ -43,32 +51,8 @@ public class SAPTable {
         }
     }
 
-    public LinkedList<String> getSystemNames() {
-        return systemNames;
-    }
-
-    public LinkedList<String> getTextNames() {
-        return textNames;
-    }
-
-    public LinkedList<String> getColumnLen() {
-        return columnLen;
-    }
-
-    public LinkedList<String> getDataTypes() {
-        return dataTypes;
-    }
-
-    public LinkedList<String> getDomNames() {
-        return domNames;
-    }
-
-    public LinkedList<String> getOutputLen() {
-        return outputLen;
-    }
-
-    public LinkedList<String> getDecimals() {
-        return decimals;
+    public LinkedList<SAPColumn> getColumns() {
+        return columns;
     }
 
     public int getCount() {

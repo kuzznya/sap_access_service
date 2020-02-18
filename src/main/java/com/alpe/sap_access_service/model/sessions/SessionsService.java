@@ -1,6 +1,8 @@
 package com.alpe.sap_access_service.model.sessions;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
+import com.alpe.sap_access_service.model.services.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SessionsService {
 
+    private AuthService authService;
+
     private Map<String, Session> sessions = new ConcurrentHashMap<>();
 
-    public SessionsService() {
+    public SessionsService(@Autowired AuthService authService) {
+        this.authService = authService;
+
         (new Timer()).schedule(new TimerTask() {
                                    @Override
                                    public void run() {
@@ -40,7 +46,7 @@ public class SessionsService {
         else
             session = new Session(system, username, password, id);
 
-        boolean authResult = session.auth();
+        boolean authResult = authService.auth(session);
         if (!authResult)
             throw new AccessDeniedException("Error while trying to authorize");
 

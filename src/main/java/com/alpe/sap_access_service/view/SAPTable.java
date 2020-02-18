@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class SAPTable {
     private LinkedList<SAPTableColumn> columns;
     private int count;
-    private LinkedList<LinkedList<String>> records;
+    private LinkedList<SAPTableRecord> records;
 
     public SAPTable(LinkedHashMap<String, LinkedList<String>> map) {
         LinkedList<String> systemNames;
@@ -42,9 +42,9 @@ public class SAPTable {
 
         records = new LinkedList<>();
         for (int i = 0; i < count; i++) {
-            records.add(new LinkedList<>());
+            records.add(new SAPTableRecord());
             for (String key : map.keySet()) {
-                records.get(i).add(map.get(key).get(i));
+                records.get(i).addData(key, map.get(key).get(i));
             }
         }
     }
@@ -57,7 +57,7 @@ public class SAPTable {
         return count;
     }
 
-    public LinkedList<LinkedList<String>> getRecords() {
+    public LinkedList<SAPTableRecord> getRecords() {
         return records;
     }
 }

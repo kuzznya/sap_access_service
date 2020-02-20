@@ -11,10 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import org.springframework.security.access.AccessDeniedException;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -44,12 +42,13 @@ public class APIController {
     }
 
     @PostMapping("/auth")
-    ResponseEntity<?> authorize(@RequestParam(name = "system") String systemName,
-                                @RequestParam String username,
-                                @RequestParam String password,
-                                @RequestParam(required = false) String lang) {
+    ResponseEntity<?> authorize(@RequestBody AuthForm authForm) {
+        String system = authForm.getSystem();
+        String username = authForm.getUsername();
+        String password = authForm.getPassword();
+        String language = authForm.getLanguage();
         try {
-            return new ResponseEntity<String>(sessionsService.createSession(systemName, username, password, lang), HttpStatus.OK);
+            return new ResponseEntity<String>(sessionsService.createSession(system, username, password, language), HttpStatus.OK);
         } catch (AccessDeniedException ex) {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<AccessDeniedException>(ex, HttpStatus.UNAUTHORIZED);
@@ -57,7 +56,8 @@ public class APIController {
     }
 
     @PutMapping("/auth")
-    ResponseEntity<?> refreshToken(@RequestParam(name = "access_token") String accessToken) {
+    ResponseEntity<?> refreshToken(@RequestBody BodyWithToken body) {
+        String accessToken = body.getAccess_token();
         try {
             sessionsService.getSession(accessToken).refresh();
             return new ResponseEntity<>(null, HttpStatus.OK);
@@ -68,7 +68,8 @@ public class APIController {
     }
 
     @DeleteMapping("/auth")
-    ResponseEntity<?> deleteSession(@RequestParam(name = "access_token") String accessToken) {
+    ResponseEntity<?> deleteSession(@RequestBody BodyWithToken body) {
+        String accessToken = body.getAccess_token();
         try {
             sessionsService.killSession(accessToken);
             return new ResponseEntity<>("Session deleted", HttpStatus.OK);
@@ -79,7 +80,8 @@ public class APIController {
     }
 
     @GetMapping("/auth")
-    ResponseEntity<?> checkToken(@RequestParam(name = "access_token") String accessToken) {
+    ResponseEntity<?> checkToken(@RequestBody BodyWithToken body) {
+        String accessToken = body.getAccess_token();
         Session session = sessionsService.getSession(accessToken);
         if (session != null) {
             session.refresh();
@@ -95,7 +97,8 @@ public class APIController {
     }
 
     @GetMapping("/apps")
-    ResponseEntity<?> getApplications(@RequestParam(name = "access_token") String accessToken) {
+    ResponseEntity<?> getApplications(@RequestBody BodyWithToken body) {
+        String accessToken = body.getAccess_token();
         Session session = sessionsService.getSession(accessToken);
         try {
             if (session != null)
@@ -109,15 +112,15 @@ public class APIController {
     }
 
     @GetMapping("/table")
-    ResponseEntity<?> getTable(@RequestParam(name = "access_token") String accessToken,
-                               @RequestParam(name = "name") String table,
+    ResponseEntity<?> getTable(@RequestParam(name = "name") String table,
                                @RequestParam(name = "recs_count", required = false) Integer recordsCount,
                                @RequestParam(name = "lang", required = false) String language,
                                @RequestParam(required = false) String where,
                                @RequestParam(required = false) String order,
                                @RequestParam(required = false) String group,
-                               @RequestParam(name = "fields_names", required = false) String fieldsNames) {
-
+                               @RequestParam(name = "fields_names", required = false) String fieldsNames,
+                               @RequestBody BodyWithToken body) {
+        String accessToken = body.getAccess_token();
         if (sessionsService.getSession(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
@@ -135,15 +138,15 @@ public class APIController {
     }
 
     @GetMapping("/dataset")
-    ResponseEntity<?> getDataset(@RequestParam(name = "access_token") String accessToken,
-                                                       @RequestParam(name = "name") String table,
-                                                       @RequestParam(name = "recs_count", required = false) Integer recordsCount,
-                                                       @RequestParam(name = "lang", required = false) String language,
-                                                       @RequestParam(required = false) String where,
-                                                       @RequestParam(required = false) String order,
-                                                       @RequestParam(required = false) String group,
-                                                       @RequestParam(name = "fields_names", required = false) String fieldsNames) {
-
+    ResponseEntity<?> getDataset(@RequestParam(name = "name") String table,
+                                 @RequestParam(name = "recs_count", required = false) Integer recordsCount,
+                                 @RequestParam(name = "lang", required = false) String language,
+                                 @RequestParam(required = false) String where,
+                                 @RequestParam(required = false) String order,
+                                 @RequestParam(required = false) String group,
+                                 @RequestParam(name = "fields_names", required = false) String fieldsNames,
+                                 @RequestBody BodyWithToken body) {
+        String accessToken = body.getAccess_token();
         if (sessionsService.getSession(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }

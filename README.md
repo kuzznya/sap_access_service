@@ -15,7 +15,7 @@ For HTTPS connection self-signed certificate is used now
 *The project is under development*
 
 
-## API
+## API (v.0.2.1)
 
 {server address}/api
 

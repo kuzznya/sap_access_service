@@ -5,6 +5,7 @@ import com.alpe.sap_access_service.services.sessions.Session;
 import com.alpe.sap_access_service.view.SAPApplication;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -12,7 +13,10 @@ import java.util.LinkedList;
 @Service
 public class AvailableAppsService {
 
-    DatasetModule datasetModule;
+    @Value("${server.myaddress}")
+    private String serverAddress;
+
+    private DatasetModule datasetModule;
 
     public AvailableAppsService(@Autowired DatasetModule datasetModule) {
         this.datasetModule = datasetModule;
@@ -27,7 +31,8 @@ public class AvailableAppsService {
             if (el.matches("[0-9]{3}[.]+.+")) {
                 int id = Integer.parseInt(el.substring(0, 3));
                 // TODO description
-                applications.add(new SAPApplication(id, el.substring(4).trim(), null));
+                applications.add(new SAPApplication(id, el.substring(4).trim(), null,
+                        serverAddress + "/apps/" + id));
             }
         }
         return applications;

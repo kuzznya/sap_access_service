@@ -19,7 +19,6 @@ import java.util.Set;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api")
 public class APIController {
 
     private SessionsService sessionsService;

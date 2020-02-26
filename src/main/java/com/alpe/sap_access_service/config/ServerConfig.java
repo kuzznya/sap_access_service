@@ -26,6 +26,7 @@ public class ServerConfig {
             }
         };
         tomcat.addAdditionalTomcatConnectors(getHttpConnector());
+        tomcat.setContextPath("/api");
         return tomcat;
     }
 

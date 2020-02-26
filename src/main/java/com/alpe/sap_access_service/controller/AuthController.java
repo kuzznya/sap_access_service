@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     private SessionsService sessionsService;

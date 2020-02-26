@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/apps/1")
+@RequestMapping("/apps/1")
 public class TableViewAppController {
 
     private SessionsService sessionsService;

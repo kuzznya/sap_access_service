@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin
 @RequestMapping("/apps/1")
-public class TableViewAppController {
+public class App1TableViewController {
 
     private SessionsService sessionsService;
     private TableService tableService;
 
-    public TableViewAppController(@Autowired SessionsService sessionsService,
-                                  @Autowired TableService tableService) {
+    public App1TableViewController(@Autowired SessionsService sessionsService,
+                                   @Autowired TableService tableService) {
         this.sessionsService = sessionsService;
         this.tableService = tableService;
     }

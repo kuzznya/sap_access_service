@@ -5,14 +5,20 @@ import com.alpe.sap_access_service.services.sessions.Session;
 import com.alpe.sap_access_service.services.sessions.SessionsService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.LinkedList;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/apps/1")
 public class App1TableViewController {
+
+    @Value("${server.myaddress}")
+    private String serverAddress;
 
     private SessionsService sessionsService;
     private TableService tableService;
@@ -21,6 +27,20 @@ public class App1TableViewController {
                                    @Autowired TableService tableService) {
         this.sessionsService = sessionsService;
         this.tableService = tableService;
+    }
+
+    @GetMapping
+    ResponseEntity<?> getURLs(@RequestBody BodyWithToken body) {
+        String accessToken = body.getAccess_token();
+        if (sessionsService.getSession(accessToken) == null) {
+            return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
+        }
+        Session session = sessionsService.getSession(accessToken);
+
+        LinkedList<String> URLs = new LinkedList<>();
+        URLs.add(serverAddress + "/apps/1/table");
+        URLs.add(serverAddress + "/apps/1/dataset");
+        return new ResponseEntity<>(URLs, HttpStatus.OK);
     }
 
     @GetMapping("/table")
@@ -36,10 +56,9 @@ public class App1TableViewController {
         if (sessionsService.getSession(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
+        Session session = sessionsService.getSession(accessToken);
 
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
-
-        Session session = sessionsService.getSession(accessToken);
 
         try {
             return new ResponseEntity<>(tableService.getTable(session, table,
@@ -62,10 +81,9 @@ public class App1TableViewController {
         if (sessionsService.getSession(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
+        Session session = sessionsService.getSession(accessToken);
 
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
-
-        Session session = sessionsService.getSession(accessToken);
 
         try {
             return new ResponseEntity<>(tableService.getDataset(session, table,

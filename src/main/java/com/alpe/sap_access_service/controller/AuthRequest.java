@@ -1,20 +1,20 @@
 package com.alpe.sap_access_service.controller;
 
-public class AuthForm {
+public class AuthRequest {
     private String system;
     private String username;
     private String password;
     private String language = null;
 
-    public AuthForm() {}
+    public AuthRequest() {}
 
-    public AuthForm(String system, String username, String password) {
+    public AuthRequest(String system, String username, String password) {
         this.system = system;
         this.username = username;
         this.password = password;
     }
 
-    public AuthForm(String system, String username, String password, String language) {
+    public AuthRequest(String system, String username, String password, String language) {
         this.system = system;
         this.username = username;
         this.password = password;

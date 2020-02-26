@@ -24,8 +24,11 @@ public class AvailableAppsService {
                 " ", " ", session.getLanguage(), " ", " ", " ", " ").get("REPI2");
         LinkedList<SAPApplication> applications = new LinkedList<>();
         for (String el : REPI2Data) {
-            if (el.matches("[0-9]{3}[.]+.+"))
-                applications.add(new SAPApplication(el, null));
+            if (el.matches("[0-9]{3}[.]+.+")) {
+                int id = Integer.parseInt(el.substring(0, 3));
+                // TODO description
+                applications.add(new SAPApplication(id, el.substring(4).trim(), null));
+            }
         }
         return applications;
     }

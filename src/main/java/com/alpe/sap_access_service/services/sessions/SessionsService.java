@@ -1,10 +1,9 @@
-package com.alpe.sap_access_service.model.sessions;
+package com.alpe.sap_access_service.services.sessions;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.model.services.AuthService;
+import com.alpe.sap_access_service.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

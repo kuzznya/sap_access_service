@@ -1,12 +1,5 @@
-package com.alpe.sap_access_service.model.sessions;
+package com.alpe.sap_access_service.services.sessions;
 
-import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.model.sap_modules.get_data.SapMap;
-import com.alpe.sap_access_service.view.SAPApplication;
-import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
-
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 public class Session {

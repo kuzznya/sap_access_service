@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.model.sap_modules.get_data;
+package com.alpe.sap_access_service.services.sap_modules.get_data;
 
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.w3c.dom.Document;

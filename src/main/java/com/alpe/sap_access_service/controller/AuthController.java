@@ -1,7 +1,9 @@
 package com.alpe.sap_access_service.controller;
 
-import com.alpe.sap_access_service.services.sessions.Session;
-import com.alpe.sap_access_service.services.sessions.SessionsService;
+import com.alpe.sap_access_service.model.AuthRequest;
+import com.alpe.sap_access_service.model.BodyWithToken;
+import com.alpe.sap_access_service.model.Session;
+import com.alpe.sap_access_service.services.SessionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

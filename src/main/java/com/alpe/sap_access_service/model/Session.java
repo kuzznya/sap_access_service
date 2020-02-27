@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.services.sessions;
+package com.alpe.sap_access_service.model;
 
 import java.util.concurrent.TimeUnit;
 

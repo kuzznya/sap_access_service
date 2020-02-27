@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.controller;
+package com.alpe.sap_access_service.model;
 
 public class AuthRequest {
     private String system;

@@ -45,7 +45,7 @@ Authorization token needs to be placed as `Authorization` header of the request
 
 * **GET /auth** - returns HTTP status "OK" (200) if active user with such access token exists  
   
-* **GET /sessions-lifetime** - returns token lifetime (default 600 sec)
+* **GET /token-lifetime** - returns token lifetime (default 600 sec)
 
 * **GET /apps** - returns available SAP modules (see [Applications](#Applications))
 

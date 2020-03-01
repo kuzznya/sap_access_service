@@ -27,8 +27,8 @@ public class UsersService {
                                    public void run() {
                                        deleteInactiveUsers();
                                    }
-                               }, 1000 * SapAccessServiceApplication.getSessionLifetime() / 4,
-                1000 * SapAccessServiceApplication.getSessionLifetime() / 4);
+                               }, 1000 * SapAccessServiceApplication.getTokenLifetime() / 4,
+                1000 * SapAccessServiceApplication.getTokenLifetime() / 4);
     }
 
     public String createUser(String system, String username, String password) throws AccessDeniedException {
@@ -81,7 +81,7 @@ public class UsersService {
             if (SapAccessServiceApplication.isSessionsInfo())
                 System.out.println("Session (access token " + key + "): last time accessed " + sessionLifeTime + " seconds ago");
 
-            if (sessionLifeTime >= SapAccessServiceApplication.getSessionLifetime()) {
+            if (sessionLifeTime >= SapAccessServiceApplication.getTokenLifetime()) {
                 deleteUser(key);
                 if (SapAccessServiceApplication.isSessionsInfo())
                     System.out.println("Session killed");

@@ -49,8 +49,8 @@ public class SapAccessServiceApplication {
 		return paramsProperties.getProperty("PRINT_SESSIONS_INFO").equals("TRUE");
 	}
 
-	public static int getSessionLifetime() {
-		return Integer.parseInt(paramsProperties.getProperty("SESSION_LIFETIME"));
+	public static int getTokenLifetime() {
+		return Integer.parseInt(paramsProperties.getProperty("TOKEN_LIFETIME"));
 	}
 
 	public static void main(String[] args) {
@@ -60,7 +60,7 @@ public class SapAccessServiceApplication {
 		boolean isConfig = false;
 		boolean addSystem = false;
 		boolean removeSystem = false;
-		int sessionLifetime;
+		int tokenLifetime;
 		String systemName = null;
 		String systemAddress = null;
 
@@ -84,16 +84,16 @@ public class SapAccessServiceApplication {
 					systemAddress = args[i + 1];
 				else if (args[i].equals("-remove"))
 					removeSystem = true;
-				else if (args[i].equals("-set_session_lifetime")) {
+				else if (args[i].equals("-set_token_lifetime")) {
 					try {
-						sessionLifetime = Integer.parseInt(args[i + 1]);
+						tokenLifetime = Integer.parseInt(args[i + 1]);
 					} catch (NumberFormatException ex) {
-						System.err.println("Error while trying to parse new session lifetime value");
+						System.err.println("Error while trying to parse new token lifetime value");
 						return;
 					}
 
 					try {
-						paramsProperties.setProperty("SESSION_LIFETIME", Integer.toString(sessionLifetime));
+						paramsProperties.setProperty("TOKEN_LIFETIME", Integer.toString(tokenLifetime));
 					} catch (IOException ex) {
 						ex.printStackTrace();
 						System.err.println("Error accessing to params.properties");
@@ -134,12 +134,12 @@ public class SapAccessServiceApplication {
 				System.out.println("Error: missing params.properties or systems.properties\nTry configuring the program before starting the service");
 				return;
 			}
-			else if (paramsProperties.getProperty("SESSION_LIFETIME") == null) {
+			else if (paramsProperties.getProperty("TOKEN_LIFETIME") == null) {
 				try {
-					System.out.println("No session lifetime parameter found\nSetting default session lifetime (600 secs)");
-					paramsProperties.setProperty("SESSION_LIFETIME", "600");
+					System.out.println("No token lifetime parameter found\nSetting default token lifetime (600 secs)");
+					paramsProperties.setProperty("TOKEN_LIFETIME", "600");
 				} catch (IOException ex) {
-					System.out.println("Error setting default session lifetime at params.properties");
+					System.out.println("Error setting default token lifetime at params.properties");
 					return;
 				}
 			}

@@ -32,9 +32,9 @@ public class APIController {
         return new LinkedList<>(systemsSet);
     }
 
-    @GetMapping("/sessions-lifetime")
-    ResponseEntity<?> getSessionsLifetime() {
-        return new ResponseEntity<>(SapAccessServiceApplication.getSessionLifetime(), HttpStatus.OK);
+    @GetMapping("/token-lifetime")
+    ResponseEntity<?> getTokenLifetime() {
+        return new ResponseEntity<>(SapAccessServiceApplication.getTokenLifetime(), HttpStatus.OK);
     }
 
     @GetMapping("/apps")

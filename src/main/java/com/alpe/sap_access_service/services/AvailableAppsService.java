@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.services;
 
-import com.alpe.sap_access_service.model.User;
+import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.services.sap_modules.get_data.DatasetModule;
 import com.alpe.sap_access_service.view.SAPApplication;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
@@ -22,10 +22,10 @@ public class AvailableAppsService {
         this.datasetModule = datasetModule;
     }
 
-    public LinkedList<SAPApplication> getAvailableApplications(User user) throws SOAPExceptionImpl {
-        LinkedList<String> REPI2Data = datasetModule.requestDataSet(user.getSystem(),
-                user.getUsername(), user.getPassword(),
-                " ", " ", user.getLanguage(), " ", " ", " ", " ").get("REPI2");
+    public LinkedList<SAPApplication> getAvailableApplications(AppUser appUser) throws SOAPExceptionImpl {
+        LinkedList<String> REPI2Data = datasetModule.requestDataSet(appUser.getSystem(),
+                appUser.getUsername(), appUser.getPassword(),
+                " ", " ", appUser.getLanguage(), " ", " ", " ", " ").get("REPI2");
         LinkedList<SAPApplication> applications = new LinkedList<>();
         for (String el : REPI2Data) {
             if (el.matches("[0-9]{3}[.]+.+")) {

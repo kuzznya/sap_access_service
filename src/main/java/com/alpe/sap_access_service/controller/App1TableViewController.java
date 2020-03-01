@@ -1,7 +1,7 @@
 package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.model.BodyWithToken;
-import com.alpe.sap_access_service.model.User;
+import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.services.TableService;
 import com.alpe.sap_access_service.services.UsersService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
@@ -36,7 +36,7 @@ public class App1TableViewController {
         if (usersService.getUser(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
-        User user = usersService.getUser(accessToken);
+        AppUser appUser = usersService.getUser(accessToken);
 
         LinkedList<String> URLs = new LinkedList<>();
         URLs.add(serverAddress + "/apps/1/table");
@@ -57,12 +57,12 @@ public class App1TableViewController {
         if (usersService.getUser(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
-        User user = usersService.getUser(accessToken);
+        AppUser appUser = usersService.getUser(accessToken);
 
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
 
         try {
-            return new ResponseEntity<>(tableService.getTable(user, table,
+            return new ResponseEntity<>(tableService.getTable(appUser, table,
                     recordsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             return new ResponseEntity<>("SAP access error", HttpStatus.BAD_REQUEST);
@@ -82,12 +82,12 @@ public class App1TableViewController {
         if (usersService.getUser(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
-        User user = usersService.getUser(accessToken);
+        AppUser appUser = usersService.getUser(accessToken);
 
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
 
         try {
-            return new ResponseEntity<>(tableService.getDataset(user, table,
+            return new ResponseEntity<>(tableService.getDataset(appUser, table,
                     recordsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             ex.setStackTrace(new StackTraceElement[0]);

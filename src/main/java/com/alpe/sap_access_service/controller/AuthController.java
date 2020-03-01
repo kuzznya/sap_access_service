@@ -2,7 +2,7 @@ package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.model.AuthRequest;
 import com.alpe.sap_access_service.model.BodyWithToken;
-import com.alpe.sap_access_service.model.User;
+import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,9 +62,9 @@ public class AuthController {
     @GetMapping
     ResponseEntity<?> checkToken(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        User user = usersService.getUser(accessToken);
-        if (user != null) {
-            user.refresh();
+        AppUser appUser = usersService.getUser(accessToken);
+        if (appUser != null) {
+            appUser.refresh();
             return new ResponseEntity<>("Active session found", HttpStatus.OK);
         }
         else

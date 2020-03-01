@@ -1,7 +1,7 @@
 package com.alpe.sap_access_service.services;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.model.User;
+import com.alpe.sap_access_service.model.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class UsersService {
 
     private AuthService authService;
 
-    private Map<String, User> users = new ConcurrentHashMap<>();
+    private Map<String, AppUser> users = new ConcurrentHashMap<>();
 
     public UsersService(@Autowired AuthService authService) {
         this.authService = authService;
@@ -37,25 +37,25 @@ public class UsersService {
 
     public String createUser(String system, String username, String password, String language) throws AccessDeniedException {
         int id = 0;
-        while (users.containsKey(User.hash(system, username, password, id)))
+        while (users.containsKey(AppUser.hash(system, username, password, id)))
             id++;
-        User user;
+        AppUser appUser;
         if (language != null)
-            user = new User(system, username, password, id, language);
+            appUser = new AppUser(system, username, password, id, language);
         else
-            user = new User(system, username, password, id);
+            appUser = new AppUser(system, username, password, id);
 
-        boolean authResult = authService.auth(user);
+        boolean authResult = authService.auth(appUser);
         if (!authResult)
             throw new AccessDeniedException("Error while trying to authorize");
 
-        users.put(user.getAccessToken(), user);
-        return user.getAccessToken();
+        users.put(appUser.getAccessToken(), appUser);
+        return appUser.getAccessToken();
     }
 
     public String getAccessToken(String system, String username, int id) {
         for (String key : users.keySet()) {
-            User curUser = users.get(key);
+            AppUser curUser = users.get(key);
             if (curUser.getSystem().equals(system) &&
                     curUser.getUsername().equals(username) &&
                     curUser.getId() == id)
@@ -64,7 +64,7 @@ public class UsersService {
         return null;
     }
 
-    public User getUser(String accessToken) {
+    public AppUser getUser(String accessToken) {
         return users.getOrDefault(accessToken, null);
     }
 

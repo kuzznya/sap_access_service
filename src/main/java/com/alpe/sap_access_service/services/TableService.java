@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.services;
 
-import com.alpe.sap_access_service.model.User;
+import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.services.sap_modules.get_data.DatasetModule;
 import com.alpe.sap_access_service.view.SAPTable;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
@@ -19,21 +19,21 @@ public class TableService {
         this.datasetModule = datasetModule;
     }
 
-    public SAPTable getTable(User user, String table, String fieldsQuan, String language,
+    public SAPTable getTable(AppUser appUser, String table, String fieldsQuan, String language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
-        LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, table, fieldsQuan, language,
+        LinkedHashMap<String, LinkedList<String>> dataset = getDataset(appUser, table, fieldsQuan, language,
                 where, order, group, fieldNames);
         return new SAPTable(dataset);
     }
 
-    public LinkedHashMap<String, LinkedList<String>> getDataset(User user,
+    public LinkedHashMap<String, LinkedList<String>> getDataset(AppUser appUser,
                                                                 String table, String fieldsQuan, String language,
                                                                 String where, String order,
                                                                 String group, String fieldNames) throws SOAPExceptionImpl {
-        language = (language != null && !language.equals(" ")) ? language : user.getLanguage();
-        return datasetModule.requestDataSet(user.getSystem(),
-                user.getUsername(), user.getPassword(),
+        language = (language != null && !language.equals(" ")) ? language : appUser.getLanguage();
+        return datasetModule.requestDataSet(appUser.getSystem(),
+                appUser.getUsername(), appUser.getPassword(),
                 table, fieldsQuan, language, where, order, group, fieldNames);
     }
 

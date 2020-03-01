@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
 
-public class User implements UserDetails {
+public class AppUser {
 
     private final String system;
     private final String username;
@@ -21,7 +21,7 @@ public class User implements UserDetails {
 
     private long lastTimeAccessed;
 
-    public User(String system, String username, String password, int id) {
+    public AppUser(String system, String username, String password, int id) {
         this.system = system;
         this.username = username;
         this.password = password;
@@ -29,7 +29,7 @@ public class User implements UserDetails {
         lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
     }
 
-    public User(String system, String username, String password, int id, String language) {
+    public AppUser(String system, String username, String password, int id, String language) {
         this.language = language;
         this.system = system;
         this.username = username;
@@ -43,35 +43,9 @@ public class User implements UserDetails {
         return system;
     }
 
-    @Override
     public String getUsername() {
         lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
     }
 
     public String getPassword() {

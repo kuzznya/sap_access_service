@@ -91,7 +91,7 @@ Authorization token needs to be placed as `Authorization` header of the request
 
 ## Download
 
-[Latest test build (v.0.2.1)](../master/builds/sap_access_service-0.2.1.jar)
+[Latest test build (v.0.3.1)](../master/builds/sap_access_service-0.3.1.jar)
 
 [View all builds](../master/builds)
 

@@ -17,6 +17,8 @@ For HTTPS connection self-signed certificate is used now
 
 ## API (v.0.2.1)
 
+README needs to be updated
+
 {server address}/api
 
 * **GET /systems** - get the list of available SAP systems  
@@ -43,7 +45,7 @@ For HTTPS connection self-signed certificate is used now
   |---------------|-----------------------------|----------|
   | `access_token`| Access token of the client  | true     |
 
-* **DELETE /auth** - kill appUser of this client  
+* **DELETE /auth** - delete user  
   Parameters:
   
   | Parameter     | Description                 | Required |

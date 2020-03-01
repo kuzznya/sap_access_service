@@ -1,6 +1,11 @@
 package com.alpe.sap_access_service.model;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.security.MessageDigest;
 import java.util.concurrent.TimeUnit;
+
+import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
 
 public class User {
 
@@ -62,13 +67,11 @@ public class User {
     }
 
     public String getAccessToken() {
-        return hash(this.system, this.username, this.password, this.id);
+        return hash(system, username, password, id);
     }
 
     public static String hash(String system, String username, String password, int id) {
-        String data = system + username + password + id;
-        int result = Math.abs(data.hashCode());
-        return String.valueOf(result);
+        return new DigestUtils(SHA3_256).digestAsHex(system + username + password + id);
     }
 
     public void refresh() {

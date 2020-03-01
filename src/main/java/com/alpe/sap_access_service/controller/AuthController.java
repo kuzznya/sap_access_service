@@ -28,7 +28,7 @@ public class AuthController {
         String password = authRequest.getPassword();
         String language = authRequest.getLanguage();
         try {
-            return new ResponseEntity<String>(usersService.createSession(system, username, password, language), HttpStatus.OK);
+            return new ResponseEntity<String>(usersService.createUser(system, username, password, language), HttpStatus.OK);
         } catch (AccessDeniedException ex) {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<AccessDeniedException>(ex, HttpStatus.UNAUTHORIZED);
@@ -39,7 +39,7 @@ public class AuthController {
     ResponseEntity<?> refreshToken(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
         try {
-            usersService.getSession(accessToken).refresh();
+            usersService.getUser(accessToken).refresh();
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (Exception ex) {
             ex.setStackTrace(new StackTraceElement[0]);
@@ -51,7 +51,7 @@ public class AuthController {
     ResponseEntity<?> deleteSession(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
         try {
-            usersService.killSession(accessToken);
+            usersService.deleteUser(accessToken);
             return new ResponseEntity<>("Session deleted", HttpStatus.OK);
         } catch (Exception ex) {
             ex.setStackTrace(new StackTraceElement[0]);
@@ -62,7 +62,7 @@ public class AuthController {
     @GetMapping
     ResponseEntity<?> checkToken(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        User user = usersService.getSession(accessToken);
+        User user = usersService.getUser(accessToken);
         if (user != null) {
             user.refresh();
             return new ResponseEntity<>("Active session found", HttpStatus.OK);

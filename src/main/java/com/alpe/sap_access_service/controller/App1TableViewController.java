@@ -33,10 +33,10 @@ public class App1TableViewController {
     @GetMapping
     ResponseEntity<?> getURLs(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        if (usersService.getSession(accessToken) == null) {
+        if (usersService.getUser(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
-        User user = usersService.getSession(accessToken);
+        User user = usersService.getUser(accessToken);
 
         LinkedList<String> URLs = new LinkedList<>();
         URLs.add(serverAddress + "/apps/1/table");
@@ -54,10 +54,10 @@ public class App1TableViewController {
                                @RequestParam(name = "fields_names", required = false) String fieldsNames,
                                @RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        if (usersService.getSession(accessToken) == null) {
+        if (usersService.getUser(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
-        User user = usersService.getSession(accessToken);
+        User user = usersService.getUser(accessToken);
 
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
 
@@ -79,10 +79,10 @@ public class App1TableViewController {
                                  @RequestParam(name = "fields_names", required = false) String fieldsNames,
                                  @RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        if (usersService.getSession(accessToken) == null) {
+        if (usersService.getUser(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
-        User user = usersService.getSession(accessToken);
+        User user = usersService.getUser(accessToken);
 
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
 

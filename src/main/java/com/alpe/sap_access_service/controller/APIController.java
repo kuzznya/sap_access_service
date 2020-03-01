@@ -42,7 +42,7 @@ public class APIController {
     @GetMapping("/apps")
     ResponseEntity<?> getApplications(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        User user = usersService.getSession(accessToken);
+        User user = usersService.getUser(accessToken);
         try {
             if (user != null)
                 return new ResponseEntity<>(appsService.getAvailableApplications(user), HttpStatus.OK);

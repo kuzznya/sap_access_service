@@ -17,7 +17,7 @@ public class UsersService {
 
     private AuthService authService;
 
-    private Map<String, User> sessions = new ConcurrentHashMap<>();
+    private Map<String, User> users = new ConcurrentHashMap<>();
 
     public UsersService(@Autowired AuthService authService) {
         this.authService = authService;
@@ -25,19 +25,19 @@ public class UsersService {
         (new Timer()).schedule(new TimerTask() {
                                    @Override
                                    public void run() {
-                                       killInactiveSessions();
+                                       deleteInactiveUsers();
                                    }
                                }, 1000 * SapAccessServiceApplication.getSessionLifetime() / 4,
                 1000 * SapAccessServiceApplication.getSessionLifetime() / 4);
     }
 
-    public String createSession(String system, String username, String password) throws AccessDeniedException {
-        return createSession(system, username, password, null);
+    public String createUser(String system, String username, String password) throws AccessDeniedException {
+        return createUser(system, username, password, null);
     }
 
-    public String createSession(String system, String username, String password, String language) throws AccessDeniedException {
+    public String createUser(String system, String username, String password, String language) throws AccessDeniedException {
         int id = 0;
-        while (sessions.containsKey(User.hash(system, username, password, id)))
+        while (users.containsKey(User.hash(system, username, password, id)))
             id++;
         User user;
         if (language != null)
@@ -49,53 +49,53 @@ public class UsersService {
         if (!authResult)
             throw new AccessDeniedException("Error while trying to authorize");
 
-        sessions.put(user.getAccessToken(), user);
+        users.put(user.getAccessToken(), user);
         return user.getAccessToken();
     }
 
     public String getAccessToken(String system, String username, int id) {
-        for (String key : sessions.keySet()) {
-            User curUser = sessions.get(key);
+        for (String key : users.keySet()) {
+            User curUser = users.get(key);
             if (curUser.getSystem().equals(system) &&
                     curUser.getUsername().equals(username) &&
                     curUser.getId() == id)
-                return curUser.getAccessToken();
+                return key;
         }
         return null;
     }
 
-    public User getSession(String accessToken) {
-        return sessions.getOrDefault(accessToken, null);
+    public User getUser(String accessToken) {
+        return users.getOrDefault(accessToken, null);
     }
 
-    public void killInactiveSessions() {
+    public void deleteInactiveUsers() {
 
         if (SapAccessServiceApplication.isSessionsInfo())
             System.out.println("=== Sessions life check ===");
 
-        for (String key : sessions.keySet()) {
+        for (String key : users.keySet()) {
 
             long sessionLifeTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) -
-                    sessions.get(key).getLastTimeAccessed();
+                    users.get(key).getLastTimeAccessed();
 
             if (SapAccessServiceApplication.isSessionsInfo())
                 System.out.println("Session (access token " + key + "): last time accessed " + sessionLifeTime + " seconds ago");
 
             if (sessionLifeTime >= SapAccessServiceApplication.getSessionLifetime()) {
-                killSession(key);
+                deleteUser(key);
                 if (SapAccessServiceApplication.isSessionsInfo())
                     System.out.println("Session killed");
             }
         }
 
         if (SapAccessServiceApplication.isSessionsInfo())
-            System.out.println("Count of active sessions: " + sessions.size() + "\n");
+            System.out.println("Count of active sessions: " + users.size() + "\n");
     }
 
-    public void killSession(String accessToken) {
-        sessions.remove(accessToken);
+    public void deleteUser(String accessToken) {
+        users.remove(accessToken);
         try {
-            sessions.remove(accessToken);
+            users.remove(accessToken);
         } catch (Exception ex) {
             System.out.println("Cannot kill session with access token " + accessToken);
         }

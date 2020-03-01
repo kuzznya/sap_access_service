@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.config;
+package com.alpe.sap_access_service.security;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;

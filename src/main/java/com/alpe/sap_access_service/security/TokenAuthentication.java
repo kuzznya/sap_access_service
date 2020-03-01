@@ -1,9 +1,8 @@
-package com.alpe.sap_access_service.config;
+package com.alpe.sap_access_service.security;
 
-import com.alpe.sap_access_service.model.User;
+import com.alpe.sap_access_service.model.AppUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.security.auth.Subject;
 import java.util.Collection;
@@ -11,18 +10,17 @@ import java.util.Collection;
 public class TokenAuthentication implements Authentication {
     private String token;
     private boolean isAuthenticated;
-
-    private UserDetails user;
+    private AppUser appUser;
 
     public TokenAuthentication(String token) {
         this.token = token;
-        this.user = null;
+        this.appUser = null;
     }
 
-    public TokenAuthentication(String token, boolean isAuthenticated, User user) {
+    public TokenAuthentication(String token, boolean isAuthenticated, AppUser appUser) {
         this.token = token;
         this.isAuthenticated = isAuthenticated;
-        this.user = user;
+        this.appUser = appUser;
     }
 
     @Override
@@ -42,7 +40,7 @@ public class TokenAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return appUser;
     }
 
     @Override
@@ -57,6 +55,8 @@ public class TokenAuthentication implements Authentication {
 
     @Override
     public String getName() {
+        if (appUser != null)
+            return appUser.getUsername();
         return null;
     }
 

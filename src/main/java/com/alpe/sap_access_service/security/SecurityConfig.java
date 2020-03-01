@@ -1,5 +1,6 @@
-package com.alpe.sap_access_service.config;
+package com.alpe.sap_access_service.security;
 
+import com.alpe.sap_access_service.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,11 +13,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    TokenAuthenticationManager tokenAuthenticationManager;
+//    @Autowired
+//    TokenAuthenticationManager tokenAuthenticationManager;
+
+    @Autowired UsersService usersService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -25,18 +28,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .requiresChannel()
                 .anyRequest().requiresSecure()
                 .and()
-                .addFilterAfter(restTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/systems").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                .antMatchers("/**").authenticated()
         ;
     }
 
-    @Bean(name = "restTokenAuthenticationFilter")
-    public TokenAuthenticationFilter restTokenAuthenticationFilter() {
-        TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter();
-        tokenAuthenticationFilter.setAuthenticationManager(tokenAuthenticationManager);
-        return tokenAuthenticationFilter;
+//    @Bean(name = "restTokenAuthenticationFilter")
+//    public TokenAuthenticationFilter restTokenAuthenticationFilter() {
+//        TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter();
+//        tokenAuthenticationFilter.setAuthenticationManager(tokenAuthenticationManager);
+//        return tokenAuthenticationFilter;
+//    }
+
+    @Bean(name = "tokenAuthenticationFilter")
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter(tokenService());
+    }
+
+    @Bean(name = "tokenService")
+    public TokenService tokenService() {
+        return new TokenService(usersService);
     }
 }

@@ -1,13 +1,16 @@
 package com.alpe.sap_access_service.model;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.MessageDigest;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
 
-public class User {
+public class User implements UserDetails {
 
     private final String system;
     private final String username;
@@ -40,9 +43,35 @@ public class User {
         return system;
     }
 
+    @Override
     public String getUsername() {
         lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 
     public String getPassword() {

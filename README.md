@@ -64,6 +64,11 @@ Authorization token needs to be placed as `Authorization` header of the request
   
   Multiple values in parameter need to be separated by space code (%20)
   
+  Example: `https://localhost:8443/api/table?name=TBL1&fields_names=MANDT%20BUKRS&lang=R`
+
+* **GET /dataset** - get table from SAP without formatting it (as list of columns)  
+  Parameters are the same as in the method GET /table  
+  
   Response:  
   Data map (\<String, List\<String\>\>) with special system fields:
   
@@ -76,11 +81,6 @@ Authorization token needs to be placed as `Authorization` header of the request
   | `domNames`   | Technical names of fields             |
   | `outputLen`  | max number of symbols for field       |
   | `decimals`   | number of floating decimals           |
-  
-  Example: `https://localhost:8443/api/table?name=TBL1&fields_names=MANDT%20BUKRS&lang=R`
-
-* **GET /dataset** - get table from SAP without formatting it (as list of columns)  
-  Parameters are the same as in the method GET /table
 
 *The list will be replenished*
 

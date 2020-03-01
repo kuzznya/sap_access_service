@@ -1,8 +1,8 @@
 package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.model.AuthRequest;
-import com.alpe.sap_access_service.model.BodyWithToken;
 import com.alpe.sap_access_service.model.AppUser;
+import com.alpe.sap_access_service.security.TokenAuthentication;
 import com.alpe.sap_access_service.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,38 +36,33 @@ public class AuthController {
     }
 
     @PutMapping
-    ResponseEntity<?> refreshToken(@RequestBody BodyWithToken body) {
-        String accessToken = body.getAccess_token();
-        try {
-            usersService.getUser(accessToken).refresh();
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        } catch (Exception ex) {
-            ex.setStackTrace(new StackTraceElement[0]);
-            return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
-        }
+    ResponseEntity<?> refreshToken(TokenAuthentication auth) {
+        if (auth == null)
+            return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
+        AppUser user = (AppUser) auth.getPrincipal();
+        user.refresh();
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @DeleteMapping
-    ResponseEntity<?> deleteSession(@RequestBody BodyWithToken body) {
-        String accessToken = body.getAccess_token();
+    ResponseEntity<?> deleteSession(TokenAuthentication auth) {
+        String accessToken = auth.getToken();
         try {
             usersService.deleteUser(accessToken);
             return new ResponseEntity<>("Session deleted", HttpStatus.OK);
         } catch (Exception ex) {
-            ex.setStackTrace(new StackTraceElement[0]);
-            return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping
-    ResponseEntity<?> checkToken(@RequestBody BodyWithToken body) {
-        String accessToken = body.getAccess_token();
-        AppUser appUser = usersService.getUser(accessToken);
-        if (appUser != null) {
-            appUser.refresh();
+    ResponseEntity<?> checkToken(TokenAuthentication auth) {
+        if (auth != null) {
+            AppUser user = (AppUser) auth.getPrincipal();
+            user.refresh();
             return new ResponseEntity<>("Active session found", HttpStatus.OK);
         }
         else
-            return new ResponseEntity<>("Error: session with access token " + accessToken + " not found", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Error: user not found", HttpStatus.UNAUTHORIZED);
     }
 }

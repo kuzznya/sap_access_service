@@ -19,12 +19,10 @@ import java.util.Set;
 @CrossOrigin
 public class APIController {
 
-    private UsersService usersService;
     private AvailableAppsService appsService;
 
     public APIController(@Autowired UsersService usersService,
                          @Autowired AvailableAppsService appsService) {
-        this.usersService = usersService;
         this.appsService = appsService;
     }
 
@@ -41,15 +39,16 @@ public class APIController {
 
     @GetMapping("/apps")
     ResponseEntity<?> getApplications(TokenAuthentication auth) {
-        AppUser appUser = (AppUser) auth.getPrincipal();
+        AppUser user;
         try {
-            if (appUser != null)
-                return new ResponseEntity<>(appsService.getAvailableApplications(appUser), HttpStatus.OK);
-            else
-                return new ResponseEntity<>("No such session", HttpStatus.BAD_REQUEST);
+            user = (AppUser) auth.getPrincipal();
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
+        }
+        try {
+            return new ResponseEntity<>(appsService.getAvailableApplications(user), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
-            ex.setStackTrace(new StackTraceElement[0]);
-            return new ResponseEntity<>(ex, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
         }
     }
 

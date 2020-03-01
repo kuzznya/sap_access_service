@@ -1,6 +1,7 @@
 package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
+import com.alpe.sap_access_service.config.TokenAuthentication;
 import com.alpe.sap_access_service.model.BodyWithToken;
 import com.alpe.sap_access_service.model.User;
 import com.alpe.sap_access_service.services.AvailableAppsService;
@@ -40,8 +41,8 @@ public class APIController {
     }
 
     @GetMapping("/apps")
-    ResponseEntity<?> getApplications(@RequestBody BodyWithToken body) {
-        String accessToken = body.getAccess_token();
+    ResponseEntity<?> getApplications(TokenAuthentication auth) {
+        String accessToken = auth.getToken();
         User user = usersService.getUser(accessToken);
         try {
             if (user != null)

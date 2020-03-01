@@ -43,9 +43,9 @@ Authorization token needs to be placed as `Authorization` header of the request
 
 * **DELETE /auth** - delete user  
 
-* **GET /auth** - returns HTTP status "OK" (200) if active appUser with such access token exists  
+* **GET /auth** - returns HTTP status "OK" (200) if active user with such access token exists  
   
-* **GET /sessions-lifetime** - returns sessions lifetime (default 600 sec)
+* **GET /sessions-lifetime** - returns token lifetime (default 600 sec)
 
 * **GET /apps** - returns available SAP modules (see [Applications](#Applications))
 
@@ -117,4 +117,4 @@ All configuration could be done from the console
 ## Additional information
 
 Current configuration is now stored in the same folder as the program (*will be changed later (maybe)*)
-in files `systems.properties` (list of available systems with addresses) & `params.properties` (appUser lifetime and other data)
+in files `systems.properties` (list of available systems with addresses) & `params.properties` (token lifetime and other data)

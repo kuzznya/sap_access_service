@@ -14,20 +14,23 @@ For HTTPS connection self-signed certificate is used now
 
 *The project is under development*
 
+Latest version is 0.3.1
 
-## API (v.0.2.1)
 
-README needs to be updated
+## API (v.0.3.1)
+
+All methods except those marked with `w/o auth` need authorization  
+Authorization token needs to be placed as `Authorization` header of the request
 
 {server address}/api
 
-* **GET /systems** - get the list of available SAP systems  
+* **GET /systems** (`w/o auth`) - get the list of available SAP systems  
   Response: list of systems' names
 
-* **POST /auth** - authorize in SAP system and get the access token  
-  Parameters: system
+* **POST /auth** (`w/o auth`) - authorize in SAP system and get the access token  
+  Body (JSON):
 
-  | Parameter  | Description               | Required |
+  | Key        | Description               | Required |
   |------------|---------------------------|----------|
   | `system`   | The name of the system    | true     |
   | `username` | -                         | true     |
@@ -35,45 +38,22 @@ README needs to be updated
   | `lang`     | Language of the responses | false    |
   
   Response: access token (String)
-  
-  Example: `https://localhost:8443/api/auth?system=TS1&username=admin&password=changeme`
 
-* **PUT /auth** - refresh access token (notify server that the client is active)  
-  Parameters:
-  
-  | Parameter     | Description                 | Required |
-  |---------------|-----------------------------|----------|
-  | `access_token`| Access token of the client  | true     |
+* **PUT /auth** - refresh access token (notify server that the client is active)
 
 * **DELETE /auth** - delete user  
-  Parameters:
-  
-  | Parameter     | Description                 | Required |
-  |---------------|-----------------------------|----------|
-  | `access_token`| Access token of the client  | true     |
 
 * **GET /auth** - returns HTTP status "OK" (200) if active appUser with such access token exists  
-  Parameters:
-  
-  | Parameter     | Description                 | Required |
-  |---------------|-----------------------------|----------|
-  | `access_token`| Access token of the client  | true     |
   
 * **GET /sessions-lifetime** - returns sessions lifetime (default 600 sec)
 
-* **GET /apps** - returns available SAP modules (see [Applications](#Applications))  
-  Parameters:
-    
-    | Parameter     | Description                 | Required |
-    |---------------|-----------------------------|----------|
-    | `access_token`| Access token of the client  | true     |
+* **GET /apps** - returns available SAP modules (see [Applications](#Applications))
 
-* **GET /table** - get table from SAP  
+* **GET /table** - get table from SAP and format it as list of records (not columns)
   Parameters:
   
   | Parameter     | Description                 | Required |
   |---------------|-----------------------------|----------|
-  | `access_token`| Access token of the client  | true     |
   | `name`        | Name of the table           | true     |
   | `recs_count`  | Count of the records (lines)| false    |
   | `lang`        | Language                    | false    |
@@ -97,7 +77,10 @@ README needs to be updated
   | `outputLen`  | max number of symbols for field       |
   | `decimals`   | number of floating decimals           |
   
-  Example: `https://localhost:8443/api/table?access_token=12345&name=TBL1&fields_names=MANDT%20BUKRS&lang=R`
+  Example: `https://localhost:8443/api/table?name=TBL1&fields_names=MANDT%20BUKRS&lang=R`
+
+* **GET /dataset** - get table from SAP without formatting it (as list of columns)  
+  Parameters are the same as in the method GET /table
 
 *The list will be replenished*
 
@@ -108,7 +91,7 @@ README needs to be updated
 
 ## Download
 
-[Latest test build](../master/builds/sap_access_service-0.0.1-SNAPSHOT.jar)
+[Latest test build (v.0.2.1)](../master/builds/sap_access_service-0.2.1.jar)
 
 [View all builds](../master/builds)
 

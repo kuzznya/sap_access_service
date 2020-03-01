@@ -1,9 +1,8 @@
 package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.config.TokenAuthentication;
-import com.alpe.sap_access_service.model.BodyWithToken;
-import com.alpe.sap_access_service.model.User;
+import com.alpe.sap_access_service.security.TokenAuthentication;
+import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.services.AvailableAppsService;
 import com.alpe.sap_access_service.services.UsersService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
@@ -42,11 +41,10 @@ public class APIController {
 
     @GetMapping("/apps")
     ResponseEntity<?> getApplications(TokenAuthentication auth) {
-        String accessToken = auth.getToken();
-        User user = usersService.getUser(accessToken);
+        AppUser appUser = (AppUser) auth.getPrincipal();
         try {
-            if (user != null)
-                return new ResponseEntity<>(appsService.getAvailableApplications(user), HttpStatus.OK);
+            if (appUser != null)
+                return new ResponseEntity<>(appsService.getAvailableApplications(appUser), HttpStatus.OK);
             else
                 return new ResponseEntity<>("No such session", HttpStatus.BAD_REQUEST);
         } catch (SOAPExceptionImpl ex) {

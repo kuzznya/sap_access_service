@@ -2,7 +2,7 @@ package com.alpe.sap_access_service.model;
 
 import java.util.concurrent.TimeUnit;
 
-public class Session {
+public class User {
 
     private final String system;
     private final String username;
@@ -13,7 +13,7 @@ public class Session {
 
     private long lastTimeAccessed;
 
-    public Session(String system, String username, String password, int id) {
+    public User(String system, String username, String password, int id) {
         this.system = system;
         this.username = username;
         this.password = password;
@@ -21,7 +21,7 @@ public class Session {
         lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
     }
 
-    public Session(String system, String username, String password, int id, String language) {
+    public User(String system, String username, String password, int id, String language) {
         this.language = language;
         this.system = system;
         this.username = username;

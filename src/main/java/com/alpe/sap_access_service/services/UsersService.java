@@ -1,7 +1,7 @@
 package com.alpe.sap_access_service.services;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.model.Session;
+import com.alpe.sap_access_service.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -13,13 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class SessionsService {
+public class UsersService {
 
     private AuthService authService;
 
-    private Map<String, Session> sessions = new ConcurrentHashMap<>();
+    private Map<String, User> sessions = new ConcurrentHashMap<>();
 
-    public SessionsService(@Autowired AuthService authService) {
+    public UsersService(@Autowired AuthService authService) {
         this.authService = authService;
 
         (new Timer()).schedule(new TimerTask() {
@@ -37,34 +37,34 @@ public class SessionsService {
 
     public String createSession(String system, String username, String password, String language) throws AccessDeniedException {
         int id = 0;
-        while (sessions.containsKey(Session.hash(system, username, password, id)))
+        while (sessions.containsKey(User.hash(system, username, password, id)))
             id++;
-        Session session;
+        User user;
         if (language != null)
-            session = new Session(system, username, password, id, language);
+            user = new User(system, username, password, id, language);
         else
-            session = new Session(system, username, password, id);
+            user = new User(system, username, password, id);
 
-        boolean authResult = authService.auth(session);
+        boolean authResult = authService.auth(user);
         if (!authResult)
             throw new AccessDeniedException("Error while trying to authorize");
 
-        sessions.put(session.getAccessToken(), session);
-        return session.getAccessToken();
+        sessions.put(user.getAccessToken(), user);
+        return user.getAccessToken();
     }
 
     public String getAccessToken(String system, String username, int id) {
         for (String key : sessions.keySet()) {
-            Session curSession = sessions.get(key);
-            if (curSession.getSystem().equals(system) &&
-                    curSession.getUsername().equals(username) &&
-                    curSession.getId() == id)
-                return curSession.getAccessToken();
+            User curUser = sessions.get(key);
+            if (curUser.getSystem().equals(system) &&
+                    curUser.getUsername().equals(username) &&
+                    curUser.getId() == id)
+                return curUser.getAccessToken();
         }
         return null;
     }
 
-    public Session getSession(String accessToken) {
+    public User getSession(String accessToken) {
         return sessions.getOrDefault(accessToken, null);
     }
 

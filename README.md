@@ -43,14 +43,14 @@ For HTTPS connection self-signed certificate is used now
   |---------------|-----------------------------|----------|
   | `access_token`| Access token of the client  | true     |
 
-* **DELETE /auth** - kill session of this client  
+* **DELETE /auth** - kill user of this client  
   Parameters:
   
   | Parameter     | Description                 | Required |
   |---------------|-----------------------------|----------|
   | `access_token`| Access token of the client  | true     |
 
-* **GET /auth** - returns HTTP status "OK" (200) if active session with such access token exists  
+* **GET /auth** - returns HTTP status "OK" (200) if active user with such access token exists  
   Parameters:
   
   | Parameter     | Description                 | Required |
@@ -118,7 +118,7 @@ All configuration could be done from the console
   `-config -add -name [system name] -address [address]`
 * Remove system:  
   `-config -remove -name`
-* Set session lifetime:  
+* Set user lifetime:  
   `-config -set_session_lifetime`
 
 
@@ -132,7 +132,7 @@ All configuration could be done from the console
 ## Additional information
 
 Current configuration is now stored in the same folder as the program (*will be changed later (maybe)*)
-in files `systems.properties` (list of available systems with addresses) & `params.properties` (session lifetime and other data)
+in files `systems.properties` (list of available systems with addresses) & `params.properties` (user lifetime and other data)
 
 ## TODO
 

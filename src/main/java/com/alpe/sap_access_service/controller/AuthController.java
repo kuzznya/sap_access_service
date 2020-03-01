@@ -2,8 +2,8 @@ package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.model.AuthRequest;
 import com.alpe.sap_access_service.model.BodyWithToken;
-import com.alpe.sap_access_service.model.Session;
-import com.alpe.sap_access_service.services.SessionsService;
+import com.alpe.sap_access_service.model.User;
+import com.alpe.sap_access_service.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private SessionsService sessionsService;
+    private UsersService usersService;
 
-    public AuthController(@Autowired SessionsService sessionsService) {
-        this.sessionsService = sessionsService;
+    public AuthController(@Autowired UsersService usersService) {
+        this.usersService = usersService;
     }
 
     @PostMapping
@@ -28,7 +28,7 @@ public class AuthController {
         String password = authRequest.getPassword();
         String language = authRequest.getLanguage();
         try {
-            return new ResponseEntity<String>(sessionsService.createSession(system, username, password, language), HttpStatus.OK);
+            return new ResponseEntity<String>(usersService.createSession(system, username, password, language), HttpStatus.OK);
         } catch (AccessDeniedException ex) {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<AccessDeniedException>(ex, HttpStatus.UNAUTHORIZED);
@@ -39,7 +39,7 @@ public class AuthController {
     ResponseEntity<?> refreshToken(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
         try {
-            sessionsService.getSession(accessToken).refresh();
+            usersService.getSession(accessToken).refresh();
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (Exception ex) {
             ex.setStackTrace(new StackTraceElement[0]);
@@ -51,7 +51,7 @@ public class AuthController {
     ResponseEntity<?> deleteSession(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
         try {
-            sessionsService.killSession(accessToken);
+            usersService.killSession(accessToken);
             return new ResponseEntity<>("Session deleted", HttpStatus.OK);
         } catch (Exception ex) {
             ex.setStackTrace(new StackTraceElement[0]);
@@ -62,9 +62,9 @@ public class AuthController {
     @GetMapping
     ResponseEntity<?> checkToken(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        Session session = sessionsService.getSession(accessToken);
-        if (session != null) {
-            session.refresh();
+        User user = usersService.getSession(accessToken);
+        if (user != null) {
+            user.refresh();
             return new ResponseEntity<>("Active session found", HttpStatus.OK);
         }
         else

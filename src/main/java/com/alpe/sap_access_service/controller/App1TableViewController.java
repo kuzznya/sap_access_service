@@ -1,9 +1,9 @@
 package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.model.BodyWithToken;
+import com.alpe.sap_access_service.model.User;
 import com.alpe.sap_access_service.services.TableService;
-import com.alpe.sap_access_service.model.Session;
-import com.alpe.sap_access_service.services.SessionsService;
+import com.alpe.sap_access_service.services.UsersService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,22 +21,22 @@ public class App1TableViewController {
     @Value("${server.myaddress}")
     private String serverAddress;
 
-    private SessionsService sessionsService;
+    private UsersService usersService;
     private TableService tableService;
 
-    public App1TableViewController(@Autowired SessionsService sessionsService,
+    public App1TableViewController(@Autowired UsersService usersService,
                                    @Autowired TableService tableService) {
-        this.sessionsService = sessionsService;
+        this.usersService = usersService;
         this.tableService = tableService;
     }
 
     @GetMapping
     ResponseEntity<?> getURLs(@RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        if (sessionsService.getSession(accessToken) == null) {
+        if (usersService.getSession(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
-        Session session = sessionsService.getSession(accessToken);
+        User user = usersService.getSession(accessToken);
 
         LinkedList<String> URLs = new LinkedList<>();
         URLs.add(serverAddress + "/apps/1/table");
@@ -54,15 +54,15 @@ public class App1TableViewController {
                                @RequestParam(name = "fields_names", required = false) String fieldsNames,
                                @RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        if (sessionsService.getSession(accessToken) == null) {
+        if (usersService.getSession(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
-        Session session = sessionsService.getSession(accessToken);
+        User user = usersService.getSession(accessToken);
 
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
 
         try {
-            return new ResponseEntity<>(tableService.getTable(session, table,
+            return new ResponseEntity<>(tableService.getTable(user, table,
                     recordsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             return new ResponseEntity<>("SAP access error", HttpStatus.BAD_REQUEST);
@@ -79,15 +79,15 @@ public class App1TableViewController {
                                  @RequestParam(name = "fields_names", required = false) String fieldsNames,
                                  @RequestBody BodyWithToken body) {
         String accessToken = body.getAccess_token();
-        if (sessionsService.getSession(accessToken) == null) {
+        if (usersService.getSession(accessToken) == null) {
             return new ResponseEntity<>("Invalid access token", HttpStatus.UNAUTHORIZED);
         }
-        Session session = sessionsService.getSession(accessToken);
+        User user = usersService.getSession(accessToken);
 
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
 
         try {
-            return new ResponseEntity<>(tableService.getDataset(session, table,
+            return new ResponseEntity<>(tableService.getDataset(user, table,
                     recordsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             ex.setStackTrace(new StackTraceElement[0]);

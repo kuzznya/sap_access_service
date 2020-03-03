@@ -22,6 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf().disable()
                 .requiresChannel()
                 .anyRequest().requiresSecure()
@@ -35,13 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         ;
     }
-
-//    @Bean(name = "restTokenAuthenticationFilter")
-//    public TokenAuthenticationFilter restTokenAuthenticationFilter() {
-//        TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter();
-//        tokenAuthenticationFilter.setAuthenticationManager(tokenAuthenticationManager);
-//        return tokenAuthenticationFilter;
-//    }
 
     @Bean(name = "tokenAuthenticationFilter")
     public TokenAuthenticationFilter tokenAuthenticationFilter() {

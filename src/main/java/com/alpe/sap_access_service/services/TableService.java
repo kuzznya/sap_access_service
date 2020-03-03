@@ -19,21 +19,21 @@ public class TableService {
         this.datasetModule = datasetModule;
     }
 
-    public SAPTable getTable(AppUser appUser, String table, String fieldsQuan, String language,
+    public SAPTable getTable(AppUser user, String table, String fieldsQuan, String language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
-        LinkedHashMap<String, LinkedList<String>> dataset = getDataset(appUser, table, fieldsQuan, language,
+        LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, table, fieldsQuan, language,
                 where, order, group, fieldNames);
         return new SAPTable(dataset);
     }
 
-    public LinkedHashMap<String, LinkedList<String>> getDataset(AppUser appUser,
+    public LinkedHashMap<String, LinkedList<String>> getDataset(AppUser user,
                                                                 String table, String fieldsQuan, String language,
                                                                 String where, String order,
                                                                 String group, String fieldNames) throws SOAPExceptionImpl {
-        language = (language != null && !language.equals(" ")) ? language : appUser.getLanguage();
-        return datasetModule.requestDataSet(appUser.getSystem(),
-                appUser.getUsername(), appUser.getPassword(),
+        language = (language != null && !language.equals(" ")) ? language : user.getLanguage();
+        return datasetModule.requestDataSet(user.getSystem(),
+                user.getUsername(), user.getPassword(),
                 table, fieldsQuan, language, where, order, group, fieldNames);
     }
 

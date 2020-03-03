@@ -10,17 +10,17 @@ import java.util.Collection;
 public class TokenAuthentication implements Authentication {
     private String token;
     private boolean isAuthenticated;
-    private AppUser appUser;
+    private AppUser user;
 
     public TokenAuthentication(String token) {
         this.token = token;
-        this.appUser = null;
+        this.user = null;
     }
 
-    public TokenAuthentication(String token, boolean isAuthenticated, AppUser appUser) {
+    public TokenAuthentication(String token, boolean isAuthenticated, AppUser user) {
         this.token = token;
         this.isAuthenticated = isAuthenticated;
-        this.appUser = appUser;
+        this.user = user;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TokenAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return appUser;
+        return user;
     }
 
     @Override
@@ -55,8 +55,8 @@ public class TokenAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        if (appUser != null)
-            return appUser.getUsername();
+        if (user != null)
+            return user.getUsername();
         return null;
     }
 

@@ -39,18 +39,18 @@ public class UsersService {
         int id = 0;
         while (users.containsKey(AppUser.hash(system, username, password, id)))
             id++;
-        AppUser appUser;
+        AppUser user;
         if (language != null)
-            appUser = new AppUser(system, username, password, id, language);
+            user = new AppUser(system, username, password, id, language);
         else
-            appUser = new AppUser(system, username, password, id);
+            user = new AppUser(system, username, password, id);
 
-        boolean authResult = authService.auth(appUser);
+        boolean authResult = authService.auth(user);
         if (!authResult)
             throw new AccessDeniedException("Error while trying to authorize");
 
-        users.put(appUser.getAccessToken(), appUser);
-        return appUser.getAccessToken();
+        users.put(user.getAccessToken(), user);
+        return user.getAccessToken();
     }
 
     public String getAccessToken(String system, String username, int id) {

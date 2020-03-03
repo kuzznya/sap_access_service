@@ -15,11 +15,11 @@ public class AuthService {
         this.datasetModule = datasetModule;
     }
 
-    public boolean auth(AppUser appUser) {
+    public boolean auth(AppUser user) {
         try {
-            Object result = datasetModule.requestDataSet(appUser.getSystem(),
-                    appUser.getUsername(), appUser.getPassword(),
-                    " ", " ", appUser.getLanguage(), " ", " ", " ", " ");
+            Object result = datasetModule.requestDataSet(user.getSystem(),
+                    user.getUsername(), user.getPassword(),
+                    " ", " ", user.getLanguage(), " ", " ", " ", " ");
             return true;
         } catch (SOAPExceptionImpl ex) {
             return false;

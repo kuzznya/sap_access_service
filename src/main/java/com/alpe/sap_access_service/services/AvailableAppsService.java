@@ -22,10 +22,10 @@ public class AvailableAppsService {
         this.datasetModule = datasetModule;
     }
 
-    public LinkedList<SAPApplication> getAvailableApplications(AppUser appUser) throws SOAPExceptionImpl {
-        LinkedList<String> REPI2Data = datasetModule.requestDataSet(appUser.getSystem(),
-                appUser.getUsername(), appUser.getPassword(),
-                " ", " ", appUser.getLanguage(), " ", " ", " ", " ").get("REPI2");
+    public LinkedList<SAPApplication> getAvailableApplications(AppUser user) throws SOAPExceptionImpl {
+        LinkedList<String> REPI2Data = datasetModule.requestDataSet(user.getSystem(),
+                user.getUsername(), user.getPassword(),
+                " ", " ", user.getLanguage(), " ", " ", " ", " ").get("REPI2");
         LinkedList<SAPApplication> applications = new LinkedList<>();
         for (String el : REPI2Data) {
             if (el.matches("[0-9]{3}[.]+.+")) {

@@ -2,7 +2,7 @@ package com.alpe.sap_access_service.services;
 
 import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.services.sap_modules.get_data.DatasetModule;
-import com.alpe.sap_access_service.view.SAPApplication;
+import com.alpe.sap_access_service.model.SAPApplication;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

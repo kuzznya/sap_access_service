@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.view;
+package com.alpe.sap_access_service.model;
 
 public class SAPTableColumn {
 

@@ -21,12 +21,9 @@ public class App1TableViewController {
     @Value("${server.myaddress}")
     private String serverAddress;
 
-    private UsersService usersService;
     private TableService tableService;
 
-    public App1TableViewController(@Autowired UsersService usersService,
-                                   @Autowired TableService tableService) {
-        this.usersService = usersService;
+    public App1TableViewController(@Autowired TableService tableService) {
         this.tableService = tableService;
     }
 
@@ -49,16 +46,16 @@ public class App1TableViewController {
                                @RequestParam(required = false) String order,
                                @RequestParam(required = false) String group,
                                @RequestParam(name = "fields_names", required = false) String fieldsNames,
+                               @RequestParam(required = false) Integer offset,
+                               @RequestParam(required = false) Integer count,
                                TokenAuthentication auth) {
         if (auth == null)
             return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
         AppUser user = (AppUser) auth.getPrincipal();
 
-        String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
-
         try {
             return new ResponseEntity<>(tableService.getTable(user, table,
-                    recordsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
+                    recordsCount, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             return new ResponseEntity<>("SAP access error", HttpStatus.BAD_REQUEST);
         }
@@ -77,11 +74,9 @@ public class App1TableViewController {
             return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
         AppUser user = (AppUser) auth.getPrincipal();
 
-        String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
-
         try {
             return new ResponseEntity<>(tableService.getDataset(user, table,
-                    recordsCountStr, language, where, order, group, fieldsNames), HttpStatus.OK);
+                    recordsCount, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             ex.setStackTrace(new StackTraceElement[0]);
             return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);

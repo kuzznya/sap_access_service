@@ -17,7 +17,7 @@ public class AppUser {
     private final String password;
     private final int id;
 
-    private String language = " ";
+    private Character language = ' ';
 
     private long lastTimeAccessed;
 
@@ -29,7 +29,7 @@ public class AppUser {
         lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
     }
 
-    public AppUser(String system, String username, String password, int id, String language) {
+    public AppUser(String system, String username, String password, int id, Character language) {
         this.language = language;
         this.system = system;
         this.username = username;
@@ -57,16 +57,16 @@ public class AppUser {
         return id;
     }
 
-    public String getLanguage() {
+    public Character getLanguage() {
         lastTimeAccessed = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(Character language) {
         if (language != null)
             this.language = language;
         else
-            this.language = " ";
+            this.language = ' ';
     }
 
     public String getAccessToken() {

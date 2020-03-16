@@ -19,7 +19,7 @@ public class TableService {
         this.datasetModule = datasetModule;
     }
 
-    public SAPTable getTable(AppUser user, String table, Integer recordsCount, String language,
+    public SAPTable getTable(AppUser user, String table, Integer recordsCount, Character language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
         LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, table, recordsCount, language,

@@ -11,7 +11,7 @@ import java.util.LinkedList;
 public class DatasetModule {
 
     public LinkedHashMap<String, LinkedList<String>> requestDataSet(String system, String username, String password,
-                                                                    String table, String fieldsQuan, String language,
+                                                                    String table, String fieldsQuan, Character language,
                                                                     String where, String order,
                                                                     String group, String fieldNames)
             throws SOAPExceptionImpl {

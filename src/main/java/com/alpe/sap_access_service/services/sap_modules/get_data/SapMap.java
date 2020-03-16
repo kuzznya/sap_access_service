@@ -35,11 +35,11 @@ public class SapMap {
     }
 
     //  constructor with params
-    public SapMap(String table, String fieldsQuan, String language, String where,
+    public SapMap(String table, String fieldsQuan, Character language, String where,
                   String order, String group, String fieldNames) {
         this.table = table;
         this.fieldsQuan = fieldsQuan != null ? fieldsQuan : "";
-        this.language = language != null ? language : "";
+        this.language = language != null ? language.toString() : "";
         this.where = where != null ? where : "";
         this.order = order != null ? order : "";
         this.group = group != null ? group : "";

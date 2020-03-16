@@ -41,7 +41,7 @@ public class App1TableViewController {
     @GetMapping("/table")
     ResponseEntity<?> getTable(@RequestParam(name = "name") String table,
                                @RequestParam(name = "recs_count", required = false) Integer recordsCount,
-                               @RequestParam(name = "lang", required = false) String language,
+                               @RequestParam(name = "lang", required = false) Character language,
                                @RequestParam(required = false) String where,
                                @RequestParam(required = false) String order,
                                @RequestParam(required = false) String group,
@@ -64,7 +64,7 @@ public class App1TableViewController {
     @GetMapping("/dataset")
     ResponseEntity<?> getDataset(@RequestParam(name = "name") String table,
                                  @RequestParam(name = "recs_count", required = false) Integer recordsCount,
-                                 @RequestParam(name = "lang", required = false) String language,
+                                 @RequestParam(name = "lang", required = false) Character language,
                                  @RequestParam(required = false) String where,
                                  @RequestParam(required = false) String order,
                                  @RequestParam(required = false) String group,

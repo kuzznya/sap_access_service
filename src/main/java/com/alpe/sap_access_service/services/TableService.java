@@ -15,6 +15,9 @@ public class TableService {
 
     DatasetModule datasetModule;
 
+    @Autowired
+    private TableRepository tableRepository;
+
     public TableService(@Autowired DatasetModule datasetModule) {
         this.datasetModule = datasetModule;
     }
@@ -22,13 +25,14 @@ public class TableService {
     public SAPTable getTable(AppUser user, String table, Integer recordsCount, Character language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
+
         LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, table, recordsCount, language,
                 where, order, group, fieldNames);
         return new SAPTable(dataset);
     }
 
     public LinkedHashMap<String, LinkedList<String>> getDataset(AppUser user,
-                                                                String table, Integer recordsCount, String language,
+                                                                String table, Integer recordsCount, Character language,
                                                                 String where, String order,
                                                                 String group, String fieldNames) throws SOAPExceptionImpl {
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;

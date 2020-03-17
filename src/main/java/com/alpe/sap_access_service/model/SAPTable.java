@@ -8,6 +8,8 @@ public class SAPTable {
     private int count;
     private LinkedList<SAPTableRecord> records;
 
+    public SAPTable() {}
+
     public SAPTable(LinkedHashMap<String, LinkedList<String>> map) {
         LinkedList<String> systemNames;
         LinkedList<String> textNames;

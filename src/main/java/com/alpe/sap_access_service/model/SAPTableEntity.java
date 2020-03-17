@@ -1,11 +1,11 @@
 package com.alpe.sap_access_service.model;
 
-import org.h2.util.json.JSONObject;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.sql.Clob;
 import java.util.Date;
 
 @Entity
@@ -18,10 +18,14 @@ public class SAPTableEntity {
     @Column(name = "access_token")
     private String accessToken;
 
+    @NaturalId
+    @Column(name = "params_hash")
+    private Integer paramsHash;
+
     @Column(name = "table_name")
     private String name;
     @Column(name = "table_records_count")
-    private String recordsCount;
+    private Integer recordsCount;
     @Column(name = "table_language")
     private Character language;
     @Column(name = "table_where")
@@ -33,8 +37,8 @@ public class SAPTableEntity {
     @Column(name = "table_field_names")
     private String fieldNames;
 
-    @Type(type = "JSON")
     @Column(name = "table_data")
+    @Lob
     private String sapTableJSON;
 
     @CreationTimestamp
@@ -85,5 +89,69 @@ public class SAPTableEntity {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Integer getParamsHash() {
+        return paramsHash;
+    }
+
+    public void setParamsHash(Integer paramsHash) {
+        this.paramsHash = paramsHash;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getRecordsCount() {
+        return recordsCount;
+    }
+
+    public void setRecordsCount(Integer recordsCount) {
+        this.recordsCount = recordsCount;
+    }
+
+    public Character getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Character language) {
+        this.language = language;
+    }
+
+    public String getWhere() {
+        return where;
+    }
+
+    public void setWhere(String where) {
+        this.where = where;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getFieldNames() {
+        return fieldNames;
+    }
+
+    public void setFieldNames(String fieldNames) {
+        this.fieldNames = fieldNames;
     }
 }

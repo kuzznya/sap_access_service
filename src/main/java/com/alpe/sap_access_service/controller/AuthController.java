@@ -26,7 +26,7 @@ public class AuthController {
         String system = authRequest.getSystem();
         String username = authRequest.getUsername();
         String password = authRequest.getPassword();
-        String language = authRequest.getLanguage();
+        Character language = authRequest.getLanguage();
         try {
             return new ResponseEntity<String>(usersService.createUser(system, username, password, language), HttpStatus.OK);
         } catch (AccessDeniedException ex) {

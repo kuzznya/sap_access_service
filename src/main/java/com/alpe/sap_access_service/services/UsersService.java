@@ -35,7 +35,7 @@ public class UsersService {
         return createUser(system, username, password, null);
     }
 
-    public String createUser(String system, String username, String password, String language) throws AccessDeniedException {
+    public String createUser(String system, String username, String password, Character language) throws AccessDeniedException {
         int id = 0;
         while (users.containsKey(AppUser.hash(system, username, password, id)))
             id++;

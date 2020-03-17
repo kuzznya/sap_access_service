@@ -4,7 +4,7 @@ public class AuthRequest {
     private String system;
     private String username;
     private String password;
-    private String language = null;
+    private Character language = null;
 
     public AuthRequest() {}
 
@@ -14,7 +14,7 @@ public class AuthRequest {
         this.password = password;
     }
 
-    public AuthRequest(String system, String username, String password, String language) {
+    public AuthRequest(String system, String username, String password, Character language) {
         this.system = system;
         this.username = username;
         this.password = password;
@@ -45,11 +45,11 @@ public class AuthRequest {
         this.password = password;
     }
 
-    public String getLanguage() {
+    public Character getLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(Character language) {
         this.language = language;
     }
 }

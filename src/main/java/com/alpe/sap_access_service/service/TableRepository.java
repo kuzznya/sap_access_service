@@ -13,7 +13,10 @@ import javax.transaction.Transactional;
 public interface TableRepository extends JpaRepository<SAPTableEntity, Long> {
 
     //TODO edit query to select tables witl null params
-    @Query(value = "SELECT t FROM SAPTableEntity t WHERE t.accessToken = :access_token AND t.name = :name AND t.language = :language AND t.where = :where AND t.order = :order AND t.group = :group AND t.fieldNames = :field_names")
+    @Query(value = "SELECT DISTINCT t FROM SAPTableEntity t WHERE t.accessToken = :access_token AND t.name = :name AND " +
+            "(:language IS NULL OR t.language = :language) AND (:where IS NULL OR t.where = :where) " +
+            "AND (:order IS NULL OR t.order = :order) AND (:group IS NULL OR t.group = :group) AND " +
+            "(:field_names IS NULL OR t.fieldNames = :field_names)")
     SAPTableEntity findSAPTableEntityByAccessTokenAndParams(@Param("access_token") String accessToken,
                                                             @Param("name") String tableName,
                                                             @Param("language") Character language,

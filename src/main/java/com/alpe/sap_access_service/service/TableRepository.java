@@ -11,9 +11,16 @@ import javax.transaction.Transactional;
 
 @Repository
 public interface TableRepository extends JpaRepository<SAPTableEntity, Long> {
-    @Query(value = "SELECT t FROM SAPTableEntity t WHERE t.accessToken = :access_token AND t.paramsHash = :params_hash")
-    SAPTableEntity findSAPTableEntityByAccessTokenAndParamsHash(@Param("access_token") String accessToken,
-                                                                @Param("params_hash") Integer paramsHash);
+
+    //TODO edit query to select tables witl null params
+    @Query(value = "SELECT t FROM SAPTableEntity t WHERE t.accessToken = :access_token AND t.name = :name AND t.language = :language AND t.where = :where AND t.order = :order AND t.group = :group AND t.fieldNames = :field_names")
+    SAPTableEntity findSAPTableEntityByAccessTokenAndParams(@Param("access_token") String accessToken,
+                                                            @Param("name") String tableName,
+                                                            @Param("language") Character language,
+                                                            @Param("where") String where,
+                                                            @Param("order") String order,
+                                                            @Param("group") String group,
+                                                            @Param("field_names") String fieldNames);
 
     @Transactional
     @Modifying

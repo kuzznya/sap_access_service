@@ -43,10 +43,9 @@ public class TableService {
     public SAPTable getTable(AppUser user, String name, Integer recordsCount, Character language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
-        Integer hash = (name + recordsCount + language + where + order + group + fieldNames).hashCode();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            SAPTableEntity tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParamsHash(user.getAccessToken(), hash);
+            SAPTableEntity tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
             if (tableEntity == null)
                 throw new NullPointerException();
             return objectMapper.readValue(tableEntity.getSapTableJSON(), SAPTable.class);
@@ -56,10 +55,13 @@ public class TableService {
             SAPTable table = new SAPTable(dataset);
             SAPTableEntity entity = new SAPTableEntity();
             entity.setAccessToken(user.getAccessToken());
-            entity.setParamsHash(hash);
             entity.setName(name);
-            entity.setRecordsCount(recordsCount);
             entity.setLanguage(language);
+            entity.setWhere(where);
+            entity.setOrder(order);
+            entity.setGroup(group);
+            entity.setFieldNames(fieldNames);
+            entity.setRecordsCount(recordsCount);
             try {
                 entity.setSapTableJSON(objectMapper.writeValueAsString(table));
                 tableRepository.save(entity);

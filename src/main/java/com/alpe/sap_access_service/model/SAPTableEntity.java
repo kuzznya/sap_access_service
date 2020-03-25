@@ -18,10 +18,6 @@ public class SAPTableEntity {
     @Column(name = "access_token")
     private String accessToken;
 
-    @NaturalId
-    @Column(name = "params_hash")
-    private Integer paramsHash;
-
     @Column(name = "table_name")
     private String name;
     @Column(name = "table_records_count")
@@ -89,14 +85,6 @@ public class SAPTableEntity {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
-    }
-
-    public Integer getParamsHash() {
-        return paramsHash;
-    }
-
-    public void setParamsHash(Integer paramsHash) {
-        this.paramsHash = paramsHash;
     }
 
     public String getName() {

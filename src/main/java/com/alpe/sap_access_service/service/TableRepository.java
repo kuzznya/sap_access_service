@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 @Repository
 public interface TableRepository extends JpaRepository<SAPTableEntity, Long> {
 
-    //TODO edit query to select tables witl null params
     @Query(value = "SELECT DISTINCT t FROM SAPTableEntity t WHERE t.accessToken = :access_token AND t.name = :name AND " +
             "(:language IS NULL OR t.language = :language) AND (:where IS NULL OR t.where = :where) " +
             "AND (:order IS NULL OR t.order = :order) AND (:group IS NULL OR t.group = :group) AND " +

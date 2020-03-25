@@ -1,16 +1,18 @@
 package com.alpe.sap_access_service.services;
 
+import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.model.SAPTableEntity;
 import com.alpe.sap_access_service.services.sap_modules.get_data.DatasetModule;
 import com.alpe.sap_access_service.model.SAPTable;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 @Service
@@ -21,8 +23,21 @@ public class TableService {
     @Autowired
     private TableRepository tableRepository;
 
+    private int tableLifetime;
+
+    private Timer tableCleaner;
+
     public TableService(@Autowired DatasetModule datasetModule) {
         this.datasetModule = datasetModule;
+        tableLifetime = SapAccessServiceApplication.getTokenLifetime();
+
+        tableCleaner = new Timer();
+        tableCleaner.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                deleteOldTables();
+            }
+        }, tableLifetime * 1000 / 2, tableLifetime * 1000 / 2);
     }
 
     public SAPTable getTable(AppUser user, String name, Integer recordsCount, Character language,
@@ -65,6 +80,16 @@ public class TableService {
         return datasetModule.requestDataSet(user.getSystem(),
                 user.getUsername(), user.getPassword(),
                 table, recordsCountStr, language, where, order, group, fieldNames);
+    }
+
+    public void deleteOldTables() {
+        try {
+            tableRepository.deleteOldSAPTableEntities(tableLifetime);
+            if (SapAccessServiceApplication.isSessionsInfo())
+                System.out.println("Old tables deleted");
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
     }
 
 }

@@ -3,7 +3,7 @@ package com.alpe.sap_access_service.controller;
 import com.alpe.sap_access_service.model.AuthRequest;
 import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.security.TokenAuthentication;
-import com.alpe.sap_access_service.services.UsersService;
+import com.alpe.sap_access_service.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

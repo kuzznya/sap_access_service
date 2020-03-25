@@ -1,9 +1,9 @@
-package com.alpe.sap_access_service.services;
+package com.alpe.sap_access_service.service;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.model.SAPTableEntity;
-import com.alpe.sap_access_service.services.sap_modules.get_data.DatasetModule;
+import com.alpe.sap_access_service.service.sap_modules.get_data.DatasetModule;
 import com.alpe.sap_access_service.model.SAPTable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;

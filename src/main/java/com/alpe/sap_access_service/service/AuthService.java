@@ -1,7 +1,7 @@
-package com.alpe.sap_access_service.services;
+package com.alpe.sap_access_service.service;
 
 import com.alpe.sap_access_service.model.AppUser;
-import com.alpe.sap_access_service.services.sap_modules.get_data.DatasetModule;
+import com.alpe.sap_access_service.service.sap_modules.get_data.DatasetModule;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

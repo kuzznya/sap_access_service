@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.services;
+package com.alpe.sap_access_service.service;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.model.AppUser;

@@ -2,8 +2,7 @@ package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.security.TokenAuthentication;
-import com.alpe.sap_access_service.services.TableService;
-import com.alpe.sap_access_service.services.UsersService;
+import com.alpe.sap_access_service.service.TableService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

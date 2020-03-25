@@ -17,7 +17,7 @@ For HTTPS connection self-signed certificate is used now
 Latest version is 0.3.1
 
 
-## API (v.0.3.1)
+## API (v.0.3.2)
 
 All methods except those marked with `w/o auth` need authorization  
 Authorization token needs to be placed as `Authorization` header of the request
@@ -91,7 +91,7 @@ Authorization token needs to be placed as `Authorization` header of the request
 
 ## Download
 
-[Latest test build (v.0.3.1)](../master/builds/sap_access_service-0.3.1.jar)
+[Latest test build (v.0.3.2)](../master/builds/sap_access_service-0.3.2.jar)
 
 [View all builds](../master/builds)
 

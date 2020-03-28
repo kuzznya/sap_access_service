@@ -85,7 +85,7 @@ public class TableService {
                         language, where, order, group, fieldNames, table));
             else {
                 SAPTableEntity finalTableEntity = tableEntity;
-                CompletableFuture.runAsync(() -> updateTable(finalTableEntity, table));
+                CompletableFuture.runAsync(() -> updateTable(finalTableEntity, table, table.getRecordsCount() < offset + count + 1));
             }
             return subTable;
         }
@@ -114,10 +114,11 @@ public class TableService {
         }
     }
 
-    public void updateTable(SAPTableEntity oldEntity, SAPTable updatedTable) {
+    public void updateTable(SAPTableEntity oldEntity, SAPTable updatedTable, Boolean full) {
         ObjectMapper objectMapper = new ObjectMapper();
         oldEntity.setUpdateDate(new Date());
         oldEntity.setRecordsCount(updatedTable.getRecordsCount());
+        oldEntity.setTableFull(full);
         try {
             oldEntity.setSapTableJSON(objectMapper.writeValueAsString(updatedTable));
             tableRepository.save(oldEntity);

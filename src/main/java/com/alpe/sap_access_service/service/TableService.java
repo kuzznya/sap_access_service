@@ -82,11 +82,32 @@ public class TableService {
 
             if (tableEntity == null)
                 CompletableFuture.runAsync(() -> saveTable(user, name, table.getRecordsCount() < offset + count + 1,
-                        language, where, order, group, fieldNames, table));
+                        language, where, order, group, fieldNames, table)).thenRun(() -> {
+                    try {
+                        SAPTableEntity entity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
+                        LinkedHashMap<String, LinkedList<String>> newDataset = getDataset(user, name, offset + count + 100,
+                                language, where, order, group, fieldNames);
+                        SAPTable newSapTable = new SAPTable(newDataset);
+                        updateTable(entity, newSapTable, newSapTable.getRecordsCount() < offset + count + 100);
+                    } catch (Exception ex2) {
+                        ex2.printStackTrace();
+                    }
+                });
             else {
                 SAPTableEntity finalTableEntity = tableEntity;
-                CompletableFuture.runAsync(() -> updateTable(finalTableEntity, table, table.getRecordsCount() < offset + count + 1));
+                CompletableFuture.runAsync(() -> updateTable(finalTableEntity, table, table.getRecordsCount() < offset + count + 1))
+                        .thenRun(() -> {
+                    try {
+                        LinkedHashMap<String, LinkedList<String>> newDataset = getDataset(user, name, offset + count + 100,
+                                language, where, order, group, fieldNames);
+                        SAPTable newSapTable = new SAPTable(newDataset);
+                        updateTable(finalTableEntity, newSapTable, newSapTable.getRecordsCount() < offset + count + 100);
+                    } catch (Exception ex2) {
+                        ex2.printStackTrace();
+                    }
+                });
             }
+
             return subTable;
         }
     }

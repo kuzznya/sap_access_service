@@ -1,5 +1,7 @@
 package com.alpe.sap_access_service.model;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+
 import java.util.LinkedHashMap;
 
 public class SAPTableRecord {
@@ -9,6 +11,7 @@ public class SAPTableRecord {
         data.put(key, value);
     }
 
+    @JsonAnyGetter
     public LinkedHashMap<String, String> getData() {
         return data;
     }

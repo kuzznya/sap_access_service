@@ -39,22 +39,31 @@ public class App1TableViewController {
 
     @GetMapping("/table")
     ResponseEntity<?> getTable(@RequestParam(name = "name") String table,
-                               @RequestParam(name = "recs_count", required = false) Integer recordsCount,
+                               @RequestParam(required = false) Integer offset,
+                               @RequestParam(required = false) Integer count,
                                @RequestParam(name = "lang", required = false) Character language,
                                @RequestParam(required = false) String where,
                                @RequestParam(required = false) String order,
                                @RequestParam(required = false) String group,
                                @RequestParam(name = "fields_names", required = false) String fieldsNames,
-                               @RequestParam(required = false) Integer offset,
-                               @RequestParam(required = false) Integer count,
                                TokenAuthentication auth) {
         if (auth == null)
             return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
         AppUser user = (AppUser) auth.getPrincipal();
 
         try {
-            return new ResponseEntity<>(tableService.getTable(user, table,
-                    recordsCount, language, where, order, group, fieldsNames), HttpStatus.OK);
+            if (offset == null && count == null)
+                return new ResponseEntity<>(tableService.getTable(user, table,
+                        language, where, order, group, fieldsNames), HttpStatus.OK);
+            else if (offset == null)
+                return new ResponseEntity<>(tableService.getTable(user, table, 0, count,
+                        language, where, order, group, fieldsNames), HttpStatus.OK);
+            else if (count == null)
+                return new ResponseEntity<>(tableService.getTable(user, table, offset, 100000,
+                        language, where, order, group, fieldsNames), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(tableService.getTable(user, table, offset, count,
+                        language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             return new ResponseEntity<>("SAP access error", HttpStatus.BAD_REQUEST);
         }

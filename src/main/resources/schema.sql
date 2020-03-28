@@ -6,6 +6,7 @@ CREATE TABLE saptables (
     params_hash INT UNIQUE NOT NULL,
     table_name VARCHAR(30) NOT NULL,
     table_records_count INT DEFAULT NULL,
+    table_full BOOL DEFAULT UNKNOWN,
     table_language CHAR DEFAULT NULL,
     table_where VARCHAR(40) DEFAULT NULL,
     table_order VARCHAR(40) DEFAULT NULL,

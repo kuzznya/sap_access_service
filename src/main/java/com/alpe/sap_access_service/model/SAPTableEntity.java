@@ -5,7 +5,6 @@ import org.hibernate.annotations.*;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Clob;
 import java.util.Date;
 
 @Entity
@@ -22,6 +21,8 @@ public class SAPTableEntity {
     private String name;
     @Column(name = "table_records_count")
     private Integer recordsCount;
+    @Column(name = "table_full")
+    private Boolean tableFull;
     @Column(name = "table_language")
     private Character language;
     @Column(name = "table_where")
@@ -101,6 +102,14 @@ public class SAPTableEntity {
 
     public void setRecordsCount(Integer recordsCount) {
         this.recordsCount = recordsCount;
+    }
+
+    public Boolean isTableFull() {
+        return tableFull;
+    }
+
+    public void setTableFull(Boolean tableFull) {
+        this.tableFull = tableFull;
     }
 
     public Character getLanguage() {

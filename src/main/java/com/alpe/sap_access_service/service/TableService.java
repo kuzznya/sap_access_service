@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.*;
 
 
 @Service
@@ -40,36 +41,72 @@ public class TableService {
         }, tableLifetime * 1000 / 2, tableLifetime * 1000 / 2);
     }
 
-    public SAPTable getTable(AppUser user, String name, Integer recordsCount, Character language,
+    public SAPTable getTable(AppUser user, String name, Character language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             SAPTableEntity tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
-            if (tableEntity == null)
+            if (tableEntity == null || !tableEntity.isTableFull())
                 throw new NullPointerException();
+
             return objectMapper.readValue(tableEntity.getSapTableJSON(), SAPTable.class);
         } catch (Exception ex) {
-            LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, name, recordsCount, language,
+            LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, name, null, language,
                     where, order, group, fieldNames);
             SAPTable table = new SAPTable(dataset);
-            SAPTableEntity entity = new SAPTableEntity();
-            entity.setAccessToken(user.getAccessToken());
-            entity.setName(name);
-            entity.setLanguage(language);
-            entity.setWhere(where);
-            entity.setOrder(order);
-            entity.setGroup(group);
-            entity.setFieldNames(fieldNames);
-            entity.setRecordsCount(recordsCount);
-            try {
-                entity.setSapTableJSON(objectMapper.writeValueAsString(table));
-                tableRepository.save(entity);
-                return table;
-            } catch (Exception ex2) {
-                ex2.printStackTrace();
+
+            CompletableFuture.runAsync(() -> saveTable(user, name, true, language, where, order, group, fieldNames, table));
+            return table;
+        }
+    }
+
+    public SAPTable getTable(AppUser user, String name, int offset, int count, Character language,
+                             String where, String order,
+                             String group, String fieldNames) throws SOAPExceptionImpl {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            SAPTableEntity tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
+            if (tableEntity == null || tableEntity.getRecordsCount() < offset + count && !tableEntity.isTableFull())
+                throw new NullPointerException();
+
+            SAPTable table = objectMapper.readValue(tableEntity.getSapTableJSON(), SAPTable.class);
+
+            if (tableEntity.isTableFull() && table.getRecordsCount() < offset)
                 return null;
-            }
+            return table.getSubTable(offset, offset + count);
+        } catch (Exception ex) {
+            LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, name, offset + count + 1,
+                    language, where, order, group, fieldNames);
+            SAPTable table = new SAPTable(dataset);
+            SAPTable subTable = table.getSubTable(offset, offset + count);
+
+            CompletableFuture.runAsync(() -> saveTable(user, name, table.getRecordsCount() < offset + count + 1,
+                    language, where, order, group, fieldNames, table));
+            return subTable;
+        }
+    }
+
+    public void saveTable(AppUser user, String name, Boolean full,
+                          Character language, String where, String order,
+                          String group, String fieldNames, SAPTable table) {
+        SAPTableEntity entity = new SAPTableEntity();
+        entity.setAccessToken(user.getAccessToken());
+        entity.setName(name);
+        entity.setTableFull(full);
+        entity.setLanguage(language);
+        entity.setWhere(where);
+        entity.setOrder(order);
+        entity.setGroup(group);
+        entity.setFieldNames(fieldNames);
+        entity.setRecordsCount(table.getRecordsCount());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            entity.setSapTableJSON(objectMapper.writeValueAsString(table));
+            tableRepository.save(entity);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

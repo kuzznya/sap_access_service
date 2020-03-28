@@ -9,10 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import java.util.*;
 import java.util.concurrent.*;
 
 
@@ -65,8 +63,9 @@ public class TableService {
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
         ObjectMapper objectMapper = new ObjectMapper();
+        SAPTableEntity tableEntity = null;
         try {
-            SAPTableEntity tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
+            tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
             if (tableEntity == null || tableEntity.getRecordsCount() < offset + count && !tableEntity.isTableFull())
                 throw new NullPointerException();
 
@@ -81,8 +80,13 @@ public class TableService {
             SAPTable table = new SAPTable(dataset);
             SAPTable subTable = table.getSubTable(offset, offset + count);
 
-            CompletableFuture.runAsync(() -> saveTable(user, name, table.getRecordsCount() < offset + count + 1,
-                    language, where, order, group, fieldNames, table));
+            if (tableEntity == null)
+                CompletableFuture.runAsync(() -> saveTable(user, name, table.getRecordsCount() < offset + count + 1,
+                        language, where, order, group, fieldNames, table));
+            else {
+                SAPTableEntity finalTableEntity = tableEntity;
+                CompletableFuture.runAsync(() -> updateTable(finalTableEntity, table));
+            }
             return subTable;
         }
     }
@@ -105,6 +109,18 @@ public class TableService {
         try {
             entity.setSapTableJSON(objectMapper.writeValueAsString(table));
             tableRepository.save(entity);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void updateTable(SAPTableEntity oldEntity, SAPTable updatedTable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        oldEntity.setUpdateDate(new Date());
+        oldEntity.setRecordsCount(updatedTable.getRecordsCount());
+        try {
+            oldEntity.setSapTableJSON(objectMapper.writeValueAsString(updatedTable));
+            tableRepository.save(oldEntity);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

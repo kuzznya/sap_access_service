@@ -1,15 +1,17 @@
 package com.alpe.sap_access_service.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.security.InvalidParameterException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SAPTable {
-    private LinkedList<SAPTableColumn> columns;
-    private LinkedList<SAPTableRecord> records;
+    private LinkedList<SAPTableColumn> columns = new LinkedList<>();
+    private LinkedList<SAPTableRecord> records = new LinkedList<>();
 
     public SAPTable() {}
 
@@ -64,7 +66,6 @@ public class SAPTable {
     }
 
     public void setColumns(LinkedList<SAPTableColumn> columns) {
-        this.records.remove();
         this.columns = columns;
     }
 

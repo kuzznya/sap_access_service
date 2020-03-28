@@ -51,6 +51,9 @@ public class App1TableViewController {
             return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
         AppUser user = (AppUser) auth.getPrincipal();
 
+        if (offset != null && offset < 0 || count != null && count < 0)
+            return new ResponseEntity<>("offset and count params cannot be less than zero", HttpStatus.BAD_REQUEST);
+
         try {
             if (offset == null && count == null)
                 return new ResponseEntity<>(tableService.getTable(user, table,

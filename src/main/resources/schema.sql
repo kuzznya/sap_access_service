@@ -16,3 +16,15 @@ CREATE TABLE saptables (
     creation_date TIMESTAMP DEFAULT now(),
     update_date TIMESTAMP DEFAULT now()
 );
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    system VARCHAR(10) NOT NULL,
+    username VARCHAR(30) NOT NULL,
+    password VARCHAR(40) NOT NULL,
+    language CHAR DEFAULT NULL,
+    access_token VARCHAR(255) UNIQUE NOT NULL,
+    accessed TIMESTAMP DEFAULT now()
+);

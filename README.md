@@ -24,8 +24,14 @@ Authorization token needs to be placed as `Authorization` header of the request
 
 {server address}/api
 
+* **GET /token-lifetime** - returns token lifetime (default 600 sec)
+
 * **GET /systems** (`w/o auth`) - get the list of available SAP systems  
   Response: list of systems' names
+  
+ * **GET /apps** - returns available SAP modules (see [Applications](#Applications))
+
+### Authorization
 
 * **POST /auth** (`w/o auth`) - authorize in SAP system and get the access token  
   Body (JSON):
@@ -35,7 +41,7 @@ Authorization token needs to be placed as `Authorization` header of the request
   | `system`   | The name of the system    | true     |
   | `username` | -                         | true     |
   | `password` | -                         | true     |
-  | `lang`     | Language of the responses | false    |
+  | `language` | Lang. of responses (char) | false    |
   
   Response: access token (String)
 
@@ -44,12 +50,12 @@ Authorization token needs to be placed as `Authorization` header of the request
 * **DELETE /auth** - delete user  
 
 * **GET /auth** - returns HTTP status "OK" (200) if active user with such access token exists  
-  
-* **GET /token-lifetime** - returns token lifetime (default 600 sec)
 
-* **GET /apps** - returns available SAP modules (see [Applications](#Applications))
+### App 1
 
-* **GET /apps/1/table** - get table from SAP and format it as list of records (not columns)
+__/apps/1/*__
+
+* **GET /table** - get table from SAP and format it as list of records (not columns)
   Parameters:
   
   | Parameter     | Description                 | Required |
@@ -57,7 +63,7 @@ Authorization token needs to be placed as `Authorization` header of the request
   | `name`        | Name of the table           | true     |
   | `offset`      | Get records from this offset| false    |
   | `count`       | Get exact count of records  | false    |
-  | `lang`        | Language                    | false    |
+  | `lang`        | Language (char)             | false    |
   | `where`       | "WHERE" SAP condition       | false    |
   | `order`       | The order of the data       | false    |
   | `group`       | "GROUP" SAP condition       | false    |
@@ -65,7 +71,7 @@ Authorization token needs to be placed as `Authorization` header of the request
   
   Multiple values in parameter need to be separated by space code (%20)
   
-  Example: `https://localhost:8443/api/table?name=TBL1&fields_names=MANDT%20BUKRS&lang=R`
+  Example: `GET https://localhost:8443/api/apps/1/table?name=TBL1&offset=50&count=100&fields_names=MANDT%20BUKRS&lang=R`
 
 * **GET /apps/1/dataset** - get table from SAP without formatting it (as list of columns)  
   Parameters are the same as in the method GET /table  

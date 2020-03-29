@@ -49,13 +49,14 @@ Authorization token needs to be placed as `Authorization` header of the request
 
 * **GET /apps** - returns available SAP modules (see [Applications](#Applications))
 
-* **GET /table** - get table from SAP and format it as list of records (not columns)
+* **GET /apps/1/table** - get table from SAP and format it as list of records (not columns)
   Parameters:
   
   | Parameter     | Description                 | Required |
   |---------------|-----------------------------|----------|
   | `name`        | Name of the table           | true     |
-  | `recs_count`  | Count of the records (lines)| false    |
+  | `offset`      | Get records from this offset| false    |
+  | `count`       | Get exact count of records  | false    |
   | `lang`        | Language                    | false    |
   | `where`       | "WHERE" SAP condition       | false    |
   | `order`       | The order of the data       | false    |
@@ -66,7 +67,7 @@ Authorization token needs to be placed as `Authorization` header of the request
   
   Example: `https://localhost:8443/api/table?name=TBL1&fields_names=MANDT%20BUKRS&lang=R`
 
-* **GET /dataset** - get table from SAP without formatting it (as list of columns)  
+* **GET /apps/1/dataset** - get table from SAP without formatting it (as list of columns)  
   Parameters are the same as in the method GET /table  
   
   Response:  
@@ -86,12 +87,12 @@ Authorization token needs to be placed as `Authorization` header of the request
 
 ## Applications
 
-1. Application A. Table view
-2. Application Z. Add information from QR to SAP
+1. Table view
+2. Add information from QR to SAP
 
 ## Download
 
-[Latest test build (v.0.3.2)](../master/builds/sap_access_service-0.3.3.jar)
+[Latest test build (v.0.3.3)](../master/builds/sap_access_service-0.3.3.jar)
 
 [View all builds](../master/builds)
 

@@ -23,11 +23,12 @@ public class AvailableAppsService {
     }
 
     public LinkedList<SAPApplication> getAvailableApplications(AppUser user) throws SOAPExceptionImpl {
-        LinkedList<String> REPI2Data = datasetModule.requestDataSet(user.getSystem(),
+        LinkedList<String> REPI2Data = datasetModule.getDataSet(user.getSystem(),
                 user.getUsername(), user.getPassword(),
                 " ", " ", user.getLanguage(), " ", " ", " ", " ").get("REPI2");
         LinkedList<SAPApplication> applications = new LinkedList<>();
         for (String el : REPI2Data) {
+            // Transform app string from SAP to object, i.e. XXX. Name -> { id = XXX, name = Name }
             if (el.matches("[0-9]{3}[.]+.+")) {
                 int id = Integer.parseInt(el.substring(0, 3));
                 // TODO description

@@ -22,21 +22,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                // Disable CORS & CSRF protection
                 .cors()
                 .and()
                 .csrf().disable()
                 .headers().frameOptions().disable()
+                // Require TLS
                 .and()
                 .requiresChannel()
                 .anyRequest().requiresSecure()
                 .and()
+                // Add custom authentication filter
                 .addFilterAfter(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                // Allow access to auth methods for all & protect all other
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/systems").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                // Allow non authenticated access to DB console
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/**").authenticated()
                 .and()
+                // Stateless HTTP sessions (for REST architecture)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         ;
     }

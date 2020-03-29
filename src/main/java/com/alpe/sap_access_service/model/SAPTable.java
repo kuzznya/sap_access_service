@@ -15,6 +15,7 @@ public class SAPTable {
 
     public SAPTable() {}
 
+    // Create SAPTable from map of columns
     public SAPTable(LinkedHashMap<String, LinkedList<String>> map) {
         LinkedList<String> systemNames;
         LinkedList<String> textNames;
@@ -24,6 +25,7 @@ public class SAPTable {
         LinkedList<String> outputLen;
         LinkedList<String> decimals;
 
+        // Columns info from SAP
         systemNames = map.get("fieldNames");
         map.remove("fieldNames");
         textNames = map.get("repText");

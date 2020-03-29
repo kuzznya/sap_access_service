@@ -162,7 +162,7 @@ public class TableService {
                                                                 String group, String fieldNames) throws SOAPExceptionImpl {
         String recordsCountStr = recordsCount != null ? String.valueOf(recordsCount) : null;
         language = (language != null && !language.equals(' ')) ? language : user.getLanguage();
-        return datasetModule.requestDataSet(user.getSystem(),
+        return datasetModule.getDataSet(user.getSystem(),
                 user.getUsername(), user.getPassword(),
                 table, recordsCountStr, language, where, order, group, fieldNames);
     }

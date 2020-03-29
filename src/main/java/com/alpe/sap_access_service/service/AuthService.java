@@ -15,9 +15,10 @@ public class AuthService {
         this.datasetModule = datasetModule;
     }
 
+    // Check user authentication in SAP
     public boolean auth(AppUser user) {
         try {
-            Object result = datasetModule.requestDataSet(user.getSystem(),
+            Object result = datasetModule.getDataSet(user.getSystem(),
                     user.getUsername(), user.getPassword(),
                     " ", " ", user.getLanguage(), " ", " ", " ", " ");
             return true;

@@ -17,11 +17,13 @@ public class UsersService {
 
     private AuthService authService;
 
+    //TODO move users info to DB
     private Map<String, AppUser> users = new ConcurrentHashMap<>();
 
     public UsersService(@Autowired AuthService authService) {
         this.authService = authService;
 
+        // Run deletion of inactive users on timer event
         (new Timer()).schedule(new TimerTask() {
                                    @Override
                                    public void run() {

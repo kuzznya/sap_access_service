@@ -62,6 +62,8 @@ public class App1TableViewController {
                 return new ResponseEntity<>(tableService.getTable(user, table, 0, count,
                         language, where, order, group, fieldsNames), HttpStatus.OK);
             else if (count == null)
+                // If offset is set & count is null then all records of the table from offset should be returned
+                // Now the count is manually set as 10000
                 return new ResponseEntity<>(tableService.getTable(user, table, offset, 100000,
                         language, where, order, group, fieldsNames), HttpStatus.OK);
             else

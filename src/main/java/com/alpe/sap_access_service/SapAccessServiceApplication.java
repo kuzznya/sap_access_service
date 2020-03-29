@@ -71,6 +71,7 @@ public class SapAccessServiceApplication {
 		}
 
 		try {
+			// Parse args
 			for (int i = 0; i < args.length; i++) {
 				if (args[i].equals("-test"))
 					isTest = true;
@@ -129,6 +130,7 @@ public class SapAccessServiceApplication {
 			return;
 		}
 
+		// Run server in normal mode
 		if (!isConfig) {
 			if (paramsProperties == null || systemsProperties == null) {
 				System.out.println("Error: missing params.properties or systems.properties\nTry configuring the program before starting the service");
@@ -145,6 +147,8 @@ public class SapAccessServiceApplication {
 			}
 			SpringApplication.run(SapAccessServiceApplication.class, otherArgsArray);
 		}
+
+		// Add new system & exit
 		else if (addSystem && !removeSystem) {
 			if (systemName == null || systemAddress == null)
 				System.err.println("Incorrect parameters to add new system");
@@ -158,6 +162,7 @@ public class SapAccessServiceApplication {
 			}
 		}
 
+		// Remove system
 		else if (removeSystem && !addSystem) {
 			if (systemName == null)
 				System.err.println("Incorrect parameters to remove new system");

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import java.util.LinkedHashMap;
 
 public class SAPTableRecord {
+    // Map serializing as separate fields
     private LinkedHashMap<String, String> data = new LinkedHashMap<>();
 
     @JsonAnySetter

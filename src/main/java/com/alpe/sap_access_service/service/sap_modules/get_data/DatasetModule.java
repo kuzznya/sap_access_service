@@ -10,10 +10,11 @@ import java.util.LinkedList;
 @Service
 public class DatasetModule {
 
-    public LinkedHashMap<String, LinkedList<String>> requestDataSet(String system, String username, String password,
-                                                                    String table, String fieldsQuan, Character language,
-                                                                    String where, String order,
-                                                                    String group, String fieldNames)
+    // Get dataset (map of columns) from SAP
+    public LinkedHashMap<String, LinkedList<String>> getDataSet(String system, String username, String password,
+                                                                String table, String fieldsQuan, Character language,
+                                                                String where, String order,
+                                                                String group, String fieldNames)
             throws SOAPExceptionImpl {
         SapMap sm = new SapMap(table, fieldsQuan, language, where, order, group, fieldNames);
         String systemAddress = SapAccessServiceApplication.getSystemAddress(system);

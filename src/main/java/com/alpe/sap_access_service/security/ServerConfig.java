@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ServerConfig {
 
+    // Tomcat settings for TLS
     @Bean
     public ServletWebServerFactory servletContainer() {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
@@ -30,6 +31,7 @@ public class ServerConfig {
         return tomcat;
     }
 
+    // Set HTTP 8081 port redirect to HTTPS 8443
     private Connector getHttpConnector() {
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");

@@ -22,7 +22,7 @@ Latest version is 0.3.3
 All methods except those marked with `w/o auth` need authorization  
 Authorization token needs to be placed as `Authorization` header of the request
 
-{server address}/api
+{server address}/api/*
 
 * **GET /token-lifetime** - returns token lifetime (default 600 sec)
 
@@ -73,7 +73,7 @@ __/apps/1/*__
   
   Example: `GET https://localhost:8443/api/apps/1/table?name=TBL1&offset=50&count=100&fields_names=MANDT%20BUKRS&lang=R`
 
-* **GET /apps/1/dataset** - get table from SAP without formatting it (as list of columns)  
+* **GET /dataset** - get table from SAP without formatting it (as list of columns)  
   Parameters are the same as in the method GET /table  
   
   Response:  

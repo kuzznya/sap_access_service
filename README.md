@@ -20,7 +20,7 @@ Latest version is 0.3.3
 ## API (v.0.3.3)
 
 All methods except those marked with `w/o auth` need authorization  
-Authorization token needs to be placed as `Authorization` header of the request
+Authorization token needs to be placed as `Authorization` header of the request and needs to be prefixed as 'Bearer '
 
 {server address}/api/*
 

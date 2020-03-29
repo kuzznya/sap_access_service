@@ -30,6 +30,7 @@ public class TableService {
         this.datasetModule = datasetModule;
         tableLifetime = SapAccessServiceApplication.getTokenLifetime();
 
+        // Start deletion of old tables on timer event
         tableCleaner = new Timer();
         tableCleaner.schedule(new TimerTask() {
             @Override
@@ -39,48 +40,57 @@ public class TableService {
         }, tableLifetime * 1000 / 2, tableLifetime * 1000 / 2);
     }
 
+    // Get all table
     public SAPTable getTable(AppUser user, String name, Character language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
+            // Try to get table from local DB
             SAPTableEntity tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
             if (tableEntity == null || !tableEntity.isTableFull())
                 throw new NullPointerException();
 
             return objectMapper.readValue(tableEntity.getSapTableJSON(), SAPTable.class);
         } catch (Exception ex) {
+            // Get table from SAP
             LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, name, null, language,
                     where, order, group, fieldNames);
             SAPTable table = new SAPTable(dataset);
 
+            // Run saving table to local DB asynchronously
             CompletableFuture.runAsync(() -> saveTable(user, name, true, language, where, order, group, fieldNames, table));
             return table;
         }
     }
 
+    // Get table with subset of records (from - to)
     public SAPTable getTable(AppUser user, String name, int offset, int count, Character language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
         ObjectMapper objectMapper = new ObjectMapper();
         SAPTableEntity tableEntity = null;
         try {
+            // Try to get table from local DB
             tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
             if (tableEntity == null || tableEntity.getRecordsCount() < offset + count && !tableEntity.isTableFull())
                 throw new NullPointerException();
 
             SAPTable table = objectMapper.readValue(tableEntity.getSapTableJSON(), SAPTable.class);
 
+            // If offset is incorrect, return null
             if (tableEntity.isTableFull() && table.getRecordsCount() < offset)
                 return null;
             return table.getSubTable(offset, offset + count);
         } catch (Exception ex) {
+            // Get table from SAP
             LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, name, offset + count + 1,
                     language, where, order, group, fieldNames);
             SAPTable table = new SAPTable(dataset);
             SAPTable subTable = table.getSubTable(offset, offset + count);
 
             if (tableEntity == null)
+                // Save new table entity asynchronously
                 CompletableFuture.runAsync(() -> saveTable(user, name, table.getRecordsCount() < offset + count + 1,
                         language, where, order, group, fieldNames, table)).thenRun(() -> {
                     try {
@@ -89,11 +99,10 @@ public class TableService {
                                 language, where, order, group, fieldNames);
                         SAPTable newSapTable = new SAPTable(newDataset);
                         updateTable(entity, newSapTable, newSapTable.getRecordsCount() < offset + count + 100);
-                    } catch (Exception ex2) {
-                        ex2.printStackTrace();
-                    }
+                    } catch (Exception ignored) {}
                 });
             else {
+                // Update table entity asynchronously
                 SAPTableEntity finalTableEntity = tableEntity;
                 CompletableFuture.runAsync(() -> updateTable(finalTableEntity, table, table.getRecordsCount() < offset + count + 1))
                         .thenRun(() -> {
@@ -102,9 +111,7 @@ public class TableService {
                                 language, where, order, group, fieldNames);
                         SAPTable newSapTable = new SAPTable(newDataset);
                         updateTable(finalTableEntity, newSapTable, newSapTable.getRecordsCount() < offset + count + 100);
-                    } catch (Exception ex2) {
-                        ex2.printStackTrace();
-                    }
+                    } catch (Exception ignored) {}
                 });
             }
 
@@ -148,6 +155,7 @@ public class TableService {
         }
     }
 
+    // Get dataset (map of columns) from SAP
     public LinkedHashMap<String, LinkedList<String>> getDataset(AppUser user,
                                                                 String table, Integer recordsCount, Character language,
                                                                 String where, String order,

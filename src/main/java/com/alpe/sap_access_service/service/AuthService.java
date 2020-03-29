@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.service;
 
-import com.alpe.sap_access_service.model.AppUser;
+import com.alpe.sap_access_service.model.User;
 import com.alpe.sap_access_service.service.sap_modules.get_data.DatasetModule;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class AuthService {
     }
 
     // Check user authentication in SAP
-    public boolean auth(AppUser user) {
+    public boolean auth(User user) {
         try {
             Object result = datasetModule.getDataSet(user.getSystem(),
                     user.getUsername(), user.getPassword(),

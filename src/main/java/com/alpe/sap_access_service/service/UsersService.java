@@ -1,24 +1,24 @@
 package com.alpe.sap_access_service.service;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.model.AppUser;
+import com.alpe.sap_access_service.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UsersService {
 
     private AuthService authService;
 
-    //TODO move users info to DB
-    private Map<String, AppUser> users = new ConcurrentHashMap<>();
+    @Autowired
+    private UserRepository userRepository;
 
     public UsersService(@Autowired AuthService authService) {
         this.authService = authService;
@@ -38,69 +38,40 @@ public class UsersService {
     }
 
     public String createUser(String system, String username, String password, Character language) throws AccessDeniedException {
-        int id = 0;
-        while (users.containsKey(AppUser.hash(system, username, password, id)))
-            id++;
-        AppUser user;
-        if (language != null)
-            user = new AppUser(system, username, password, id, language);
-        else
-            user = new AppUser(system, username, password, id);
-
-        boolean authResult = authService.auth(user);
-        if (!authResult)
-            throw new AccessDeniedException("Error while trying to authorize");
-
-        users.put(user.getAccessToken(), user);
+        User user = new User(system, username, password, language);
+        userRepository.save(user);
+        if (!authService.auth(user))
+            throw new AccessDeniedException("Cannot authorize user in SAP");
         return user.getAccessToken();
     }
 
-    public String getAccessToken(String system, String username, int id) {
-        for (String key : users.keySet()) {
-            AppUser curUser = users.get(key);
-            if (curUser.getSystem().equals(system) &&
-                    curUser.getUsername().equals(username) &&
-                    curUser.getId() == id)
-                return key;
+    public User getUser(String accessToken) {
+        try {
+            User user = userRepository.getUserByAccessToken(accessToken);
+            user.setLastTimeAccessed(new Date());
+            CompletableFuture.runAsync(() -> userRepository.save(user));
+            return user;
+        } catch (Exception ex) {
+            return null;
         }
-        return null;
     }
 
-    public AppUser getUser(String accessToken) {
-        return users.getOrDefault(accessToken, null);
-    }
-
-    public void deleteInactiveUsers() {
-
-        if (SapAccessServiceApplication.isSessionsInfo())
-            System.out.println("=== Sessions life check ===");
-
-        for (String key : users.keySet()) {
-
-            long sessionLifeTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) -
-                    users.get(key).getLastTimeAccessed();
-
-            if (SapAccessServiceApplication.isSessionsInfo())
-                System.out.println("Session (access token " + key + "): last time accessed " + sessionLifeTime + " seconds ago");
-
-            if (sessionLifeTime >= SapAccessServiceApplication.getTokenLifetime()) {
-                deleteUser(key);
-                if (SapAccessServiceApplication.isSessionsInfo())
-                    System.out.println("Session killed");
-            }
+    public void refreshUser(String accessToken) {
+        User user = getUser(accessToken);
+        if (user != null) {
+            user.setLastTimeAccessed(new Date());
+            userRepository.save(user);
         }
-
-        if (SapAccessServiceApplication.isSessionsInfo())
-            System.out.println("Count of active sessions: " + users.size() + "\n");
+        else
+            throw new NoSuchElementException();
     }
 
     public void deleteUser(String accessToken) {
-        users.remove(accessToken);
-        try {
-            users.remove(accessToken);
-        } catch (Exception ex) {
-            System.out.println("Cannot kill session with access token " + accessToken);
-        }
+        userRepository.delete(userRepository.getUserByAccessToken(accessToken));
+    }
+
+    public void deleteInactiveUsers() {
+        userRepository.deleteInactiveUsers(SapAccessServiceApplication.getTokenLifetime());
     }
 
 }

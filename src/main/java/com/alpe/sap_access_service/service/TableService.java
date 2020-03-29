@@ -1,8 +1,8 @@
 package com.alpe.sap_access_service.service;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.model.SAPTableEntity;
+import com.alpe.sap_access_service.model.User;
 import com.alpe.sap_access_service.service.sap_modules.get_data.DatasetModule;
 import com.alpe.sap_access_service.model.SAPTable;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +41,7 @@ public class TableService {
     }
 
     // Get all table
-    public SAPTable getTable(AppUser user, String name, Character language,
+    public SAPTable getTable(User user, String name, Character language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -65,7 +65,7 @@ public class TableService {
     }
 
     // Get table with subset of records (from - to)
-    public SAPTable getTable(AppUser user, String name, int offset, int count, Character language,
+    public SAPTable getTable(User user, String name, int offset, int count, Character language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -128,7 +128,7 @@ public class TableService {
     }
 
     // Load more records from SAP and update table in DB (method is required for calling asynchronously)
-    private void loadMoreRecordsAndUpdateTable(AppUser user, String name, int offset, int countOfNewRecords,
+    private void loadMoreRecordsAndUpdateTable(User user, String name, int offset, int countOfNewRecords,
                                                Character language, String where, String order,
                                                String group, String fieldNames, SAPTableEntity entity) throws SOAPExceptionImpl {
         if (!entity.isTableFull()) {
@@ -139,7 +139,7 @@ public class TableService {
         }
     }
 
-    public void saveTable(AppUser user, String name, Boolean full,
+    public void saveTable(User user, String name, Boolean full,
                           Character language, String where, String order,
                           String group, String fieldNames, SAPTable table) {
         SAPTableEntity entity = new SAPTableEntity();
@@ -176,7 +176,7 @@ public class TableService {
     }
 
     // Get dataset (map of columns) from SAP
-    public LinkedHashMap<String, LinkedList<String>> getDataset(AppUser user,
+    public LinkedHashMap<String, LinkedList<String>> getDataset(User user,
                                                                 String table, Integer recordsCount, Character language,
                                                                 String where, String order,
                                                                 String group, String fieldNames) throws SOAPExceptionImpl {

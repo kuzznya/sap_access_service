@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.service;
 
-import com.alpe.sap_access_service.model.AppUser;
+import com.alpe.sap_access_service.model.User;
 import com.alpe.sap_access_service.service.sap_modules.get_data.DatasetModule;
 import com.alpe.sap_access_service.model.SAPApplication;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
@@ -22,7 +22,7 @@ public class AvailableAppsService {
         this.datasetModule = datasetModule;
     }
 
-    public LinkedList<SAPApplication> getAvailableApplications(AppUser user) throws SOAPExceptionImpl {
+    public LinkedList<SAPApplication> getAvailableApplications(User user) throws SOAPExceptionImpl {
         LinkedList<String> REPI2Data = datasetModule.getDataSet(user.getSystem(),
                 user.getUsername(), user.getPassword(),
                 " ", " ", user.getLanguage(), " ", " ", " ", " ").get("REPI2");

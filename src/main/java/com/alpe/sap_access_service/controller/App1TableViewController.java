@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.controller;
 
-import com.alpe.sap_access_service.model.AppUser;
+import com.alpe.sap_access_service.model.User;
 import com.alpe.sap_access_service.security.TokenAuthentication;
 import com.alpe.sap_access_service.service.TableService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
@@ -49,7 +49,7 @@ public class App1TableViewController {
                                TokenAuthentication auth) {
         if (auth == null)
             return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
-        AppUser user = (AppUser) auth.getPrincipal();
+        User user = (User) auth.getPrincipal();
 
         if (offset != null && offset < 0 || count != null && count < 0)
             return new ResponseEntity<>("offset and count params cannot be less than zero", HttpStatus.BAD_REQUEST);
@@ -85,7 +85,7 @@ public class App1TableViewController {
                                  TokenAuthentication auth) {
         if (auth == null)
             return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
-        AppUser user = (AppUser) auth.getPrincipal();
+        User user = (User) auth.getPrincipal();
 
         try {
             return new ResponseEntity<>(tableService.getDataset(user, table,

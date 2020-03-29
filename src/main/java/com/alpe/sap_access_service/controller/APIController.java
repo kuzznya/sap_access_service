@@ -1,8 +1,8 @@
 package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
+import com.alpe.sap_access_service.model.User;
 import com.alpe.sap_access_service.security.TokenAuthentication;
-import com.alpe.sap_access_service.model.AppUser;
 import com.alpe.sap_access_service.service.AvailableAppsService;
 import com.alpe.sap_access_service.service.UsersService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
@@ -39,9 +39,9 @@ public class APIController {
 
     @GetMapping("/apps")
     ResponseEntity<?> getApplications(TokenAuthentication auth) {
-        AppUser user;
+        User user;
         try {
-            user = (AppUser) auth.getPrincipal();
+            user = (User) auth.getPrincipal();
         } catch (Exception ex) {
             return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
         }

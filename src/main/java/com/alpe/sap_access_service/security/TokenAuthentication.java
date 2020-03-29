@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.security;
 
-import com.alpe.sap_access_service.model.AppUser;
+import com.alpe.sap_access_service.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -10,14 +10,14 @@ import java.util.Collection;
 public class TokenAuthentication implements Authentication {
     private String token;
     private boolean isAuthenticated;
-    private AppUser user;
+    private User user;
 
     public TokenAuthentication(String token) {
         this.token = token;
         this.user = null;
     }
 
-    public TokenAuthentication(String token, boolean isAuthenticated, AppUser user) {
+    public TokenAuthentication(String token, boolean isAuthenticated, User user) {
         this.token = token;
         this.isAuthenticated = isAuthenticated;
         this.user = user;

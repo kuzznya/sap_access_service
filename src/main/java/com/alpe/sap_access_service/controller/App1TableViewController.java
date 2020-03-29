@@ -28,9 +28,6 @@ public class App1TableViewController {
 
     @GetMapping
     ResponseEntity<?> getURLs(TokenAuthentication auth) {
-        if (auth == null)
-            return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
-
         LinkedList<String> URLs = new LinkedList<>();
         URLs.add(serverAddress + "/apps/1/table");
         URLs.add(serverAddress + "/apps/1/dataset");
@@ -47,8 +44,6 @@ public class App1TableViewController {
                                @RequestParam(required = false) String group,
                                @RequestParam(name = "fields_names", required = false) String fieldsNames,
                                TokenAuthentication auth) {
-        if (auth == null)
-            return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
         User user = (User) auth.getPrincipal();
 
         if (offset != null && offset < 0 || count != null && count < 0)
@@ -83,8 +78,6 @@ public class App1TableViewController {
                                  @RequestParam(required = false) String group,
                                  @RequestParam(name = "fields_names", required = false) String fieldsNames,
                                  TokenAuthentication auth) {
-        if (auth == null)
-            return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
         User user = (User) auth.getPrincipal();
 
         try {

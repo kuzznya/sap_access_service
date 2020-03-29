@@ -1,7 +1,6 @@
 package com.alpe.sap_access_service.controller;
 
 import com.alpe.sap_access_service.model.AuthRequest;
-import com.alpe.sap_access_service.model.User;
 import com.alpe.sap_access_service.security.TokenAuthentication;
 import com.alpe.sap_access_service.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +36,6 @@ public class AuthController {
 
     @PutMapping
     ResponseEntity<?> refreshToken(TokenAuthentication auth) {
-        if (auth == null)
-            return new ResponseEntity<>("Not authorized", HttpStatus.UNAUTHORIZED);
         usersService.getUser(auth.getToken());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
@@ -56,15 +53,11 @@ public class AuthController {
 
     @GetMapping
     ResponseEntity<?> checkToken(TokenAuthentication auth) {
-        if (auth != null) {
-            try {
-                usersService.getUser(auth.getToken());
-                return new ResponseEntity<>("Active session found", HttpStatus.OK);
-            } catch (Exception ex) {
-                return new ResponseEntity<>("No user with such access token", HttpStatus.BAD_REQUEST);
-            }
+        try {
+            usersService.getUser(auth.getToken());
+            return new ResponseEntity<>("Active session found", HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("No user with such access token", HttpStatus.BAD_REQUEST);
         }
-        else
-            return new ResponseEntity<>("Error: user not found", HttpStatus.UNAUTHORIZED);
     }
 }

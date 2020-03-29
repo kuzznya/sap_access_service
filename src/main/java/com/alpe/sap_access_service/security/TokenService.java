@@ -5,6 +5,9 @@ import com.alpe.sap_access_service.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.CredentialException;
+import java.util.NoSuchElementException;
+
 @Service
 public class TokenService {
     private final UsersService usersService;
@@ -13,8 +16,12 @@ public class TokenService {
         this.usersService = usersService;
     }
 
-    public TokenAuthentication authenticate(final String token) {
-        User user = usersService.getUser(token);
-        return new TokenAuthentication(token, true, user);
+    public TokenAuthentication authenticate(final String token) throws CredentialException {
+        try {
+            User user = usersService.getUser(token);
+            return new TokenAuthentication(token, true, user);
+        } catch (NoSuchElementException ex) {
+            throw new CredentialException("User not found");
+        }
     }
 }

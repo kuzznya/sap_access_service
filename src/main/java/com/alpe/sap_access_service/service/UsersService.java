@@ -45,14 +45,14 @@ public class UsersService {
         return user.getAccessToken();
     }
 
-    public User getUser(String accessToken) {
+    public User getUser(String accessToken) throws NoSuchElementException {
         try {
             User user = userRepository.getUserByAccessToken(accessToken);
             user.setLastTimeAccessed(new Date());
             CompletableFuture.runAsync(() -> userRepository.save(user));
             return user;
         } catch (Exception ex) {
-            return null;
+            throw new NoSuchElementException("User not found");
         }
     }
 

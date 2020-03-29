@@ -4,6 +4,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+import javax.security.auth.login.CredentialException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -30,8 +31,12 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
         }
         token = token.substring(7);
 
-        final TokenAuthentication authentication = tokenService.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            final TokenAuthentication authentication = tokenService.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (CredentialException ex) {
+            SecurityContextHolder.clearContext();
+        }
         chain.doFilter(request, response);
     }
 }

@@ -26,6 +26,6 @@ public interface TableRepository extends JpaRepository<SAPTableEntity, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "DELETE FROM SAPTableEntity t WHERE TIMESTAMPDIFF(SECOND, t.creationDate, now()) > :seconds_diff")
+    @Query(value = "DELETE FROM SAPTableEntity t WHERE TIMESTAMPDIFF(SECOND, t.updateDate, now()) > :seconds_diff")
     void deleteOldSAPTableEntities(@Param("seconds_diff") int secondsDiff);
 }

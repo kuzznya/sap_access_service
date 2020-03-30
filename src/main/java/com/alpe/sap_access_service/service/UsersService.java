@@ -29,8 +29,9 @@ public class UsersService {
                                    public void run() {
                                        deleteInactiveUsers();
                                    }
-                               }, 1000 * SapAccessServiceApplication.getTokenLifetime() / 4,
-                1000 * SapAccessServiceApplication.getTokenLifetime() / 4);
+                               },
+                1000 * 120, // Now users are checked every 120 seconds
+                1000 * 120); // If there will be too many users, the period should be increased
     }
 
     public String createUser(String system, String username, String password) throws AccessDeniedException {
@@ -49,6 +50,7 @@ public class UsersService {
         try {
             User user = userRepository.getUserByAccessToken(accessToken);
             user.setLastTimeAccessed(new Date());
+            // Asynchronously update lastTimeAccessed field in DB
             CompletableFuture.runAsync(() -> userRepository.save(user));
             return user;
         } catch (Exception ex) {
@@ -56,9 +58,10 @@ public class UsersService {
         }
     }
 
-    public void refreshUser(String accessToken) {
+    public void refreshUser(String accessToken) throws NoSuchElementException {
         User user = getUser(accessToken);
         if (user != null) {
+            // Update lastTimeAccessedField in DB
             user.setLastTimeAccessed(new Date());
             userRepository.save(user);
         }
@@ -67,10 +70,12 @@ public class UsersService {
     }
 
     public void deleteUser(String accessToken) {
+        // Find user with such access token and delete it
         userRepository.delete(userRepository.getUserByAccessToken(accessToken));
     }
 
     public void deleteInactiveUsers() {
+        // Delete users that were inactive more seconds than TokenLifetime value
         userRepository.deleteInactiveUsers(SapAccessServiceApplication.getTokenLifetime());
     }
 

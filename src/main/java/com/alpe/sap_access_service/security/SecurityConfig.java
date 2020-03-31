@@ -28,9 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .headers().frameOptions().disable()
                 // Require TLS
-                .and()
-                .requiresChannel()
-                .anyRequest().requiresSecure()
+//                .and()
+//                .requiresChannel()
+//                .anyRequest().requiresSecure()
                 .and()
                 // Add custom authentication filter
                 .addFilterAfter(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

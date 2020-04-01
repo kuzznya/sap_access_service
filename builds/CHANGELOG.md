@@ -16,3 +16,5 @@
 2. Preloader added: more records than requested (now 100 more) are automatically loaded from SAP & saved into the DB
 3. Code refactoring & small changes
 4. Code comments added
+5. User info is saved into DB
+6. SSL temporarily disabled

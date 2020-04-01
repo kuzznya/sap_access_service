@@ -190,8 +190,6 @@ public class TableService {
     public void deleteOldTables() {
         try {
             tableRepository.deleteOldSAPTableEntities(tableLifetime);
-            if (SapAccessServiceApplication.isSessionsInfo())
-                System.out.println("Old tables deleted");
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }

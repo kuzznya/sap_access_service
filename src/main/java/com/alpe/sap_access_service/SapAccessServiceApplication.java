@@ -45,10 +45,6 @@ public class SapAccessServiceApplication {
 		return result;
 	}
 
-	public static boolean isSessionsInfo() {
-		return paramsProperties.getProperty("PRINT_SESSIONS_INFO").equals("TRUE");
-	}
-
 	public static int getTokenLifetime() {
 		return Integer.parseInt(paramsProperties.getProperty("TOKEN_LIFETIME"));
 	}
@@ -63,12 +59,6 @@ public class SapAccessServiceApplication {
 		int tokenLifetime;
 		String systemName = null;
 		String systemAddress = null;
-
-		try {
-			paramsProperties.setProperty("PRINT_SESSIONS_INFO", "FALSE");
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
 
 		try {
 			// Parse args
@@ -102,14 +92,6 @@ public class SapAccessServiceApplication {
 					}
 
 				}
-				else if (args[i].equals("-print_sessions_info")) {
-					paramsProperties.setProperty("PRINT_SESSIONS_INFO", "TRUE");
-
-					// Sometimes main is restarted, so the code runs twice
-					// This causes the problem with setting PRINT_SESSIONS_INFO param to false at the beginning
-					// So this argument needs to be passed to SpringApplication.run(...) method
-					otherArgs.add(args[i]);
-				}
 				else
 					otherArgs.add(args[i]);
 			}
@@ -125,8 +107,7 @@ public class SapAccessServiceApplication {
 
 		//TEST section
 		if (isTest) {
-			System.out.println(paramsProperties.getProperty("PRINT_SESSIONS_INFO"));
-			System.out.println(isSessionsInfo());
+			// TODO ?
 			return;
 		}
 

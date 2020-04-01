@@ -116,10 +116,8 @@ All configuration could be done from the console
 
 ## Program launch
 
-* Test some features (for development only):  
+* Test some features (for development only) (now does nothing):  
   `-test`
-* Print sessions info when checking active/inactive sessions:  
-  `-print_sessions_info`
 
 ## Additional information
 

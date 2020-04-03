@@ -78,4 +78,20 @@ public class SAPTableColumn {
     public void setDecimals(String decimals) {
         this.decimals = decimals;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        SAPTableColumn col = (SAPTableColumn) o;
+        return systemName.equals(col.systemName)
+                && textName.equals(col.textName)
+                && columnLen.equals(col.columnLen)
+                && dataType.equals(col.dataType)
+                && domName.equals(col.domName)
+                && outputLen.equals(col.outputLen)
+                && decimals.equals(col.decimals);
+    }
 }

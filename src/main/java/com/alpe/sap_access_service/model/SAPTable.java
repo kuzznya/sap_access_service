@@ -16,7 +16,8 @@ public class SAPTable {
     public SAPTable() {}
 
     // Create SAPTable from map of columns
-    public SAPTable(LinkedHashMap<String, LinkedList<String>> map) {
+    public SAPTable(LinkedHashMap<String, LinkedList<String>> dataset) {
+        LinkedHashMap<String, LinkedList<String>> map= new LinkedHashMap<>(dataset);
         LinkedList<String> systemNames;
         LinkedList<String> textNames;
         LinkedList<String> columnLen;
@@ -128,5 +129,19 @@ public class SAPTable {
         try {
             records.remove();
         } catch (Exception ignored) {}
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        SAPTable table = (SAPTable) o;
+        if (!columns.equals(table.columns))
+            return false;
+        if (!records.equals(table.records))
+            return false;
+        return true;
     }
 }

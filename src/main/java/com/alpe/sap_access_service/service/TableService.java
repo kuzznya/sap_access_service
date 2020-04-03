@@ -81,7 +81,7 @@ public class TableService {
 
             // If offset is incorrect, return null
             if (tableEntity.isTableFull() && table.getRecordsCount() < offset)
-                return null;
+                return new SAPTable(table.getColumns());
 
             // Load more records if table is not full (async)
             if (table.getRecordsCount() - (offset + count) < 100 && !tableEntity.isTableFull()) {

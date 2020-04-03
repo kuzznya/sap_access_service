@@ -18,4 +18,16 @@ public class SAPTableRecord {
     public LinkedHashMap<String, String> getData() {
         return data;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        SAPTableRecord rec = (SAPTableRecord) o;
+        if (!data.keySet().equals(rec.data.keySet()))
+            return false;
+        return data.equals(rec.data);
+    }
 }

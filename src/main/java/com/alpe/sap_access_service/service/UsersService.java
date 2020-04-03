@@ -69,9 +69,13 @@ public class UsersService {
             throw new NoSuchElementException();
     }
 
-    public void deleteUser(String accessToken) {
+    public void deleteUser(String accessToken) throws NoSuchElementException {
         // Find user with such access token and delete it
-        userRepository.delete(userRepository.getUserByAccessToken(accessToken));
+        try {
+            userRepository.delete(userRepository.getUserByAccessToken(accessToken));
+        } catch (Exception ex) {
+            throw new NoSuchElementException();
+        }
     }
 
     public void deleteInactiveUsers() {

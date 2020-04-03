@@ -4,6 +4,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import java.util.Date;
 
@@ -29,7 +30,7 @@ public class User {
 
     public User() {}
 
-    public User(String system, String username, String password) {
+    public User(@NotNull String system, @NotNull String username, @NotNull String password) {
         this.system = system;
         this.username = username;
         this.password = password;
@@ -38,7 +39,10 @@ public class User {
         this.accessToken = new DigestUtils(SHA3_256).digestAsHex(system + username + password + id + new Date());
     }
 
-    public User(String system, String username, String password, Character language) {
+    public User(@NotNull String system, @NotNull String username, @NotNull String password, Character language) {
+        assert system != null;
+        assert username != null;
+        assert password != null;
         this.system = system;
         this.username = username;
         this.password = password;
@@ -60,7 +64,8 @@ public class User {
         return system;
     }
 
-    public void setSystem(String system) {
+    public void setSystem(@NotNull String system) {
+        assert system != null;
         this.system = system;
         setAccessToken();
     }
@@ -69,7 +74,8 @@ public class User {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(@NotNull String username) {
+        assert username != null;
         this.username = username;
         setAccessToken();
     }
@@ -78,7 +84,8 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(@NotNull String password) {
+        assert password != null;
         this.password = password;
         setAccessToken();
     }
@@ -96,8 +103,20 @@ public class User {
         return lastTimeAccessed;
     }
 
-    public void setLastTimeAccessed(Date lastTimeAccessed) {
+    public void setLastTimeAccessed(@NotNull Date lastTimeAccessed) {
         this.lastTimeAccessed = lastTimeAccessed;
         setAccessToken();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        User user = (User) o;
+        return this.accessToken.equals(user.accessToken)
+                && this.system.equals(user.system)
+                && this.password.equals(user.password);
     }
 }

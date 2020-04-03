@@ -1,5 +1,7 @@
 # SAP access RESTful Web service
 
+![Java CI with Maven](https://github.com/kuzznya/sap_access_service/workflows/Java%20CI%20with%20Maven/badge.svg)
+
 Company: ALPE Consulting
 
 Language: Java

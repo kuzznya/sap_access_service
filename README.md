@@ -1,6 +1,7 @@
 # SAP access RESTful Web service
 
 ![Java CI with Maven](https://github.com/kuzznya/sap_access_service/workflows/Java%20CI%20with%20Maven/badge.svg)
+[![codecov](https://codecov.io/gh/kuzznya/sap_access_service/branch/master/graph/badge.svg)](https://codecov.io/gh/kuzznya/sap_access_service)
 
 Company: ALPE Consulting
 

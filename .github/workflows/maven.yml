@@ -22,11 +22,20 @@ jobs:
         java-version: 11
     - name: Test
       run: mvn -B test --file pom.xml
+      env:
+        PORT: ${{ secrets.PORT }}
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
     - name: Build with Maven
       run: mvn -B clean package --file pom.xml -Dmaven.test.skip=true
     - name: Verify package
       run: mvn -B verify
-    - run: mkdir staging && cp target/*.jar staging
+      env:
+        PORT: ${{ secrets.PORT }}
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    - name: Copy all JAR files to dir staging
+      run: mkdir staging && cp target/*.jar staging
     - uses: actions/upload-artifact@v1
       with:
         name: sap_access_service_package

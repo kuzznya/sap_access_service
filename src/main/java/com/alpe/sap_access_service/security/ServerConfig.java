@@ -26,18 +26,7 @@ public class ServerConfig {
 //                context.addConstraint(securityConstraint);
             }
         };
-        tomcat.addAdditionalTomcatConnectors(getHttpConnector());
         tomcat.setContextPath("/api");
         return tomcat;
-    }
-
-    // Set HTTP 8081 port redirect to HTTPS 8443
-    private Connector getHttpConnector() {
-        Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
-        connector.setScheme("http");
-        connector.setPort(8081);
-        connector.setSecure(false);
-        connector.setRedirectPort(8443);
-        return connector;
     }
 }

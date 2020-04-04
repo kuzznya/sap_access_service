@@ -1,0 +1,1 @@
+web: java -jar target/sap_access_service-0.3.3.jar

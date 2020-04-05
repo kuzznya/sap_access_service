@@ -11,6 +11,8 @@ import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -50,8 +52,8 @@ class TableServiceTest {
 
         for (int i = 0; i < 20; i++) {
             LinkedList<String> col = new LinkedList<>();
-            for (int j = 0; j < 150; j++) {
-                col.add("test" + i * 150 + j);
+            for (int j = 0; j < 300; j++) {
+                col.add("test" + i * 300 + j);
             }
             testTable.put("col" + i, col);
             testTable.get("fieldNames").add("col" + i);
@@ -64,8 +66,21 @@ class TableServiceTest {
         }
 
         Mockito.when(datasetModule.getDataSet(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-                Mockito.eq("TEST"), Mockito.any(), Mockito.any(),
+                Mockito.eq("TEST"), Mockito.eq(null), Mockito.any(),
                 Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(testTable);
+
+        Mockito.when(datasetModule.getDataSet(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+                Mockito.eq("TEST"), Mockito.notNull(), Mockito.any(),
+                Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenAnswer((Answer<LinkedHashMap<String, LinkedList<String>>>) invocation -> {
+            Object[] args = invocation.getArguments();
+            LinkedHashMap<String, LinkedList<String>> table = new LinkedHashMap<>(testTable);
+            for (String key : table.keySet()) {
+                table.get(key).subList(0, Math.min(Integer.parseInt((String) args[4]), table.get(key).size()));
+            }
+            return table;
+        });
+
         Mockito.when(datasetModule.getDataSet(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
                 Mockito.eq("WRONG_TEST"), Mockito.any(), Mockito.any(),
                 Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(SOAPExceptionImpl.class);
@@ -97,14 +112,14 @@ class TableServiceTest {
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
                 "TEST", 1, 10, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 11)));
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
-                "TEST", 1, 120, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 121)));
+                "TEST", 100, 100, null, null, null, null, null), new SAPTable(testTable).getSubTable(100, 200)));
 
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
                 "TEST", 1, 100, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 101)));
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
-                "TEST", 0, 150, null, null, null, null, null), new SAPTable(testTable)));
+                "TEST", 0, 300, null, null, null, null, null), new SAPTable(testTable)));
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
-                "TEST", 150, 1, null, null, null, null, null),
+                "TEST", 300, 1, null, null, null, null, null),
                 new SAPTable(new SAPTable(testTable).getColumns())));
         assertThrows(SOAPExceptionImpl.class, () -> tableService.getTable(u,
                 "WRONG_TEST", 1, 1, null, null, null, null, null));

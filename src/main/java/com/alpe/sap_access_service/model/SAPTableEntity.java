@@ -158,7 +158,7 @@ public class SAPTableEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SAPTableEntity entity = (SAPTableEntity) o;
-        return id.equals(entity.id) &&
+        return id != null ? id.equals(entity.id) : entity.id == null &&
                 accessToken != null ? accessToken.equals(entity.accessToken) : entity.accessToken == null &&
                 name != null ? name.equals(entity.name) : entity.name == null &&
                 recordsCount != null ? recordsCount.equals(entity.recordsCount) : entity.recordsCount == null &&

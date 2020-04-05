@@ -122,12 +122,12 @@ public class SAPTable {
     }
 
     public void deleteRecords(int from, int to) {
-        records.removeAll(records.subList(from, to));
+        records.removeAll(new LinkedList<>(records.subList(from, to)));
     }
 
     public void deleteRecords() {
         try {
-            records.remove();
+            records.clear();
         } catch (Exception ignored) {}
     }
 

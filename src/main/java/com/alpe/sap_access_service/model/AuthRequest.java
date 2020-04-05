@@ -1,5 +1,7 @@
 package com.alpe.sap_access_service.model;
 
+import java.util.Objects;
+
 public class AuthRequest {
     private String system;
     private String username;
@@ -51,5 +53,21 @@ public class AuthRequest {
 
     public void setLanguage(Character language) {
         this.language = language;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthRequest request = (AuthRequest) o;
+        return system != null ? system.equals(request.system) : request.system == null &&
+                username != null ? username.equals(request.username) : request.username == null &&
+                password != null ? password.equals(request.password) : request.password == null &&
+                language != null ? language.equals(request.language) : request.language == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(system, username, password, language);
     }
 }

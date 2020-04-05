@@ -90,12 +90,14 @@ class TableServiceTest {
     void getSubTable() {
         User u = new User("TST", "u", "p");
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
-                "TEST", 1, 1, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 2)));
+                "TEST", 1, 10, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 11)));
         try {
             Thread.sleep(1000);
         } catch (Exception ignored) {}
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
-                "TEST", 1, 1, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 2)));
+                "TEST", 1, 10, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 11)));
+        assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
+                "TEST", 1, 20, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 21)));
 
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
                 "TEST", 1, 100, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 101)));

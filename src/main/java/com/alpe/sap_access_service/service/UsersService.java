@@ -60,13 +60,9 @@ public class UsersService {
 
     public void refreshUser(String accessToken) throws NoSuchElementException {
         User user = getUser(accessToken);
-        if (user != null) {
-            // Update lastTimeAccessedField in DB
-            user.setLastTimeAccessed(new Date());
-            userRepository.save(user);
-        }
-        else
-            throw new NoSuchElementException();
+        // Update lastTimeAccessedField in DB
+        user.setLastTimeAccessed(new Date());
+        userRepository.save(user);
     }
 
     public void deleteUser(String accessToken) throws NoSuchElementException {

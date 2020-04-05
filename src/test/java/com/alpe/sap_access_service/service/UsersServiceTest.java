@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.Date;
 import java.util.NoSuchElementException;
@@ -35,7 +36,7 @@ class UsersServiceTest {
     @Test
     void createUser() {
         String accessToken1 = usersService.createUser("SYS", "username", "password", 'R');
-        String accessToken2 = usersService.createUser("SYS2", "u", "p", null);
+        String accessToken2 = usersService.createUser("SYS2", "u", "p");
         User user1 = userRepository.getUserByAccessToken(accessToken1);
         assertEquals(user1.getSystem(), "SYS");
         assertEquals(user1.getUsername(), "username");
@@ -51,9 +52,12 @@ class UsersServiceTest {
             Thread.sleep(1000);
         } catch (Exception ignored) {}
 
-        assertDoesNotThrow(() -> usersService.createUser("SYS2", "u", "p", null));
+        assertDoesNotThrow(() -> usersService.createUser("SYS2", "u", "p"));
 
         assertThrows(AssertionError.class, () -> usersService.createUser(null, "u", null, 'R'));
+
+        Mockito.when(authService.auth(Mockito.any())).thenReturn(false);
+        assertThrows(AccessDeniedException.class, () -> usersService.createUser("WRONG_SYS", "WRONG_USERNAME", "WRONG_PASSWORD"));
     }
 
     @Test

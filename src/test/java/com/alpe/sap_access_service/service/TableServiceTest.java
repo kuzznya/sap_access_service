@@ -40,33 +40,28 @@ class TableServiceTest {
         tableRepository.deleteAll();
 
         testTable = new LinkedHashMap<>();
-        LinkedList<String> col1 = new LinkedList<>();
-        col1.add("test1");
-        col1.add("test2");
-        col1.add("test3");
-        testTable.put("col1", col1);
-        LinkedList<String> col2 = new LinkedList<>();
-        col2.add("test4");
-        col2.add("test5");
-        col2.add("test6");
-        testTable.put("col2", col2);
-        LinkedList<String> col3 = new LinkedList<>();
-        col3.add("test7");
-        col3.add("test8");
-        col3.add("test9");
-        testTable.put("col3", col3);
-        LinkedList<String> fieldNames = new LinkedList<>(testTable.keySet());
-        testTable.put("fieldNames", fieldNames);
-        testTable.put("repText", fieldNames);
-        LinkedList<String> colLen = new LinkedList<>();
-        colLen.add("1");
-        colLen.add("1");
-        colLen.add("1");
-        testTable.put("columnLen", colLen);
-        testTable.put("dataTypes", testTable.get("fieldNames"));
-        testTable.put("domNames", testTable.get("fieldNames"));
-        testTable.put("outputLen", colLen);
-        testTable.put("decimals", testTable.get("fieldNames"));
+        testTable.put("fieldNames", new LinkedList<>());
+        testTable.put("repText", new LinkedList<>());
+        testTable.put("columnLen", new LinkedList<>());
+        testTable.put("dataTypes", new LinkedList<>());
+        testTable.put("domNames", new LinkedList<>());
+        testTable.put("outputLen", new LinkedList<>());
+        testTable.put("decimals", new LinkedList<>());
+
+        for (int i = 0; i < 20; i++) {
+            LinkedList<String> col = new LinkedList<>();
+            for (int j = 0; j < 150; j++) {
+                col.add("test" + i * 150 + j);
+            }
+            testTable.put("col" + i, col);
+            testTable.get("fieldNames").add("col" + i);
+            testTable.get("repText").add("col" + i);
+            testTable.get("columnLen").add("150");
+            testTable.get("dataTypes").add("col" + i);
+            testTable.get("domNames").add("col" + i);
+            testTable.get("outputLen").add("150");
+            testTable.get("decimals").add("col" + i);
+        }
 
         Mockito.when(datasetModule.getDataSet(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
                 Mockito.eq("TEST"), Mockito.any(), Mockito.any(),
@@ -103,11 +98,11 @@ class TableServiceTest {
                 "TEST", 1, 1, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 2)));
 
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
-                "TEST", 1, 100, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 100)));
+                "TEST", 1, 100, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 101)));
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
-                "TEST", 0, 100, null, null, null, null, null), new SAPTable(testTable)));
+                "TEST", 0, 150, null, null, null, null, null), new SAPTable(testTable)));
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
-                "TEST", 100, 1, null, null, null, null, null),
+                "TEST", 150, 1, null, null, null, null, null),
                 new SAPTable(new SAPTable(testTable).getColumns())));
         assertThrows(SOAPExceptionImpl.class, () -> tableService.getTable(u,
                 "WRONG_TEST", 1, 1, null, null, null, null, null));
@@ -135,9 +130,9 @@ class TableServiceTest {
 
         LinkedList<SAPTableRecord> records = new LinkedList<>();
         SAPTableRecord newRecord = new SAPTableRecord();
-        newRecord.addData("col1", "test42");
-        newRecord.addData("col2", "test42");
-        newRecord.addData("col3", "test42");
+        for (int i = 0; i < 20; i++) {
+            newRecord.addData("col" + i, "test42");
+        }
         records.add(newRecord);
         table.addRecords(records);
 

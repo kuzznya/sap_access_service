@@ -29,6 +29,7 @@ class AvailableAppsServiceTest {
     void setUp() throws SOAPExceptionImpl {
         LinkedHashMap<String, LinkedList<String>> map = new LinkedHashMap<>();
         LinkedList<String> apps = new LinkedList<>();
+        apps.add("Incorrect formatted string");
         apps.add("001. App 1");
         apps.add("002. App 2");
         map.put("REPI2", apps);

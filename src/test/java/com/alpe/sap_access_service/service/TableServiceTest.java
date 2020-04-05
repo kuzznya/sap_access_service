@@ -80,8 +80,12 @@ class TableServiceTest {
     void getTable() {
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(new User("TST", "u", "p"),
                 "TEST", null, null, null, null, null), new SAPTable(testTable)));
+        try {
+            Thread.sleep(1000);
+        } catch (Exception ignored) {}
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(new User("TST", "u", "p"),
                 "TEST", null, null, null, null, null), new SAPTable(testTable)));
+
         assertThrows(SOAPExceptionImpl.class, () -> tableService.getTable(new User("TST", "u", "p"),
                 "WRONG_TEST", null, null, null, null, null));
     }
@@ -90,8 +94,12 @@ class TableServiceTest {
     void getSubTable() {
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(new User("TST", "u", "p"),
                 "TEST", 1, 1, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 2)));
+        try {
+            Thread.sleep(1000);
+        } catch (Exception ignored) {}
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(new User("TST", "u", "p"),
                 "TEST", 1, 1, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 2)));
+
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(new User("TST", "u", "p"),
                 "TEST", 1, 100, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 100)));
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(new User("TST", "u", "p"),

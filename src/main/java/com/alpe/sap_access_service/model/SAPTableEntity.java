@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "saptables")
@@ -150,5 +151,30 @@ public class SAPTableEntity {
 
     public void setFieldNames(String fieldNames) {
         this.fieldNames = fieldNames;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SAPTableEntity entity = (SAPTableEntity) o;
+        return id.equals(entity.id) &&
+                accessToken != null ? accessToken.equals(entity.accessToken) : entity.accessToken == null &&
+                name != null ? name.equals(entity.name) : entity.name == null &&
+                recordsCount != null ? recordsCount.equals(entity.recordsCount) : entity.recordsCount == null &&
+                tableFull != null ? tableFull.equals(entity.tableFull) : entity.tableFull == null &&
+                language != null ? language.equals(entity.language) : entity.language == null &&
+                where != null ? where.equals(entity.where) : entity.where == null &&
+                order != null ? order.equals(entity.order) : entity.order == null &&
+                group != null ? group.equals(entity.group) : entity.group == null &&
+                fieldNames != null ? fieldNames.equals(entity.fieldNames) : entity.fieldNames == null &&
+                sapTableJSON != null ? sapTableJSON.equals(entity.sapTableJSON) : entity.sapTableJSON == null &&
+                creationDate != null ? creationDate.equals(entity.creationDate) : entity.creationDate == null &&
+                updateDate != null ? updateDate.equals(entity.updateDate) : entity.updateDate == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, accessToken, name, recordsCount, tableFull, language, where, order, group, fieldNames, sapTableJSON, creationDate, updateDate);
     }
 }

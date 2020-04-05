@@ -1,5 +1,7 @@
 package com.alpe.sap_access_service.model;
 
+import java.util.Objects;
+
 public class SAPTableColumn {
 
     private String systemName;
@@ -86,12 +88,17 @@ public class SAPTableColumn {
         if (o == null || getClass() != o.getClass())
             return false;
         SAPTableColumn col = (SAPTableColumn) o;
-        return systemName.equals(col.systemName)
-                && textName.equals(col.textName)
-                && columnLen.equals(col.columnLen)
-                && dataType.equals(col.dataType)
-                && domName.equals(col.domName)
-                && outputLen.equals(col.outputLen)
-                && decimals.equals(col.decimals);
+        return systemName != null ? systemName.equals(col.systemName) : col.systemName == null &&
+                textName != null ? textName.equals(col.textName) : col.textName == null &&
+                columnLen != null ? columnLen.equals(col.columnLen) : col.columnLen == null &&
+                dataType != null ? dataType.equals(col.dataType) : col.dataType == null &&
+                domName != null ? domName.equals(col.domName) : col.domName == null &&
+                outputLen != null ? outputLen.equals(col.outputLen) : col.outputLen == null &&
+                decimals != null ? decimals.equals(col.decimals) : col.decimals == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(systemName, textName, columnLen, dataType, domName, outputLen, decimals);
     }
 }

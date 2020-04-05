@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 public class SAPTableRecord {
     // Map serializing as separate fields
@@ -26,8 +27,15 @@ public class SAPTableRecord {
         if (o == null || getClass() != o.getClass())
             return false;
         SAPTableRecord rec = (SAPTableRecord) o;
+        if (data == null)
+            return rec.data == null;
         if (!data.keySet().equals(rec.data.keySet()))
             return false;
         return data.equals(rec.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(data);
     }
 }

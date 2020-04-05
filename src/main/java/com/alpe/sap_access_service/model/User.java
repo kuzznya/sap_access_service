@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import java.util.Date;
+import java.util.Objects;
 
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
 
@@ -115,8 +116,14 @@ public class User {
         if (o == null || getClass() != o.getClass())
             return false;
         User user = (User) o;
-        return this.accessToken.equals(user.accessToken)
-                && this.system.equals(user.system)
-                && this.password.equals(user.password);
+        return accessToken.equals(user.accessToken) &&
+                system.equals(user.system) &&
+                password.equals(user.password) &&
+                language != null ? language.equals(user.language) : user.language == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, system, username, password, language, accessToken, lastTimeAccessed);
     }
 }

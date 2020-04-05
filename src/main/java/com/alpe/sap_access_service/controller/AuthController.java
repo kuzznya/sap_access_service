@@ -27,10 +27,9 @@ public class AuthController {
         String password = authRequest.getPassword();
         Character language = authRequest.getLanguage();
         try {
-            return new ResponseEntity<String>(usersService.createUser(system, username, password, language), HttpStatus.OK);
+            return new ResponseEntity<>(usersService.createUser(system, username, password, language), HttpStatus.OK);
         } catch (AccessDeniedException ex) {
-            ex.setStackTrace(new StackTraceElement[0]);
-            return new ResponseEntity<AccessDeniedException>(ex, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
     }
 

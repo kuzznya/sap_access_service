@@ -21,8 +21,7 @@ public class APIController {
 
     private AvailableAppsService appsService;
 
-    public APIController(@Autowired UsersService usersService,
-                         @Autowired AvailableAppsService appsService) {
+    public APIController(@Autowired AvailableAppsService appsService) {
         this.appsService = appsService;
     }
 

@@ -17,9 +17,6 @@ import java.util.LinkedList;
 @RequestMapping("/apps/1")
 public class App1TableViewController {
 
-    @Value("${server.myaddress}")
-    private String serverAddress;
-
     private TableService tableService;
 
     public App1TableViewController(@Autowired TableService tableService) {
@@ -27,10 +24,10 @@ public class App1TableViewController {
     }
 
     @GetMapping
-    ResponseEntity<?> getURLs(TokenAuthentication auth) {
+    ResponseEntity<?> getURLs() {
         LinkedList<String> URLs = new LinkedList<>();
-        URLs.add(serverAddress + "/apps/1/table");
-        URLs.add(serverAddress + "/apps/1/dataset");
+        URLs.add("/apps/1/table");
+        URLs.add("/apps/1/dataset");
         return new ResponseEntity<>(URLs, HttpStatus.OK);
     }
 

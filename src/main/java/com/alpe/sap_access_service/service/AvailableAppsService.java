@@ -13,9 +13,6 @@ import java.util.LinkedList;
 @Service
 public class AvailableAppsService {
 
-    @Value("${server.myaddress}")
-    private String serverAddress;
-
     private DatasetModule datasetModule;
 
     public AvailableAppsService(@Autowired DatasetModule datasetModule) {
@@ -32,8 +29,7 @@ public class AvailableAppsService {
             if (el.matches("[0-9]{3}[.]+.+")) {
                 int id = Integer.parseInt(el.substring(0, 3));
                 // TODO description
-                applications.add(new SAPApplication(id, el.substring(4).trim(), null,
-                        serverAddress + "/apps/" + id));
+                applications.add(new SAPApplication(id, el.substring(4).trim(), null, "/apps/" + id));
             }
         }
         return applications;

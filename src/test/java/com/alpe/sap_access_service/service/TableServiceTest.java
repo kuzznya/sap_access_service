@@ -97,7 +97,7 @@ class TableServiceTest {
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
                 "TEST", 1, 10, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 11)));
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
-                "TEST", 1, 20, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 21)));
+                "TEST", 1, 120, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 121)));
 
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
                 "TEST", 1, 100, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 101)));

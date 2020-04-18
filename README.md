@@ -99,11 +99,9 @@ __/apps/1/*__
 1. Table view
 2. Add information from QR to SAP
 
-## Download
+## Versions
 
-[Latest test build (v.0.3.3)](../master/builds/sap_access_service-0.3.3.jar)
-
-[View all builds](../master/builds)
+[View CHANGELOG](./builds/CHANGELOG.md)
 
 ## Configuration
 

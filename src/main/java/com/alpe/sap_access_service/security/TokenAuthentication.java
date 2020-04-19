@@ -12,11 +12,6 @@ public class TokenAuthentication implements Authentication {
     private boolean isAuthenticated;
     private User user;
 
-    public TokenAuthentication(String token) {
-        this.token = token;
-        this.user = null;
-    }
-
     public TokenAuthentication(String token, boolean isAuthenticated, User user) {
         this.token = token;
         this.isAuthenticated = isAuthenticated;

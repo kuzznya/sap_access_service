@@ -52,7 +52,6 @@ public class SapAccessServiceApplication {
 	public static void main(String[] args) {
 		LinkedList<String> otherArgs = new LinkedList<>();
 
-		boolean isTest = false;
 		boolean isConfig = false;
 		boolean addSystem = false;
 		boolean removeSystem = false;
@@ -63,9 +62,7 @@ public class SapAccessServiceApplication {
 		try {
 			// Parse args
 			for (int i = 0; i < args.length; i++) {
-				if (args[i].equals("-test"))
-					isTest = true;
-				else if (args[i].equals("-config"))
+				if (args[i].equals("-config"))
 					isConfig = true;
 				else if (args[i].equals("-add"))
 					addSystem = true;
@@ -103,12 +100,6 @@ public class SapAccessServiceApplication {
 		String[] otherArgsArray = new String[otherArgs.size()];
 		for (int i = 0; i < otherArgs.size(); i++) {
 			otherArgsArray[i] = otherArgs.get(i);
-		}
-
-		//TEST section
-		if (isTest) {
-			// TODO ?
-			return;
 		}
 
 		// Run server in normal mode

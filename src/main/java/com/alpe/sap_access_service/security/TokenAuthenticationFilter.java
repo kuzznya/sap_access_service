@@ -1,5 +1,7 @@
 package com.alpe.sap_access_service.security;
 
+import com.alpe.sap_access_service.security.model.TokenAuthentication;
+import com.alpe.sap_access_service.security.service.TokenService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;

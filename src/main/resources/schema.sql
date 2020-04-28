@@ -28,3 +28,14 @@ CREATE TABLE users (
     access_token VARCHAR(255) UNIQUE NOT NULL,
     accessed TIMESTAMP DEFAULT now()
 );
+
+DROP TABLE IF EXISTS chartdata;
+
+CREATE TABLE chartdata (
+    id INT PRIMARY KEY,
+    tableName VARCHAR(30) NOT NULL,
+    valuesColumn VARCHAR(20) NOT NULL,
+    categoriesColumn VARCHAR(20) DEFAULT NULL,
+    captionsColumn VARCHAR(20) DEFAULT NULL,
+    accessed TIMESTAMP DEFAULT now()
+);

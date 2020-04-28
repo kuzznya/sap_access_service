@@ -18,35 +18,35 @@ public class SAPTableEntity {
     @Column
     private String accessToken;
 
-    @Column
+    @Column(name = "tableName")
     private String name;
-    @Column
+    @Column(name = "tableRecordsCount")
     private Integer recordsCount;
-    @Column
+    @Column(name = "tableFull")
     private Boolean tableFull;
-    @Column
+    @Column(name = "tableLanguage")
     private Character language;
-    @Column
+    @Column(name = "tableWhere")
     private String where;
-    @Column
+    @Column(name = "tableOrder")
     private String order;
-    @Column
+    @Column(name = "tableGroup")
     private String group;
-    @Column
+    @Column(name = "tableFieldNames")
     private String fieldNames;
 
-    @Column
+    @Column(name = "tableData")
     @Lob
     private String sapTableJSON;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column
+    @Column(name = "creationDate")
     private Date creationDate;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column
+    @Column(name = "updateDate")
     private Date updateDate;
 
     public Long getId() {

@@ -1,6 +1,7 @@
 package com.alpe.sap_access_service.security.service;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
+import com.alpe.sap_access_service.security.dao.UserRepository;
 import com.alpe.sap_access_service.security.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;

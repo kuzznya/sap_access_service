@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.tables.service;
+package com.alpe.sap_access_service.tables.dao;
 
 import com.alpe.sap_access_service.tables.model.SAPTableEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

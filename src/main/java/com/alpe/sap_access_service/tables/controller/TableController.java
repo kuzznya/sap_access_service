@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
+import java.util.Objects;
 
 @RestController
 @CrossOrigin
@@ -49,16 +50,10 @@ public class TableController {
             if (offset == null && count == null)
                 return new ResponseEntity<>(tableService.getTable(user, table,
                         language, where, order, group, fieldsNames), HttpStatus.OK);
-            else if (offset == null)
-                return new ResponseEntity<>(tableService.getTable(user, table, 0, count,
-                        language, where, order, group, fieldsNames), HttpStatus.OK);
-            else if (count == null)
-                // If offset is set & count is null then all records of the table from offset should be returned
-                // Now the count is manually set as 10000
-                return new ResponseEntity<>(tableService.getTable(user, table, offset, 100000,
-                        language, where, order, group, fieldsNames), HttpStatus.OK);
             else
-                return new ResponseEntity<>(tableService.getTable(user, table, offset, count,
+                return new ResponseEntity<>(tableService.getTable(user, table,
+                        Objects.requireNonNullElse(offset, 0), // If offset is not set, then get from the beginning
+                        Objects.requireNonNullElse(count, 100000), // If count is null, then return 100000 records (or all from the offset)
                         language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
             return new ResponseEntity<>("SAP access error", HttpStatus.BAD_REQUEST);

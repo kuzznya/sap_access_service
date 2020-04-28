@@ -14,11 +14,11 @@ import java.util.LinkedList;
 @RestController
 @CrossOrigin
 @RequestMapping("/apps/1")
-public class App1TableViewController {
+public class TableController {
 
     private TableService tableService;
 
-    public App1TableViewController(@Autowired TableService tableService) {
+    public TableController(@Autowired TableService tableService) {
         this.tableService = tableService;
     }
 

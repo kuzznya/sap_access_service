@@ -1,6 +1,8 @@
 package com.alpe.sap_access_service.charts.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -15,7 +17,8 @@ public class ChartValue<Tv> {
         this.value = value;
     }
 
-    public ChartValue(Tv value, String caption) {
+    @JsonCreator
+    public ChartValue(@JsonProperty("value") Tv value, @JsonProperty("caption") String caption) {
         this.value = value;
         this.caption = caption;
     }

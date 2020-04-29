@@ -1,5 +1,8 @@
 package com.alpe.sap_access_service.charts.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class CategorizedChartValue<Tv, Tc> extends ChartValue<Tv> {
@@ -11,7 +14,8 @@ public class CategorizedChartValue<Tv, Tc> extends ChartValue<Tv> {
         this.category = category;
     }
 
-    public CategorizedChartValue(Tv value, Tc category, String caption) {
+    @JsonCreator
+    public CategorizedChartValue(@JsonProperty("value") Tv value, @JsonProperty("category") Tc category, @JsonProperty("caption") String caption) {
         super(value, caption);
         this.category = category;
     }

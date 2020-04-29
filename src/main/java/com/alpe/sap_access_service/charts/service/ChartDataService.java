@@ -2,12 +2,10 @@ package com.alpe.sap_access_service.charts.service;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.charts.dao.ChartDataRepository;
-import com.alpe.sap_access_service.charts.model.CategorizedChartValue;
-import com.alpe.sap_access_service.charts.model.ChartData;
-import com.alpe.sap_access_service.charts.model.ChartDataEntity;
-import com.alpe.sap_access_service.charts.model.ChartValue;
+import com.alpe.sap_access_service.charts.model.*;
 import com.alpe.sap_access_service.sap.get_data.DatasetModule;
 import com.alpe.sap_access_service.security.model.User;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +41,7 @@ public class ChartDataService {
     }
 
     public ChartData<ChartValue<String>> getChartData(User user, String tableName, String valuesColumn) throws RuntimeException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
 
         try {
             ChartDataEntity entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, null, null);
@@ -51,8 +49,9 @@ public class ChartDataService {
                 throw new NullPointerException();
 
             CompletableFuture.runAsync(() -> updateEntity(entity));
-            return objectMapper.readValue(entity.getChartData(), objectMapper.getTypeFactory().constructParametricType(ChartData.class,
-                    objectMapper.getTypeFactory().constructParametricType(ChartValue.class, String.class)));
+
+            JavaType type = mapper.getTypeFactory().constructParametricType(SimpleChartData.class, String.class);
+            return mapper.readValue(entity.getChartData(), type);
 
         } catch (Exception ex) {
 
@@ -77,7 +76,7 @@ public class ChartDataService {
 
     public ChartData<ChartValue<String>> getChartData(User user, String tableName,
                                      String valuesColumn, String captionsColumn) throws RuntimeException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
 
          try {
              ChartDataEntity entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, null, captionsColumn);
@@ -85,11 +84,11 @@ public class ChartDataService {
                  throw new NullPointerException();
 
              CompletableFuture.runAsync(() -> updateEntity(entity));
-             return objectMapper.readValue(entity.getChartData(), objectMapper.getTypeFactory().constructParametricType(ChartData.class,
-                     objectMapper.getTypeFactory().constructParametricType(ChartValue.class, String.class)));
+
+             JavaType type = mapper.getTypeFactory().constructParametricType(SimpleChartData.class, String.class);
+             return mapper.readValue(entity.getChartData(), type);
 
          } catch (Exception ex) {
-
 
              LinkedHashMap<String, LinkedList<String>> tableData;
              try {
@@ -112,7 +111,7 @@ public class ChartDataService {
 
     public ChartData<CategorizedChartValue<String, String>> getChartData(User user, String tableName,
                                                          String valuesColumn, String categoriesColumn, String captionsColumn) throws RuntimeException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
 
         try {
             ChartDataEntity entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, categoriesColumn, captionsColumn);
@@ -120,8 +119,10 @@ public class ChartDataService {
                 throw new NullPointerException();
 
             CompletableFuture.runAsync(() -> updateEntity(entity));
-            return objectMapper.readValue(entity.getChartData(), objectMapper.getTypeFactory().constructParametricType(ChartData.class,
-                    objectMapper.getTypeFactory().constructParametricType(ChartValue.class, String.class)));
+
+            JavaType type = mapper.getTypeFactory().constructParametricType(CategorizedChartData.class,
+                    String.class, String.class);
+            return mapper.readValue(entity.getChartData(), type);
 
         } catch (Exception ex) {
 
@@ -150,10 +151,10 @@ public class ChartDataService {
 
     public void saveEntity(String tableName, String valuesColumn, String categoriesColumn, String captionsColumn,
                            ChartData<? extends ChartValue<?>> data) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
         try {
             ChartDataEntity entity = new ChartDataEntity(tableName, valuesColumn, categoriesColumn, captionsColumn,
-                    objectMapper.writeValueAsString(data));
+                    mapper.writeValueAsString(data));
             repository.save(entity);
         } catch (Exception anotherEx) {
             System.err.println(anotherEx.getMessage());

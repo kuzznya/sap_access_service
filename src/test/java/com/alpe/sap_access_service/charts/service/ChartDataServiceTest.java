@@ -88,6 +88,10 @@ class ChartDataServiceTest {
             assertEquals(categorizedData.getData().get(i).getCaption(), table.get("CAP").get(i));
         }
 
+        try {
+            Thread.sleep(200);
+        } catch (Exception ignored) {}
+
         ChartData<? extends ChartValue<?>> someData = chartDataService.getChartData(new User("SYS", "USR", "PWD"),
                 "TBL", "VAL", "CAT", "CAP");
         assertEquals(categorizedData, someData);

@@ -19,28 +19,28 @@ public class ChartDataController {
         this.chartDataService = chartDataService;
     }
 
-    @GetMapping(path = "/data", params = {"table", "data"})
+    @GetMapping(path = "/data", params = {"table", "values"})
     @ResponseBody
     ChartData<?> getChartData(@RequestParam String table,
-                           @RequestParam("data") String dataColumn,
+                           @RequestParam("values") String valuesColumn,
                            @RequestParam(name = "captions", required = false) String captionsColumn,
                            TokenAuthentication auth) {
         User user = (User) auth.getPrincipal();
 
         if (captionsColumn == null)
-            return chartDataService.getChartData(user, table, dataColumn);
+            return chartDataService.getChartData(user, table, valuesColumn);
         else
-            return chartDataService.getChartData(user, table, dataColumn, captionsColumn);
+            return chartDataService.getChartData(user, table, valuesColumn, captionsColumn);
     }
 
-    @GetMapping(path = "/data", params = {"table", "data", "categories"})
+    @GetMapping(path = "/data", params = {"table", "values", "categories"})
     @ResponseBody
     ChartData<?> getChartData(@RequestParam String table,
-                                   @RequestParam(name = "data") String dataColumn,
+                                   @RequestParam(name = "values") String valuesColumn,
                                    @RequestParam(name = "categories") String categoriesColumn,
                                    @RequestParam(name = "captions", required = false) String captionsColumn,
                                    TokenAuthentication auth) {
         User user = (User) auth.getPrincipal();
-        return chartDataService.getChartData(user, table, dataColumn, categoriesColumn, captionsColumn);
+        return chartDataService.getChartData(user, table, valuesColumn, categoriesColumn, captionsColumn);
     }
 }

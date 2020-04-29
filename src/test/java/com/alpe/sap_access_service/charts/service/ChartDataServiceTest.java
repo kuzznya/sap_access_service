@@ -55,6 +55,14 @@ class ChartDataServiceTest {
             assertEquals(data.getData().get(i).getValue(), table.get("VAL").get(i));
         }
 
+        try {
+            Thread.sleep(200);
+        } catch (Exception ignored) {}
+
+        ChartData<ChartValue<String>> data1 = chartDataService.getChartData(new User("SYS", "USR", "PWD"),
+                "TBL", "VAL");
+        assertEquals(data, data1);
+
         data = chartDataService.getChartData(new User("SYS", "USR", "PWD"),
                 "TBL", "VAL", "CAP");
         assertEquals(data.getData().size(), table.get("VAL").size());
@@ -62,6 +70,14 @@ class ChartDataServiceTest {
             assertEquals(data.getData().get(i).getValue(), table.get("VAL").get(i));
             assertEquals(data.getData().get(i).getCaption(), table.get("CAP").get(i));
         }
+
+        try {
+            Thread.sleep(200);
+        } catch (Exception ignored) {}
+
+        data1 = chartDataService.getChartData(new User("SYS", "USR", "PWD"),
+                "TBL", "VAL", "CAP");
+        assertEquals(data, data1);
 
         ChartData<CategorizedChartValue<String, String>> categorizedData = chartDataService.getChartData(new User("SYS", "USR", "PWD"),
                 "TBL", "VAL", "CAT", "CAP");

@@ -41,8 +41,8 @@ class AvailableAppsServiceTest {
     @Test
     void getAvailableApplications() {
         LinkedList<SAPApplication> apps = new LinkedList<>();
-        apps.add(new SAPApplication(1, "App 1", null));
-        apps.add(new SAPApplication(2, "App 2", null));
+        apps.add(new SAPApplication(1, "App 1", null, "/apps/1"));
+        apps.add(new SAPApplication(2, "App 2", null, "/apps/2"));
         assertDoesNotThrow(()-> assertEquals(appsService.getAvailableApplications(new User("CORRECT_SYS", "CORRECT_USERNAME", "CORRECT_PASSWORD")), apps));
     }
 }

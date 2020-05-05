@@ -2,6 +2,9 @@ package com.alpe.sap_access_service.tables.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.security.InvalidParameterException;
 import java.util.LinkedHashMap;
@@ -9,11 +12,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@EqualsAndHashCode
 public class SAPTable {
+    @Getter
     private LinkedList<SAPTableColumn> columns = new LinkedList<>();
+    @Getter
     private LinkedList<SAPTableRecord> records = new LinkedList<>();
-
-    public SAPTable() {}
 
     // Create SAPTable from map of columns
     public SAPTable(LinkedHashMap<String, LinkedList<String>> dataset) {
@@ -64,11 +69,8 @@ public class SAPTable {
         this.records = new LinkedList<>();
     }
 
-    public LinkedList<SAPTableColumn> getColumns() {
-        return columns;
-    }
-
     public void setColumns(LinkedList<SAPTableColumn> columns) {
+        records.clear();
         this.columns = columns;
     }
 
@@ -80,10 +82,6 @@ public class SAPTable {
     @JsonGetter("columns_count")
     public int getColumnsCount() {
         return columns.size();
-    }
-
-    public LinkedList<SAPTableRecord> getRecords() {
-        return records;
     }
 
     public void addRecords(LinkedList<SAPTableRecord> records) {
@@ -129,19 +127,5 @@ public class SAPTable {
         try {
             records.clear();
         } catch (Exception ignored) {}
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        SAPTable table = (SAPTable) o;
-        if (!columns.equals(table.columns))
-            return false;
-        if (!records.equals(table.records))
-            return false;
-        return true;
     }
 }

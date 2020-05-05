@@ -54,7 +54,7 @@ class UsersServiceTest {
 
         assertDoesNotThrow(() -> usersService.createUser("SYS2", "u", "p"));
 
-        assertThrows(AssertionError.class, () -> usersService.createUser(null, "u", null, 'R'));
+        assertThrows(NullPointerException.class, () -> usersService.createUser(null, "u", null, 'R'));
 
         Mockito.when(authService.auth(Mockito.any())).thenReturn(false);
         assertThrows(AccessDeniedException.class, () -> usersService.createUser("WRONG_SYS", "WRONG_USERNAME", "WRONG_PASSWORD"));

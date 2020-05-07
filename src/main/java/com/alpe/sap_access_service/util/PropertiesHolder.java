@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.properties;
+package com.alpe.sap_access_service.util;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

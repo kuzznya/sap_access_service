@@ -1,6 +1,8 @@
 package com.alpe.sap_access_service;
 
-import com.alpe.sap_access_service.properties.PropertiesHolder;
+import com.alpe.sap_access_service.util.Args;
+import com.alpe.sap_access_service.util.PropertiesHolder;
+import com.beust.jcommander.JCommander;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -17,7 +19,7 @@ public class SapAccessServiceApplication {
 			systemsProperties = new PropertiesHolder("systems.properties");
 		} catch (IOException e) {
 			e.printStackTrace();
-			systemsProperties = null;
+			System.exit(1);
 		}
 	}
 
@@ -28,7 +30,7 @@ public class SapAccessServiceApplication {
 			paramsProperties = new PropertiesHolder("params.properties");
 		} catch (IOException e) {
 			e.printStackTrace();
-			paramsProperties = null;
+			System.exit(1);
 		}
 	}
 
@@ -50,107 +52,60 @@ public class SapAccessServiceApplication {
 	}
 
 	public static void main(String[] args) {
-		LinkedList<String> otherArgs = new LinkedList<>();
+		Args myArgs = new Args();
 
-		boolean isConfig = false;
-		boolean addSystem = false;
-		boolean removeSystem = false;
-		int tokenLifetime;
-		String systemName = null;
-		String systemAddress = null;
+		JCommander commander = JCommander.newBuilder()
+				.addObject(myArgs)
+				.build();
 
-		try {
-			// Parse args
-			for (int i = 0; i < args.length; i++) {
-				if (args[i].equals("-config"))
-					isConfig = true;
-				else if (args[i].equals("-add"))
-					addSystem = true;
-				else if (args[i].equals("-name"))
-					systemName = args[i + 1];
-				else if (args[i].equals("-address"))
-					systemAddress = args[i + 1];
-				else if (args[i].equals("-remove"))
-					removeSystem = true;
-				else if (args[i].equals("-set_token_lifetime")) {
-					try {
-						tokenLifetime = Integer.parseInt(args[i + 1]);
-					} catch (NumberFormatException ex) {
-						System.err.println("Error while trying to parse new token lifetime value");
-						return;
-					}
+		commander.parse(args);
 
-					try {
-						paramsProperties.setProperty("TOKEN_LIFETIME", Integer.toString(tokenLifetime));
-					} catch (IOException ex) {
-						ex.printStackTrace();
-						System.err.println("Error accessing to params.properties");
-						return;
-					}
-
-				}
-				else
-					otherArgs.add(args[i]);
-			}
-		} catch (Exception ex) {
-			System.err.println("Error while trying to parse the arguments");
+		if (myArgs.isHelp()) {
+			commander.usage();
 			return;
 		}
 
-		String[] otherArgsArray = new String[otherArgs.size()];
-		for (int i = 0; i < otherArgs.size(); i++) {
-			otherArgsArray[i] = otherArgs.get(i);
-		}
-
-		// Run server in normal mode
-		if (!isConfig) {
-			if (paramsProperties == null || systemsProperties == null) {
-				System.out.println("Error: missing params.properties or systems.properties\nTry configuring the program before starting the service");
+		if (myArgs.getNewSystem() != null) {
+			String[] newSystem = myArgs.getNewSystem().split("=");
+			if (newSystem.length != 2) {
+				System.err.println("Invalid parameter to add new system, format -s <NAME>=<address>");
 				return;
 			}
-			else if (paramsProperties.getProperty("TOKEN_LIFETIME") == null) {
-				try {
-					System.out.println("No token lifetime parameter found\nSetting default token lifetime (600 secs)");
-					paramsProperties.setProperty("TOKEN_LIFETIME", "600");
-				} catch (IOException ex) {
-					System.out.println("Error setting default token lifetime at params.properties");
-					return;
-				}
-			}
-			SpringApplication.run(SapAccessServiceApplication.class, otherArgsArray);
-		}
-
-		// Add new system & exit
-		else if (addSystem && !removeSystem) {
-			if (systemName == null || systemAddress == null)
-				System.err.println("Incorrect parameters to add new system");
-			else {
-				try {
-				systemsProperties.setProperty(systemName, systemAddress);
-				} catch (IOException ex) {
-					ex.printStackTrace();
-					System.err.println("Error accessing to systems.properties");
-				}
+			try {
+				systemsProperties.setProperty(newSystem[0], newSystem[1]);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				System.err.println("Error accessing systems.properties");
+				return;
 			}
 		}
 
-		// Remove system
-		else if (removeSystem && !addSystem) {
-			if (systemName == null)
-				System.err.println("Incorrect parameters to remove new system");
-			else {
-				try {
-					systemsProperties.removeProperty(systemName);
-				} catch (IOException ex) {
-					ex.printStackTrace();
-					System.err.println("Error accessing systems.properties");
-				}
+		if (myArgs.getSystemToBeRemoved() != null) {
+			try {
+				systemsProperties.removeProperty(myArgs.getSystemToBeRemoved());
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				System.err.println("Error accessing systems.properties");
+				return;
 			}
 		}
 
-		else if (removeSystem && addSystem) {
-			System.out.println("Incorrect parameters");
+		if (myArgs.getTokenLifetime() != null) {
+			try {
+				paramsProperties.setProperty("TOKEN_LIFETIME", myArgs.getTokenLifetime().toString());
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				System.err.println("Error accessing params.properties");
+				return;
+			}
 		}
+
+		String[] otherArgsArray = new String[myArgs.getParameters().size()];
+		for (int i = 0; i < myArgs.getParameters().size(); i++) {
+			otherArgsArray[i] = myArgs.getParameters().get(i);
+		}
+
+		SpringApplication.run(SapAccessServiceApplication.class, otherArgsArray);
 
 	}
 

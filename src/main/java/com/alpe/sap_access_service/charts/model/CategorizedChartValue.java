@@ -3,10 +3,10 @@ package com.alpe.sap_access_service.charts.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class CategorizedChartValue<Tv, Tc> extends ChartValue<Tv> {
 
     private Tc category;

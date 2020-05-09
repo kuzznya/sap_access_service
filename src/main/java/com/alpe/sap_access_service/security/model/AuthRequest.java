@@ -16,8 +16,6 @@ public class AuthRequest {
     private Character language = null;
 
     public AuthRequest(String system, String username, String password) {
-        this.system = system;
-        this.username = username;
-        this.password = password;
+        this(system, username, password, null);
     }
 }

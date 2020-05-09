@@ -131,6 +131,7 @@ class TableServiceTest {
         User u = new User("TST", "u", "p");
         tableService.saveTable(u, "TEST2",
                 true, null, null, null, null, null, table);
+        table.setId(null);
         assertEquals(tableRepository.findSAPTableEntityByAccessTokenAndParams(u.getAccessToken(), "TEST2", null, null, null, null, null).getSapTableJSON(),
                 new ObjectMapper().writeValueAsString(table));
     }

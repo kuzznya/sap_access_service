@@ -8,6 +8,7 @@ import com.alpe.sap_access_service.sap.get_data.DatasetModule;
 import com.alpe.sap_access_service.tables.model.SAPTable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,27 +42,65 @@ public class TableService {
         }, tableLifetime * 1000 / 2, tableLifetime * 1000 / 2);
     }
 
+    // Get existing table by id
+    public SAPTable getTable(User user, long id) throws SOAPExceptionImpl {
+        try {
+            var entity = tableRepository.getOne(id);
+            return getTable(user, entity.getName(), entity.getLanguage(),
+                    entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames());
+        }
+        catch (SOAPExceptionImpl sex) {
+            throw new SOAPExceptionImpl();
+        }
+        catch (Exception ex) {
+            throw new RuntimeException();
+        }
+    }
+
     // Get all table
     public SAPTable getTable(User user, String name, Character language,
                              String where, String order,
                              String group, String fieldNames) throws SOAPExceptionImpl {
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
+        SAPTableEntity entity = null;
         try {
             // Try to get table from local DB
-            SAPTableEntity tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
-            if (tableEntity == null || !tableEntity.isTableFull())
+            entity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
+            if (entity == null || !entity.isTableFull())
                 throw new NullPointerException();
 
-            return objectMapper.readValue(tableEntity.getSapTableJSON(), SAPTable.class);
+            return objectMapper.readValue(entity.getSapTableJSON(), SAPTable.class);
         } catch (Exception ex) {
             // Get table from SAP
-            LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, name, null, language,
+            var dataset = getDataset(user, name, null, language,
                     where, order, group, fieldNames);
             SAPTable table = new SAPTable(dataset);
 
-            // Run saving table to local DB asynchronously
-            CompletableFuture.runAsync(() -> saveTable(user, name, true, language, where, order, group, fieldNames, table));
+            if (entity != null) {
+                // Update table
+                table.setId(entity.getId());
+                updateTable(entity, table, true);
+            }
+            else
+                // Save table to local DB
+                saveTable(user, name, true, language, where, order, group, fieldNames, table);
+
             return table;
+        }
+    }
+
+    // Get existing table by id
+    public SAPTable getTable(User user, long id, int offset, int count) throws SOAPExceptionImpl {
+        try {
+            var entity = tableRepository.getOne(id);
+            return getTable(user, entity.getName(), offset, count, entity.getLanguage(),
+                    entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames());
+        }
+        catch (SOAPExceptionImpl sex) {
+            throw new SOAPExceptionImpl();
+        }
+        catch (Exception ex) {
+            throw new RuntimeException();
         }
     }
 
@@ -79,14 +118,15 @@ public class TableService {
                 throw new NullPointerException();
 
             SAPTable table = objectMapper.readValue(tableEntity.getSapTableJSON(), SAPTable.class);
+            table.setId(tableEntity.getId());
 
             // If offset is incorrect, return null
             if (tableEntity.isTableFull() && table.getRecordsCount() < offset)
-                return new SAPTable(table.getColumns());
+                return new SAPTable(table.getId(), table.getColumns());
 
             // Load more records if table is not full (async)
             if (table.getRecordsCount() - (offset + count) < 100 && !tableEntity.isTableFull()) {
-                final SAPTableEntity finalTableEntity1 = tableEntity;
+                val finalTableEntity1 = tableEntity;
                 CompletableFuture.runAsync(() -> {
                     try {
                         loadMoreRecordsAndUpdateTable(user, name, offset + count, 100, language, where, order, group, fieldNames, finalTableEntity1);
@@ -99,32 +139,38 @@ public class TableService {
             // Get table from SAP
             LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, name, offset + count + 1,
                     language, where, order, group, fieldNames);
-            SAPTable table = new SAPTable(dataset);
-            SAPTable subTable = table.getSubTable(offset, offset + count);
+            var table = new SAPTable(dataset);
 
-            if (tableEntity == null)
-                // Save new table entity asynchronously
-                CompletableFuture.runAsync(() -> saveTable(user, name, table.getRecordsCount() < offset + count + 1,
-                        language, where, order, group, fieldNames, table)).thenRun(() -> {
-                            // Load more records
-                            try {
-                                SAPTableEntity entity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
-                                loadMoreRecordsAndUpdateTable(user, name, offset + count, 100, language, where, order, group, fieldNames, entity);
-                            } catch (Exception ignored) {}
+            if (tableEntity == null) {
+                // Save new table entity
+                saveTable(user, name, table.getRecordsCount() < offset + count + 1,
+                        language, where, order, group, fieldNames, table);
+
+                //Load more records asynchronously
+                CompletableFuture.runAsync(() -> {
+                    // Load more records
+                    try {
+//                                SAPTableEntity entity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
+                        var entity = tableRepository.getOne(table.getId());
+                        loadMoreRecordsAndUpdateTable(user, name, offset + count, 100, language, where, order, group, fieldNames, entity);
+                    } catch (Exception ignored) {}
                 });
+            }
             else {
                 // Update table entity asynchronously
-                final SAPTableEntity finalTableEntity = tableEntity;
+                table.setId(tableEntity.getId());
+
+                val finalTableEntity = tableEntity;
                 CompletableFuture.runAsync(() -> updateTable(finalTableEntity, table, table.getRecordsCount() < offset + count + 1))
                         .thenRun(() -> {
                             // Load more records
                             try {
                                 loadMoreRecordsAndUpdateTable(user, name, offset + count, 100, language, where, order, group, fieldNames, finalTableEntity);
                             } catch (Exception ignored) {}
-                });
+                        });
             }
 
-            return subTable;
+            return table.getSubTable(offset, offset + count);
         }
     }
 
@@ -133,9 +179,9 @@ public class TableService {
                                                Character language, String where, String order,
                                                String group, String fieldNames, SAPTableEntity entity) throws SOAPExceptionImpl {
         if (!entity.isTableFull()) {
-            LinkedHashMap<String, LinkedList<String>> newDataset = getDataset(user, name, offset + countOfNewRecords,
+            var newDataset = getDataset(user, name, offset + countOfNewRecords,
                     language, where, order, group, fieldNames);
-            SAPTable newSapTable = new SAPTable(newDataset);
+            var newSapTable = new SAPTable(newDataset);
             updateTable(entity, newSapTable, newSapTable.getRecordsCount() < offset + countOfNewRecords);
         }
     }
@@ -143,7 +189,7 @@ public class TableService {
     public void saveTable(User user, String name, Boolean full,
                           Character language, String where, String order,
                           String group, String fieldNames, SAPTable table) {
-        SAPTableEntity entity = new SAPTableEntity();
+        var entity = new SAPTableEntity();
         entity.setAccessToken(user.getAccessToken());
         entity.setName(name);
         entity.setTableFull(full);
@@ -154,17 +200,18 @@ public class TableService {
         entity.setFieldNames(fieldNames);
         entity.setRecordsCount(table.getRecordsCount());
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
         try {
             entity.setSapTableJSON(objectMapper.writeValueAsString(table));
             tableRepository.save(entity);
+            table.setId(entity.getId());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     public void updateTable(SAPTableEntity oldEntity, SAPTable updatedTable, Boolean full) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
         oldEntity.setUpdateDate(new Date());
         oldEntity.setRecordsCount(updatedTable.getRecordsCount());
         oldEntity.setTableFull(full);

@@ -31,7 +31,31 @@ public class TableController {
         return new ResponseEntity<>(URLs, HttpStatus.OK);
     }
 
-    @GetMapping("/table")
+    @GetMapping(value = "/table", params = {"id"})
+    ResponseEntity<?> getTable(@RequestParam Long id,
+                               @RequestParam(required = false) Integer offset,
+                               @RequestParam(required = false) Integer count,
+                               TokenAuthentication auth) {
+        User user = (User) auth.getPrincipal();
+
+        if (offset != null && offset < 0 || count != null && count < 0)
+            return new ResponseEntity<>("offset and count params cannot be less than zero", HttpStatus.BAD_REQUEST);
+
+        try {
+            if (offset == null && count == null)
+                return new ResponseEntity<>(tableService.getTable(user, id), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(tableService.getTable(user, id,
+                        Objects.requireNonNullElse(offset, 0), // If offset is not set, then get from the beginning
+                        Objects.requireNonNullElse(count, 100000) // If count is null, then return 100000 records (or all from the offset)
+                ), HttpStatus.OK);
+        } catch (SOAPExceptionImpl ex) {
+            return new ResponseEntity<>("SAP access error", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @GetMapping(value = "/table", params = {"name"})
     ResponseEntity<?> getTable(@RequestParam(name = "name") String table,
                                @RequestParam(required = false) Integer offset,
                                @RequestParam(required = false) Integer count,

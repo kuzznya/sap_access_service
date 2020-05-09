@@ -115,6 +115,13 @@ __/apps/3/*__
 
 ## Configguration
 
+Environment variables required for server:
+
+* `PORT` - server port
+* `DB_USERNAME` - username for H2 in-memory database
+* `DB_PASSWORD` - password for database
+* `REQUIRE_SSL` - is SSL protocol required
+
 ## Start server (package)
 
 `java -jar sap_access_service-<VERSION>.jar`

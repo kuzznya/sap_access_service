@@ -34,9 +34,10 @@ public class AuthController {
     }
 
     @PutMapping
-    ResponseEntity<?> refreshToken(TokenAuthentication auth) {
+    @ResponseBody
+    String refreshToken(TokenAuthentication auth) {
         usersService.getUser(auth.getToken());
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return "Token refreshed";
     }
 
     @DeleteMapping

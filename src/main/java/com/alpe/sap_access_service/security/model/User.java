@@ -46,12 +46,8 @@ public class User {
     }
 
     public User(String system, String username, String password, Character language) {
-        setSystem(system);
-        setUsername(username);
-        setPassword(password);
+        this(system, username, password);
         setLanguage(language);
-        this.lastTimeAccessed = new Date();
-        this.accessToken = new DigestUtils(SHA3_256).digestAsHex(system + username + password + id + new Date());
     }
 
     public void setAccessToken() {

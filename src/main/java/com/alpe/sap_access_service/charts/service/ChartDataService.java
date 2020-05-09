@@ -44,7 +44,7 @@ public class ChartDataService {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            ChartDataEntity entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, null, null);
+            var entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, null, null);
             if (entity == null)
                 throw new NullPointerException();
 
@@ -79,7 +79,7 @@ public class ChartDataService {
         ObjectMapper mapper = new ObjectMapper();
 
          try {
-             ChartDataEntity entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, null, captionsColumn);
+             var entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, null, captionsColumn);
              if (entity == null)
                  throw new NullPointerException();
 
@@ -111,10 +111,10 @@ public class ChartDataService {
 
     public ChartData<CategorizedChartValue<String, String>> getChartData(User user, String tableName,
                                                          String valuesColumn, String categoriesColumn, String captionsColumn) throws RuntimeException {
-        ObjectMapper mapper = new ObjectMapper();
+        var mapper = new ObjectMapper();
 
         try {
-            ChartDataEntity entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, categoriesColumn, captionsColumn);
+            var entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, categoriesColumn, captionsColumn);
             if (entity == null)
                 throw new NullPointerException();
 
@@ -151,9 +151,9 @@ public class ChartDataService {
 
     public void saveEntity(String tableName, String valuesColumn, String categoriesColumn, String captionsColumn,
                            ChartData<? extends ChartValue<?>> data) {
-        ObjectMapper mapper = new ObjectMapper();
+        var mapper = new ObjectMapper();
         try {
-            ChartDataEntity entity = new ChartDataEntity(tableName, valuesColumn, categoriesColumn, captionsColumn,
+            var entity = new ChartDataEntity(tableName, valuesColumn, categoriesColumn, captionsColumn,
                     mapper.writeValueAsString(data));
             repository.save(entity);
         } catch (Exception anotherEx) {

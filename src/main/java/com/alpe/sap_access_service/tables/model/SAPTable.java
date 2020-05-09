@@ -1,10 +1,13 @@
 package com.alpe.sap_access_service.tables.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.security.InvalidParameterException;
 import java.util.LinkedHashMap;
@@ -13,16 +16,25 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"id"})
 public class SAPTable {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Getter @Setter
+    private Long id;
+
     @Getter
-    private LinkedList<SAPTableColumn> columns = new LinkedList<>();
+    private List<SAPTableColumn> columns = new LinkedList<>();
     @Getter
-    private LinkedList<SAPTableRecord> records = new LinkedList<>();
+    private List<SAPTableRecord> records = new LinkedList<>();
+
+    public SAPTable(Long id, LinkedHashMap<String, LinkedList<String>> dataset) {
+        this(dataset);
+        this.id = id;
+    }
 
     // Create SAPTable from map of columns
     public SAPTable(LinkedHashMap<String, LinkedList<String>> dataset) {
-        LinkedHashMap<String, LinkedList<String>> map= new LinkedHashMap<>(dataset);
+        LinkedHashMap<String, LinkedList<String>> map = new LinkedHashMap<>(dataset);
         LinkedList<String> systemNames;
         LinkedList<String> textNames;
         LinkedList<String> columnLen;
@@ -64,12 +76,17 @@ public class SAPTable {
         }
     }
 
-    public SAPTable(LinkedList<SAPTableColumn> columns) {
+    public SAPTable(List<SAPTableColumn> columns) {
         this.columns = columns;
         this.records = new LinkedList<>();
     }
 
-    public void setColumns(LinkedList<SAPTableColumn> columns) {
+    public SAPTable(Long id, List<SAPTableColumn> columns) {
+        this(columns);
+        this.id = id;
+    }
+
+    public void setColumns(List<SAPTableColumn> columns) {
         records.clear();
         this.columns = columns;
     }
@@ -84,7 +101,7 @@ public class SAPTable {
         return columns.size();
     }
 
-    public void addRecords(LinkedList<SAPTableRecord> records) {
+    public void addRecords(List<SAPTableRecord> records) {
         for (SAPTableRecord rec : records) {
             for (SAPTableColumn col : columns) {
                 if (!rec.getData().containsKey(col.getSystemName())) {
@@ -95,7 +112,7 @@ public class SAPTable {
         this.records.addAll(records);
     }
 
-    public void setRecords(LinkedList<SAPTableRecord> records) {
+    public void setRecords(List<SAPTableRecord> records) {
         deleteRecords();
         addRecords(records);
     }
@@ -107,7 +124,7 @@ public class SAPTable {
     }
 
     public SAPTable getSubTable(int recordsFrom, int recordsTo) {
-        SAPTable subTable = new SAPTable(columns);
+        SAPTable subTable = new SAPTable(id, columns);
         List<SAPTableRecord> subRecords = getRecords(recordsFrom, recordsTo);
         if (subRecords == null)
             return subTable;

@@ -28,8 +28,7 @@ public class AppsController {
     @GetMapping("/apps")
     @ResponseBody
     List<SAPApplication> getApplications(TokenAuthentication auth) {
-        User user;
-        user = (User) auth.getPrincipal();
+        User user = (User) auth.getPrincipal();
         try {
             return appsService.getAvailableApplications(user);
         } catch (SOAPExceptionImpl ex) {

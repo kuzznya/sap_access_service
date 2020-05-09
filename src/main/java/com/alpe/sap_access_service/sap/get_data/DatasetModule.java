@@ -19,7 +19,7 @@ public class DatasetModule {
         SapMap sm = new SapMap(table, fieldsQuan, language, where, order, group, fieldNames);
         String systemAddress = SapAccessServiceApplication.getSystemAddress(system);
         sm.dataFill(systemAddress, username, password);
-        LinkedHashMap<String, LinkedList<String>> map = sm.getDataMap();
+        var map = sm.getDataMap();
         map.put("columnLen", sm.getColumnLeng());
         map.put("fieldNames", sm.getFieldName());
         map.put("dataTypes", sm.getDataType());

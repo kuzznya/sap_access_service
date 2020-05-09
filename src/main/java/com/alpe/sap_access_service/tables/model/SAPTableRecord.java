@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.EqualsAndHashCode;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Objects;
 
 @EqualsAndHashCode
 public class SAPTableRecord {
     // Map serializing as separate fields
-    private LinkedHashMap<String, String> data = new LinkedHashMap<>();
+    private HashMap<String, String> data = new LinkedHashMap<>();
 
     @JsonAnySetter
     public void addData(String key, String value) {
@@ -18,7 +18,7 @@ public class SAPTableRecord {
     }
 
     @JsonAnyGetter
-    public LinkedHashMap<String, String> getData() {
+    public HashMap<String, String> getData() {
         return data;
     }
 }

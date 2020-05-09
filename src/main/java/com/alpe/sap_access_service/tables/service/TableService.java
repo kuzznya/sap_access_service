@@ -21,15 +21,16 @@ public class TableService {
 
     DatasetModule datasetModule;
 
-    @Autowired
-    private TableRepository tableRepository;
+    private TableRepository repository;
 
     private int tableLifetime;
 
     private Timer tableCleaner;
 
-    public TableService(@Autowired DatasetModule datasetModule) {
+    public TableService(@Autowired DatasetModule datasetModule,
+                        @Autowired TableRepository repository) {
         this.datasetModule = datasetModule;
+        this.repository = repository;
         tableLifetime = SapAccessServiceApplication.getTokenLifetime();
 
         // Start deletion of old tables on timer event
@@ -45,7 +46,7 @@ public class TableService {
     // Get existing table by id
     public SAPTable getTable(User user, long id) throws SOAPExceptionImpl {
         try {
-            var entity = tableRepository.getOne(id);
+            var entity = repository.getOne(id);
             return getTable(user, entity.getName(), entity.getLanguage(),
                     entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames());
         }
@@ -65,7 +66,7 @@ public class TableService {
         SAPTableEntity entity = null;
         try {
             // Try to get table from local DB
-            entity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
+            entity = repository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
             if (entity == null || !entity.isTableFull())
                 throw new NullPointerException();
 
@@ -92,7 +93,7 @@ public class TableService {
     // Get existing table by id
     public SAPTable getTable(User user, long id, int offset, int count) throws SOAPExceptionImpl {
         try {
-            var entity = tableRepository.getOne(id);
+            var entity = repository.getOne(id);
             return getTable(user, entity.getName(), offset, count, entity.getLanguage(),
                     entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames());
         }
@@ -112,7 +113,7 @@ public class TableService {
         SAPTableEntity tableEntity = null;
         try {
             // Try to get table from local DB
-            tableEntity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
+            tableEntity = repository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
             // If no such table in DB or table in DB has less records than required
             if (tableEntity == null || tableEntity.getRecordsCount() < offset + count && !tableEntity.isTableFull())
                 throw new NullPointerException();
@@ -151,7 +152,7 @@ public class TableService {
                     // Load more records
                     try {
 //                                SAPTableEntity entity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
-                        var entity = tableRepository.getOne(table.getId());
+                        var entity = repository.getOne(table.getId());
                         loadMoreRecordsAndUpdateTable(user, name, offset + count, 100, language, where, order, group, fieldNames, entity);
                     } catch (Exception ignored) {}
                 });
@@ -203,7 +204,7 @@ public class TableService {
         var objectMapper = new ObjectMapper();
         try {
             entity.setSapTableJSON(objectMapper.writeValueAsString(table));
-            tableRepository.save(entity);
+            repository.save(entity);
             table.setId(entity.getId());
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -217,7 +218,7 @@ public class TableService {
         oldEntity.setTableFull(full);
         try {
             oldEntity.setSapTableJSON(objectMapper.writeValueAsString(updatedTable));
-            tableRepository.save(oldEntity);
+            repository.save(oldEntity);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -235,9 +236,11 @@ public class TableService {
                 table, recordsCountStr, language, where, order, group, fieldNames);
     }
 
+
+
     public void deleteOldTables() {
         try {
-            tableRepository.deleteOldSAPTableEntities(tableLifetime);
+            repository.deleteOldSAPTableEntities(tableLifetime);
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }

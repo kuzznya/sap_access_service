@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedList;
-import java.util.Objects;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategorizedChartData<Tv, Tc> implements ChartData<CategorizedChartValue<Tv, Tc>> {
-    LinkedList<CategorizedChartValue<Tv, Tc>> data;
+    List<CategorizedChartValue<Tv, Tc>> data;
 }

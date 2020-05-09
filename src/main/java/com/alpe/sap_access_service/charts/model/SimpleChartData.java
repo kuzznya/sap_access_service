@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedList;
-import java.util.Objects;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class SimpleChartData<Tv> implements ChartData<ChartValue<Tv>> {
-    LinkedList<ChartValue<Tv>> data;
+    List<ChartValue<Tv>> data;
 }

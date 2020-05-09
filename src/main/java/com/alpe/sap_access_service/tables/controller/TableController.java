@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -24,11 +25,12 @@ public class TableController {
     }
 
     @GetMapping
-    ResponseEntity<?> getURLs() {
-        LinkedList<String> URLs = new LinkedList<>();
+    @ResponseBody
+    List<String> getURLs() {
+        var URLs = new LinkedList<String>();
         URLs.add("/apps/1/table");
         URLs.add("/apps/1/dataset");
-        return new ResponseEntity<>(URLs, HttpStatus.OK);
+        return URLs;
     }
 
     @GetMapping(value = "/table", params = {"id"})
@@ -99,8 +101,7 @@ public class TableController {
             return new ResponseEntity<>(tableService.getDataset(user, table,
                     recordsCount, language, where, order, group, fieldsNames), HttpStatus.OK);
         } catch (SOAPExceptionImpl ex) {
-            ex.setStackTrace(new StackTraceElement[0]);
-            return new ResponseEntity<Exception>(ex, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("SAP access error", HttpStatus.BAD_REQUEST);
         }
     }
 

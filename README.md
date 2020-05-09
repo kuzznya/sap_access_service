@@ -13,8 +13,6 @@ The purpose of this project is to provide the access to SAP system through our A
 
 Response type: JSON
 
-For HTTPS connection self-signed certificate is used now
-
 *The project is under development*
 
 Latest version is 0.3.3
@@ -54,7 +52,7 @@ Authorization token needs to be placed as `Authorization` header of the request 
 
 * **GET /auth** - returns HTTP status "OK" (200) if active user with such access token exists  
 
-### App 1
+### App 1 - Table data
 
 __/apps/1/*__
 
@@ -92,33 +90,58 @@ __/apps/1/*__
   | `outputLen`  | max number of symbols for field       |
   | `decimals`   | number of floating decimals           |
 
+## App 3 - Chart data
+
+__/apps/3/*__
+
+* **GET /data** - get chart data  
+  Get data from SAP & format it as list of records (points):
+  `{value, category, caption}`
+  
+  | Parameter     | Description                 | Required |
+  |---------------|-----------------------------|----------|
+  | `table`       | Name of the table           | true     |
+  | `values`      | Values column               | true     |
+  | `categories`  | Categories column           | false    |
+  | `captions`    | Captions column             | false    |
+
 *The list will be replenished*
 
 ## Applications
 
-1. Table view
-2. Add information from QR to SAP
+1. Table data
+2. Add information from QR to SAP (currently nonexistent)
+3. Chart data
 
-## Versions
+## Configguration
 
-[View CHANGELOG](./builds/CHANGELOG.md)
+Environment variables required for server:
 
-## Configuration
+* `PORT` - server port
+* `DB_USERNAME` - username for H2 in-memory database
+* `DB_PASSWORD` - password for database
+* `REQUIRE_SSL` - is SSL protocol required
 
-All configuration could be done from the console
+## Start server (package)
+
+`java -jar sap_access_service-<VERSION>.jar`
+
+## Start server (dev, from source code)
+
+Maven required
+
+`mvn spring-boot:run`
+
+## Setup
+
+These command line args perform configuration & then start server
 
 * Add new system:  
-  `-config -add -name [system name] -address [address]`
+  `-add <NAME>=<address>`
 * Remove system:  
-  `-config -remove -name`
-* Set appUser lifetime:  
-  `-config -set_session_lifetime`
-
-
-## Program launch
-
-* Test some features (for development only) (now does nothing):  
-  `-test`
+  `-remove <NAME>`
+* Set token lifetime (& also cached table & chart data)  
+  `-token_lifetime`/`-tl` `<TIME (seconds)`
 
 ## Additional information
 

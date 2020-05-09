@@ -43,4 +43,12 @@ public class ChartDataController {
         User user = (User) auth.getPrincipal();
         return chartDataService.getChartData(user, table, valuesColumn, categoriesColumn, captionsColumn);
     }
+
+    @GetMapping(path = "/data", params = {"id"})
+    @ResponseBody
+    ChartData<?> getChartData(@RequestParam Long id,
+                              TokenAuthentication auth) {
+        User user = (User) auth.getPrincipal();
+        return chartDataService.getChartData(user, id);
+    }
 }

@@ -40,8 +40,26 @@ public class ChartDataService {
         }, chartLifetime * 1000 / 2, chartLifetime * 1000 / 2);
     }
 
+    public ChartData<? extends ChartValue<?>> getChartData(User user, long id) throws RuntimeException {
+        ChartDataEntity entity;
+        try {
+            entity = repository.getOne(id);
+            System.out.println(entity);
+        } catch (Exception ex) {
+            throw new RuntimeException();
+        }
+        System.out.println(entity);
+        if (entity.getCategoriesColumn() == null && entity.getCaptionsColumn() == null)
+            return getChartData(user, entity.getTableName(), entity.getValuesColumn());
+        else if (entity.getCategoriesColumn() != null && entity.getCaptionsColumn() == null)
+            return getChartData(user, entity.getTableName(), entity.getValuesColumn(), entity.getCategoriesColumn());
+        else
+            return getChartData(user, entity.getTableName(), entity.getValuesColumn(), entity.getCategoriesColumn(),
+                    entity.getCaptionsColumn());
+    }
+
     public ChartData<ChartValue<String>> getChartData(User user, String tableName, String valuesColumn) throws RuntimeException {
-        ObjectMapper mapper = new ObjectMapper();
+        var mapper = new ObjectMapper();
 
         try {
             var entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, null, null);
@@ -51,7 +69,9 @@ public class ChartDataService {
             CompletableFuture.runAsync(() -> updateEntity(entity));
 
             JavaType type = mapper.getTypeFactory().constructParametricType(SimpleChartData.class, String.class);
-            return mapper.readValue(entity.getChartData(), type);
+            ChartData<ChartValue<String>> data = mapper.readValue(entity.getChartData(), type);
+            data.setId(entity.getId());
+            return data;
 
         } catch (Exception ex) {
 
@@ -68,7 +88,7 @@ public class ChartDataService {
 
             ChartData<ChartValue<String>> data = ChartDataFactory.createChartData(tableData.get(valuesColumn));
 
-            CompletableFuture.runAsync(() -> saveEntity(tableName, valuesColumn, null, null, data));
+            saveEntity(tableName, valuesColumn, null, null, data);
 
             return data;
         }
@@ -86,7 +106,9 @@ public class ChartDataService {
              CompletableFuture.runAsync(() -> updateEntity(entity));
 
              JavaType type = mapper.getTypeFactory().constructParametricType(SimpleChartData.class, String.class);
-             return mapper.readValue(entity.getChartData(), type);
+             ChartData<ChartValue<String>> data = mapper.readValue(entity.getChartData(), type);
+             data.setId(entity.getId());
+             return data;
 
          } catch (Exception ex) {
 
@@ -102,7 +124,7 @@ public class ChartDataService {
 
              ChartData<ChartValue<String>> data = ChartDataFactory.createChartData(tableData.get(valuesColumn), tableData.get(captionsColumn));
 
-             CompletableFuture.runAsync(() -> saveEntity(tableName, valuesColumn, null, captionsColumn, data));
+             saveEntity(tableName, valuesColumn, null, captionsColumn, data);
 
              return data;
          }
@@ -122,7 +144,9 @@ public class ChartDataService {
 
             JavaType type = mapper.getTypeFactory().constructParametricType(CategorizedChartData.class,
                     String.class, String.class);
-            return mapper.readValue(entity.getChartData(), type);
+            ChartData<CategorizedChartValue<String, String>> data = mapper.readValue(entity.getChartData(), type);
+            data.setId(entity.getId());
+            return data;
 
         } catch (Exception ex) {
 
@@ -143,7 +167,7 @@ public class ChartDataService {
             else
                 data = ChartDataFactory.createChartData(tableData.get(valuesColumn), tableData.get(categoriesColumn), tableData.get(captionsColumn));
 
-            CompletableFuture.runAsync(() -> saveEntity(tableName, valuesColumn, categoriesColumn, captionsColumn, data));
+            saveEntity(tableName, valuesColumn, categoriesColumn, captionsColumn, data);
 
             return data;
         }
@@ -156,6 +180,7 @@ public class ChartDataService {
             var entity = new ChartDataEntity(tableName, valuesColumn, categoriesColumn, captionsColumn,
                     mapper.writeValueAsString(data));
             repository.save(entity);
+            data.setId(entity.getId());
         } catch (Exception anotherEx) {
             System.err.println(anotherEx.getMessage());
         }

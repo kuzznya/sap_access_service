@@ -18,11 +18,12 @@ public class UsersService {
 
     private AuthService authService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private UserRepository repository;
 
-    public UsersService(@Autowired AuthService authService) {
+    public UsersService(@Autowired AuthService authService,
+                        @Autowired UserRepository repository) {
         this.authService = authService;
+        this.repository = repository;
 
         // Run deletion of inactive users on timer event
         (new Timer()).schedule(new TimerTask() {
@@ -41,7 +42,7 @@ public class UsersService {
 
     public String createUser(String system, String username, String password, Character language) throws AccessDeniedException {
         User user = new User(system, username, password, language);
-        userRepository.save(user);
+        repository.save(user);
         if (!authService.auth(user))
             throw new AccessDeniedException("Cannot authorize user in SAP");
         return user.getAccessToken();
@@ -49,10 +50,10 @@ public class UsersService {
 
     public User getUser(String accessToken) throws NoSuchElementException {
         try {
-            User user = userRepository.getUserByAccessToken(accessToken);
+            User user = repository.getUserByAccessToken(accessToken);
             user.setLastTimeAccessed(new Date());
             // Asynchronously update lastTimeAccessed field in DB
-            CompletableFuture.runAsync(() -> userRepository.save(user));
+            CompletableFuture.runAsync(() -> repository.save(user));
             return user;
         } catch (Exception ex) {
             throw new NoSuchElementException("User not found");
@@ -63,13 +64,13 @@ public class UsersService {
         User user = getUser(accessToken);
         // Update lastTimeAccessedField in DB
         user.setLastTimeAccessed(new Date());
-        userRepository.save(user);
+        repository.save(user);
     }
 
     public void deleteUser(String accessToken) throws NoSuchElementException {
         // Find user with such access token and delete it
         try {
-            userRepository.delete(userRepository.getUserByAccessToken(accessToken));
+            repository.delete(repository.getUserByAccessToken(accessToken));
         } catch (Exception ex) {
             throw new NoSuchElementException();
         }
@@ -77,7 +78,7 @@ public class UsersService {
 
     public void deleteInactiveUsers() {
         // Delete users that were inactive more seconds than TokenLifetime value
-        userRepository.deleteInactiveUsers(SapAccessServiceApplication.getTokenLifetime());
+        repository.deleteInactiveUsers(SapAccessServiceApplication.getTokenLifetime());
     }
 
 }

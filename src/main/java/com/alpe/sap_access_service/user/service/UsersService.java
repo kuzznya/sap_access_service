@@ -38,10 +38,10 @@ public class UsersService {
 
     public String createUser(User user)
             throws AccessDeniedException {
-        user.generateAccessToken();
-        repository.save(user);
         if (!authService.auth(user))
             throw new AccessDeniedException("Cannot authorize user in SAP");
+        user.generateAccessToken();
+        repository.save(user);
         return user.getAccessToken();
     }
 

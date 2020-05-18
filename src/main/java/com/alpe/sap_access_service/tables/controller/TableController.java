@@ -1,13 +1,11 @@
 package com.alpe.sap_access_service.tables.controller;
 
-import com.alpe.sap_access_service.security.model.User;
-import com.alpe.sap_access_service.security.model.TokenAuthentication;
+import com.alpe.sap_access_service.user.model.TokenAuthentication;
 import com.alpe.sap_access_service.tables.model.SAPTable;
 import com.alpe.sap_access_service.tables.service.TableService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 

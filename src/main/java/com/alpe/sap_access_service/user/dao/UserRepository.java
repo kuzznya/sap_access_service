@@ -1,6 +1,6 @@
-package com.alpe.sap_access_service.security.dao;
+package com.alpe.sap_access_service.user.dao;
 
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

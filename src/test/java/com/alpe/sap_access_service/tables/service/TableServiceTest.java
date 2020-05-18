@@ -1,10 +1,10 @@
 package com.alpe.sap_access_service.tables.service;
 
-import com.alpe.sap_access_service.security.dao.UserRepository;
+import com.alpe.sap_access_service.user.dao.UserRepository;
 import com.alpe.sap_access_service.tables.model.SAPTable;
 import com.alpe.sap_access_service.tables.model.SAPTableEntity;
 import com.alpe.sap_access_service.tables.model.SAPTableRecord;
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.model.User;
 import com.alpe.sap_access_service.sap.get_data.DatasetModule;
 import com.alpe.sap_access_service.tables.dao.TableRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;

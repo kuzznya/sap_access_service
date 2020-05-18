@@ -1,10 +1,8 @@
-package com.alpe.sap_access_service.security.model;
+package com.alpe.sap_access_service.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor

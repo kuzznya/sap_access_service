@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.apps.service;
 
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.model.User;
 import com.alpe.sap_access_service.sap.get_data.DatasetModule;
 import com.alpe.sap_access_service.apps.model.SAPApplication;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;

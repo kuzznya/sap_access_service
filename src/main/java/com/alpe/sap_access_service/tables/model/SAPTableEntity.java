@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.tables.model;
 
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.model.User;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;

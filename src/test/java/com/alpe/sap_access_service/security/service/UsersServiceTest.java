@@ -1,7 +1,9 @@
 package com.alpe.sap_access_service.security.service;
 
-import com.alpe.sap_access_service.security.model.User;
-import com.alpe.sap_access_service.security.dao.UserRepository;
+import com.alpe.sap_access_service.user.model.User;
+import com.alpe.sap_access_service.user.dao.UserRepository;
+import com.alpe.sap_access_service.user.service.AuthService;
+import com.alpe.sap_access_service.user.service.UsersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -69,19 +71,11 @@ class UsersServiceTest {
     }
 
     @Test
-    void refreshUser() {
-        User testUser = new User("TST", "user", "pass");
-        userRepository.save(testUser);
-        assertDoesNotThrow(() -> usersService.refreshUser(testUser.getAccessToken()));
-        assertThrows(NoSuchElementException.class, () -> usersService.refreshUser("0000"));
-    }
-
-    @Test
     void deleteUser() {
         User testUser = new User("TST", "user", "pass");
         userRepository.save(testUser);
-        assertDoesNotThrow(() -> usersService.deleteUser(testUser.getAccessToken()));
-        assertThrows(NoSuchElementException.class, () -> usersService.deleteUser(testUser.getAccessToken()));
+        assertDoesNotThrow(() -> usersService.deleteUser(testUser));
+        assertThrows(NoSuchElementException.class, () -> usersService.deleteUser(testUser));
     }
 
     @Test

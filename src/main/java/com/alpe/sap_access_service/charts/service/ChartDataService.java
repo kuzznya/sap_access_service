@@ -4,7 +4,7 @@ import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.charts.dao.ChartDataRepository;
 import com.alpe.sap_access_service.charts.model.*;
 import com.alpe.sap_access_service.sap.get_data.DatasetModule;
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.model.User;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;

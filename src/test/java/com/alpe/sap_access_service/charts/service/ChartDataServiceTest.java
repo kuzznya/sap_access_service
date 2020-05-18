@@ -4,7 +4,7 @@ import com.alpe.sap_access_service.charts.model.CategorizedChartValue;
 import com.alpe.sap_access_service.charts.model.ChartData;
 import com.alpe.sap_access_service.charts.model.ChartValue;
 import com.alpe.sap_access_service.sap.get_data.DatasetModule;
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.model.User;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 

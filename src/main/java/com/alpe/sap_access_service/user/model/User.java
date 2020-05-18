@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.security.model;
+package com.alpe.sap_access_service.user.model;
 
 import lombok.*;
 import org.apache.commons.codec.digest.DigestUtils;

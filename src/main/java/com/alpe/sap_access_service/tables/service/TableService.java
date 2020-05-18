@@ -3,7 +3,7 @@ package com.alpe.sap_access_service.tables.service;
 import com.alpe.sap_access_service.SapAccessServiceApplication;
 import com.alpe.sap_access_service.tables.dao.TableRepository;
 import com.alpe.sap_access_service.tables.model.SAPTableEntity;
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.model.User;
 import com.alpe.sap_access_service.sap.get_data.DatasetModule;
 import com.alpe.sap_access_service.tables.model.SAPTable;
 import com.fasterxml.jackson.databind.ObjectMapper;

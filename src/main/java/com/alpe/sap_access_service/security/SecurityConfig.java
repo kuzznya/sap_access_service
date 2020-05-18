@@ -1,7 +1,6 @@
 package com.alpe.sap_access_service.security;
 
-import com.alpe.sap_access_service.security.service.TokenService;
-import com.alpe.sap_access_service.security.service.UsersService;
+import com.alpe.sap_access_service.user.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

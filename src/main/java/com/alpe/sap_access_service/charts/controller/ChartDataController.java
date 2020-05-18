@@ -2,10 +2,8 @@ package com.alpe.sap_access_service.charts.controller;
 
 import com.alpe.sap_access_service.charts.model.ChartData;
 import com.alpe.sap_access_service.charts.service.ChartDataService;
-import com.alpe.sap_access_service.security.model.TokenAuthentication;
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.model.TokenAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

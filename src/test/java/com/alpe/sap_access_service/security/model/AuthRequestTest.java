@@ -1,6 +1,6 @@
 package com.alpe.sap_access_service.security.model;
 
-import com.alpe.sap_access_service.security.model.AuthRequest;
+import com.alpe.sap_access_service.user.model.AuthRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,8 +1,8 @@
-package com.alpe.sap_access_service.security.service;
+package com.alpe.sap_access_service.user.service;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
-import com.alpe.sap_access_service.security.dao.UserRepository;
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.dao.UserRepository;
+import com.alpe.sap_access_service.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -36,11 +36,13 @@ public class UsersService {
                 1000 * 120); // If there will be too many users, the period should be increased
     }
 
-    public String createUser(String system, String username, String password) throws AccessDeniedException {
+    public String createUser(String system, String username, String password)
+            throws AccessDeniedException {
         return createUser(system, username, password, null);
     }
 
-    public String createUser(String system, String username, String password, Character language) throws AccessDeniedException {
+    public String createUser(String system, String username, String password, Character language)
+            throws AccessDeniedException {
         User user = new User(system, username, password, language);
         repository.save(user);
         if (!authService.auth(user))
@@ -60,20 +62,11 @@ public class UsersService {
         }
     }
 
-    public void refreshUser(String accessToken) throws NoSuchElementException {
-        User user = getUser(accessToken);
-        // Update lastTimeAccessedField in DB
-        user.setLastTimeAccessed(new Date());
-        repository.save(user);
-    }
-
-    public void deleteUser(String accessToken) throws NoSuchElementException {
+    public void deleteUser(User user) throws NoSuchElementException {
         // Find user with such access token and delete it
-        try {
-            repository.delete(repository.getUserByAccessToken(accessToken));
-        } catch (Exception ex) {
+        if (!repository.existsById(user.getId()))
             throw new NoSuchElementException();
-        }
+        repository.delete(user);
     }
 
     public void deleteInactiveUsers() {

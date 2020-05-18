@@ -1,7 +1,8 @@
-package com.alpe.sap_access_service.security.service;
+package com.alpe.sap_access_service.security;
 
-import com.alpe.sap_access_service.security.model.TokenAuthentication;
-import com.alpe.sap_access_service.security.model.User;
+import com.alpe.sap_access_service.user.model.TokenAuthentication;
+import com.alpe.sap_access_service.user.model.User;
+import com.alpe.sap_access_service.user.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

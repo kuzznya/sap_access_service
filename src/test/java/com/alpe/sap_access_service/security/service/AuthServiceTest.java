@@ -1,8 +1,8 @@
 package com.alpe.sap_access_service.security.service;
 
-import com.alpe.sap_access_service.security.model.User;
-import com.alpe.sap_access_service.security.service.AuthService;
+import com.alpe.sap_access_service.user.model.User;
 import com.alpe.sap_access_service.sap.get_data.DatasetModule;
+import com.alpe.sap_access_service.user.service.AuthService;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

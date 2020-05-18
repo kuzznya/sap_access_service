@@ -1,7 +1,8 @@
 package com.alpe.sap_access_service.security.service;
 
-import com.alpe.sap_access_service.security.model.User;
-import com.alpe.sap_access_service.security.dao.UserRepository;
+import com.alpe.sap_access_service.security.TokenService;
+import com.alpe.sap_access_service.user.model.User;
+import com.alpe.sap_access_service.user.dao.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

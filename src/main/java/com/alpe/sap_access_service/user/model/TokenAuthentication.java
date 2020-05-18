@@ -1,6 +1,5 @@
-package com.alpe.sap_access_service.security.model;
+package com.alpe.sap_access_service.user.model;
 
-import com.alpe.sap_access_service.security.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 

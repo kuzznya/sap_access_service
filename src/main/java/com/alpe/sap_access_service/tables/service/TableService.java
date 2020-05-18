@@ -66,7 +66,8 @@ public class TableService {
         SAPTableEntity entity = null;
         try {
             // Try to get table from local DB
-            entity = repository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
+            entity = repository.findByUserIdAndNameAndLanguageAndWhereAndOrderAndGroupAndFieldNames(user.getId(),
+                    name, language, where, order, group, fieldNames);
             if (entity == null || !entity.isTableFull())
                 throw new NullPointerException();
 
@@ -113,7 +114,8 @@ public class TableService {
         SAPTableEntity tableEntity = null;
         try {
             // Try to get table from local DB
-            tableEntity = repository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
+            tableEntity = repository.findByUserIdAndNameAndLanguageAndWhereAndOrderAndGroupAndFieldNames(user.getId(),
+                    name, language, where, order, group, fieldNames);
             // If no such table in DB or table in DB has less records than required
             if (tableEntity == null || tableEntity.getRecordsCount() < offset + count && !tableEntity.isTableFull())
                 throw new NullPointerException();
@@ -191,7 +193,7 @@ public class TableService {
                           Character language, String where, String order,
                           String group, String fieldNames, SAPTable table) {
         var entity = new SAPTableEntity();
-        entity.setAccessToken(user.getAccessToken());
+        entity.setUser(user);
         entity.setName(name);
         entity.setTableFull(full);
         entity.setLanguage(language);

@@ -129,17 +129,20 @@ class TableServiceTest {
     void saveTable() throws JsonProcessingException {
         SAPTable table = new SAPTable(testTable);
         User u = new User("TST", "u", "p");
+        u.setId(100);
         tableService.saveTable(u, "TEST2",
                 true, null, null, null, null, null, table);
         table.setId(null);
-        assertEquals(tableRepository.findSAPTableEntityByAccessTokenAndParams(u.getAccessToken(), "TEST2", null, null, null, null, null).getSapTableJSON(),
+        assertEquals(tableRepository.findByUserIdAndNameAndLanguageAndWhereAndOrderAndGroupAndFieldNames(u.getId(), "TEST2", null, null, null, null, null).getSapTableJSON(),
                 new ObjectMapper().writeValueAsString(table));
     }
 
     @Test
     void updateTable() throws JsonProcessingException {
         SAPTableEntity entity = new SAPTableEntity();
-        entity.setAccessToken("token");
+        var user = new User();
+        user.setId(100);
+        entity.setUser(user);
         entity.setName("TEST");
 
         SAPTable table = new SAPTable(testTable);
@@ -155,7 +158,7 @@ class TableServiceTest {
         table.addRecords(records);
 
         tableService.updateTable(entity, table, true);
-        assertEquals(tableRepository.findSAPTableEntityByAccessTokenAndParams("token", entity.getName(), entity.getLanguage(), entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames()).getSapTableJSON(), entity.getSapTableJSON());
+        assertEquals(tableRepository.findByUserIdAndNameAndLanguageAndWhereAndOrderAndGroupAndFieldNames(user.getId(), entity.getName(), entity.getLanguage(), entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames()).getSapTableJSON(), entity.getSapTableJSON());
     }
 
     @Test
@@ -168,20 +171,23 @@ class TableServiceTest {
 
     @Test
     void deleteOldTables() {
+        var u = new User();
+        u.setId(100);
+
         SAPTableEntity entity1 = new SAPTableEntity();
-        entity1.setAccessToken("token");
+        entity1.setUser(u);
         entity1.setName("TEST1");
         entity1.setCreationDate(new Date(0));
         entity1.setUpdateDate(new Date(0));
 
         SAPTableEntity entity2 = new SAPTableEntity();
-        entity2.setAccessToken("token");
+        entity2.setUser(u);
         entity2.setName("TEST2");
         entity2.setCreationDate(new Date(0));
         entity2.setUpdateDate(new Date(0));
 
         SAPTableEntity entity3 = new SAPTableEntity();
-        entity3.setAccessToken("token");
+        entity3.setUser(u);
         entity3.setName("TEST3");
         entity3.setCreationDate(new Date());
         entity3.setUpdateDate(new Date());

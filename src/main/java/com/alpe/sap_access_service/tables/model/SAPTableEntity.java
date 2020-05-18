@@ -1,5 +1,6 @@
 package com.alpe.sap_access_service.tables.model;
 
+import com.alpe.sap_access_service.security.model.User;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -16,8 +17,9 @@ public class SAPTableEntity {
     @GeneratedValue
     private Long id;
 
-    @Column
-    private String accessToken;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "tableName")
     private String name;

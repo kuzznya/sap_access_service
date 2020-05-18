@@ -30,7 +30,7 @@ class TokenServiceTest {
     void authenticate() {
         User testUser1 = new User("TST", "u", "p");
         userRepository.save(testUser1);
-        assertDoesNotThrow(() -> assertEquals(tokenService.authenticate(testUser1.getAccessToken()).getPrincipal(), testUser1));
+        assertDoesNotThrow(() -> assertEquals(tokenService.authenticate(testUser1.getAccessToken()).getUser(), testUser1));
         assertThrows(CredentialException.class, () -> tokenService.authenticate("0000"));
     }
 }

@@ -1,6 +1,7 @@
 package com.alpe.sap_access_service.common.controller;
 
 import com.alpe.sap_access_service.SapAccessServiceApplication;
+import com.alpe.sap_access_service.util.Message;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -18,8 +19,8 @@ public class APIController {
 
     @GetMapping("/token-lifetime")
     @ResponseBody
-    int getTokenLifetime() {
-        return SapAccessServiceApplication.getTokenLifetime();
+    Message getTokenLifetime() {
+        return new Message("tokenLifetime", SapAccessServiceApplication.getTokenLifetime());
     }
 
 }

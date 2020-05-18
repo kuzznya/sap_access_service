@@ -1,6 +1,5 @@
 package com.alpe.sap_access_service.user.controller;
 
-import com.alpe.sap_access_service.user.model.AuthRequest;
 import com.alpe.sap_access_service.user.model.TokenAuthentication;
 import com.alpe.sap_access_service.user.model.User;
 import com.alpe.sap_access_service.user.service.UsersService;
@@ -24,13 +23,9 @@ public class AuthController {
 
     @PostMapping
     @ResponseBody
-    Message authorize(@RequestBody AuthRequest authRequest) {
-        String system = authRequest.getSystem();
-        String username = authRequest.getUsername();
-        String password = authRequest.getPassword();
-        Character language = authRequest.getLanguage();
+    Message authorize(@RequestBody User user) {
         try {
-            String accessToken = usersService.createUser(system, username, password, language);
+            String accessToken = usersService.createUser(user);
             return new Message("accessToken", accessToken);
         } catch (AccessDeniedException ex) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");

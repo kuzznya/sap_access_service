@@ -36,14 +36,9 @@ public class UsersService {
                 1000 * 120); // If there will be too many users, the period should be increased
     }
 
-    public String createUser(String system, String username, String password)
+    public String createUser(User user)
             throws AccessDeniedException {
-        return createUser(system, username, password, null);
-    }
-
-    public String createUser(String system, String username, String password, Character language)
-            throws AccessDeniedException {
-        User user = new User(system, username, password, language);
+        user.generateAccessToken();
         repository.save(user);
         if (!authService.auth(user))
             throw new AccessDeniedException("Cannot authorize user in SAP");

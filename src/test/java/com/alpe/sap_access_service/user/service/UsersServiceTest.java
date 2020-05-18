@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.security.service;
+package com.alpe.sap_access_service.user.service;
 
 import com.alpe.sap_access_service.user.model.User;
 import com.alpe.sap_access_service.user.dao.UserRepository;
@@ -37,8 +37,8 @@ class UsersServiceTest {
 
     @Test
     void createUser() {
-        String accessToken1 = usersService.createUser("SYS", "username", "password", 'R');
-        String accessToken2 = usersService.createUser("SYS2", "u", "p");
+        String accessToken1 = usersService.createUser(new User("SYS", "username", "password", 'R'));
+        String accessToken2 = usersService.createUser(new User("SYS2", "u", "p"));
         User user1 = userRepository.getUserByAccessToken(accessToken1);
         assertEquals(user1.getSystem(), "SYS");
         assertEquals(user1.getUsername(), "username");
@@ -54,12 +54,12 @@ class UsersServiceTest {
             Thread.sleep(1000);
         } catch (Exception ignored) {}
 
-        assertDoesNotThrow(() -> usersService.createUser("SYS2", "u", "p"));
+        assertDoesNotThrow(() -> usersService.createUser(new User("SYS2", "u", "p")));
 
-        assertThrows(NullPointerException.class, () -> usersService.createUser(null, "u", null, 'R'));
+        assertThrows(NullPointerException.class, () -> usersService.createUser(new User(null, "u", null, 'R')));
 
         Mockito.when(authService.auth(Mockito.any())).thenReturn(false);
-        assertThrows(AccessDeniedException.class, () -> usersService.createUser("WRONG_SYS", "WRONG_USERNAME", "WRONG_PASSWORD"));
+        assertThrows(AccessDeniedException.class, () -> usersService.createUser(new User("WRONG_SYS", "WRONG_USERNAME", "WRONG_PASSWORD")));
     }
 
     @Test

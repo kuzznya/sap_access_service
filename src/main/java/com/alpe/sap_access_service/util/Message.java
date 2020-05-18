@@ -1,5 +1,6 @@
 package com.alpe.sap_access_service.util;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import lombok.Data;
 
 import java.util.HashMap;
@@ -11,5 +12,10 @@ public class Message {
 
     public Message(String key, Object value) {
         data.put(key, value);
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getData() {
+        return data;
     }
 }

@@ -1,4 +1,4 @@
-package com.alpe.sap_access_service.security.service;
+package com.alpe.sap_access_service.user.service;
 
 import com.alpe.sap_access_service.user.model.User;
 import com.alpe.sap_access_service.sap.get_data.DatasetModule;

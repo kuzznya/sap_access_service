@@ -44,7 +44,7 @@ public class User {
     @JsonIgnore
     private Date lastTimeAccessed;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<SAPTableEntity> requestedTables = new ArrayList<>();
 
@@ -63,7 +63,7 @@ public class User {
     }
 
     public void generateAccessToken() {
-        if (accessToken == null && system != null && username != null && password != null && lastTimeAccessed != null)
+        if (accessToken == null && system != null && username != null && password != null)
             this.accessToken = new DigestUtils(SHA3_256).digestAsHex(system + username + password + id + new Date());
     }
 }

@@ -4,11 +4,12 @@ import com.alpe.sap_access_service.user.model.AuthRequest;
 import com.alpe.sap_access_service.user.model.TokenAuthentication;
 import com.alpe.sap_access_service.user.model.User;
 import com.alpe.sap_access_service.user.service.UsersService;
+import com.alpe.sap_access_service.util.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @CrossOrigin
@@ -22,15 +23,17 @@ public class AuthController {
     }
 
     @PostMapping
-    ResponseEntity<?> authorize(@RequestBody AuthRequest authRequest) {
+    @ResponseBody
+    Message authorize(@RequestBody AuthRequest authRequest) {
         String system = authRequest.getSystem();
         String username = authRequest.getUsername();
         String password = authRequest.getPassword();
         Character language = authRequest.getLanguage();
         try {
-            return new ResponseEntity<>(usersService.createUser(system, username, password, language), HttpStatus.OK);
+            String accessToken = usersService.createUser(system, username, password, language);
+            return new Message("accessToken", accessToken);
         } catch (AccessDeniedException ex) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
     }
 

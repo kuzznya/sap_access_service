@@ -44,7 +44,7 @@ public class User {
     @JsonIgnore
     private Date lastTimeAccessed;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<SAPTableEntity> requestedTables = new ArrayList<>();
 

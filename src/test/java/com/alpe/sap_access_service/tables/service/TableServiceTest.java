@@ -1,5 +1,6 @@
 package com.alpe.sap_access_service.tables.service;
 
+import com.alpe.sap_access_service.security.dao.UserRepository;
 import com.alpe.sap_access_service.tables.model.SAPTable;
 import com.alpe.sap_access_service.tables.model.SAPTableEntity;
 import com.alpe.sap_access_service.tables.model.SAPTableRecord;
@@ -16,6 +17,7 @@ import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -35,11 +37,15 @@ class TableServiceTest {
     @Autowired
     TableRepository tableRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     LinkedHashMap<String, LinkedList<String>> testTable;
 
     @BeforeEach
     void setUp() throws SOAPExceptionImpl {
         tableRepository.deleteAll();
+        userRepository.deleteAll();
 
         testTable = new LinkedHashMap<>();
         testTable.put("fieldNames", new LinkedList<>());
@@ -89,6 +95,7 @@ class TableServiceTest {
     @Test
     void getTable() {
         User u = new User("TST", "u", "p");
+        userRepository.save(u);
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
                 "TEST", null, null, null, null, null), new SAPTable(testTable)));
         try {
@@ -97,13 +104,14 @@ class TableServiceTest {
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
                 "TEST", null, null, null, null, null), new SAPTable(testTable)));
 
-        assertThrows(SOAPExceptionImpl.class, () -> tableService.getTable(u,
+        assertThrows(ResponseStatusException.class, () -> tableService.getTable(u,
                 "WRONG_TEST", null, null, null, null, null));
     }
 
     @Test
     void getSubTable() {
         User u = new User("TST", "u", "p");
+        userRepository.save(u);
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
                 "TEST", 1, 10, null, null, null, null, null), new SAPTable(testTable).getSubTable(1, 11)));
         try {
@@ -121,7 +129,7 @@ class TableServiceTest {
         assertDoesNotThrow(() -> assertEquals(tableService.getTable(u,
                 "TEST", 300, 1, null, null, null, null, null),
                 new SAPTable(new SAPTable(testTable).getColumns())));
-        assertThrows(SOAPExceptionImpl.class, () -> tableService.getTable(u,
+        assertThrows(ResponseStatusException.class, () -> tableService.getTable(u,
                 "WRONG_TEST", 1, 1, null, null, null, null, null));
     }
 
@@ -129,7 +137,7 @@ class TableServiceTest {
     void saveTable() throws JsonProcessingException {
         SAPTable table = new SAPTable(testTable);
         User u = new User("TST", "u", "p");
-        u.setId(100);
+        userRepository.save(u);
         tableService.saveTable(u, "TEST2",
                 true, null, null, null, null, null, table);
         table.setId(null);
@@ -141,7 +149,7 @@ class TableServiceTest {
     void updateTable() throws JsonProcessingException {
         SAPTableEntity entity = new SAPTableEntity();
         var user = new User();
-        user.setId(100);
+        userRepository.save(user);
         entity.setUser(user);
         entity.setName("TEST");
 
@@ -172,7 +180,7 @@ class TableServiceTest {
     @Test
     void deleteOldTables() {
         var u = new User();
-        u.setId(100);
+        userRepository.save(u);
 
         SAPTableEntity entity1 = new SAPTableEntity();
         entity1.setUser(u);

@@ -9,7 +9,9 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -40,15 +42,24 @@ public class ChartDataService {
         }, chartLifetime * 1000 / 2, chartLifetime * 1000 / 2);
     }
 
-    public ChartData<? extends ChartValue<?>> getChartData(User user, long id) throws RuntimeException {
-        ChartDataEntity entity;
-        try {
-            entity = repository.getOne(id);
-            System.out.println(entity);
-        } catch (Exception ex) {
-            throw new RuntimeException();
-        }
-        System.out.println(entity);
+    private ChartData<ChartValue<String>> getSimpleChartDataFromEntity(ChartDataEntity entity) throws com.fasterxml.jackson.core.JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        if (entity == null)
+            throw new NullPointerException();
+
+        CompletableFuture.runAsync(() -> updateEntity(entity));
+
+        JavaType type = mapper.getTypeFactory().constructParametricType(SimpleChartData.class, String.class);
+        ChartData<ChartValue<String>> data = mapper.readValue(entity.getChartData(), type);
+        data.setId(entity.getId());
+        return data;
+    }
+
+    public ChartData<? extends ChartValue<?>> getChartData(User user, long id) {
+        var entity = repository.findById(id)
+                .or(() -> { throw new ResponseStatusException(HttpStatus.NOT_FOUND); })
+                .get();
+
         if (entity.getCategoriesColumn() == null && entity.getCaptionsColumn() == null)
             return getChartData(user, entity.getTableName(), entity.getValuesColumn());
         else if (entity.getCategoriesColumn() != null && entity.getCaptionsColumn() == null)
@@ -58,20 +69,13 @@ public class ChartDataService {
                     entity.getCaptionsColumn());
     }
 
-    public ChartData<ChartValue<String>> getChartData(User user, String tableName, String valuesColumn) throws RuntimeException {
+    public ChartData<ChartValue<String>> getChartData(User user, String tableName, String valuesColumn) {
         var mapper = new ObjectMapper();
 
         try {
-            var entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, null, null);
-            if (entity == null)
-                throw new NullPointerException();
-
-            CompletableFuture.runAsync(() -> updateEntity(entity));
-
-            JavaType type = mapper.getTypeFactory().constructParametricType(SimpleChartData.class, String.class);
-            ChartData<ChartValue<String>> data = mapper.readValue(entity.getChartData(), type);
-            data.setId(entity.getId());
-            return data;
+            var entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(
+                    tableName, valuesColumn, null, null);
+            return getSimpleChartDataFromEntity(entity);
 
         } catch (Exception ex) {
 
@@ -83,7 +87,7 @@ public class ChartDataService {
                         tableName, null, user.getLanguage(), null, null, null, valuesColumn);
 
             } catch (SOAPExceptionImpl sex) {
-                throw new RuntimeException();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "SAP connection error");
             }
 
             ChartData<ChartValue<String>> data = ChartDataFactory.createChartData(tableData.get(valuesColumn));
@@ -95,44 +99,37 @@ public class ChartDataService {
     }
 
     public ChartData<ChartValue<String>> getChartData(User user, String tableName,
-                                     String valuesColumn, String captionsColumn) throws RuntimeException {
-        ObjectMapper mapper = new ObjectMapper();
+                                                      String valuesColumn, String captionsColumn) {
+        var mapper = new ObjectMapper();
 
-         try {
-             var entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(tableName, valuesColumn, null, captionsColumn);
-             if (entity == null)
-                 throw new NullPointerException();
+        try {
+            var entity = repository.findOneByTableNameAndValuesColumnAndCategoriesColumnAndCaptionsColumn(
+                    tableName, valuesColumn, null, captionsColumn);
+            return getSimpleChartDataFromEntity(entity);
 
-             CompletableFuture.runAsync(() -> updateEntity(entity));
+        } catch (Exception ex) {
 
-             JavaType type = mapper.getTypeFactory().constructParametricType(SimpleChartData.class, String.class);
-             ChartData<ChartValue<String>> data = mapper.readValue(entity.getChartData(), type);
-             data.setId(entity.getId());
-             return data;
+            LinkedHashMap<String, LinkedList<String>> tableData;
+            try {
+                tableData = datasetModule.getDataSet(
+                        user.getSystem(), user.getUsername(), user.getPassword(),
+                        tableName, null, user.getLanguage(), null, null, null,
+                        valuesColumn + " " + captionsColumn);
+            } catch (Exception sex) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "SAP connection error");
+            }
 
-         } catch (Exception ex) {
+            ChartData<ChartValue<String>> data = ChartDataFactory.createChartData(tableData.get(valuesColumn), tableData.get(captionsColumn));
 
-             LinkedHashMap<String, LinkedList<String>> tableData;
-             try {
-                 tableData = datasetModule.getDataSet(
-                         user.getSystem(), user.getUsername(), user.getPassword(),
-                         tableName, null, user.getLanguage(), null, null, null,
-                         valuesColumn + " " + captionsColumn);
-             } catch (Exception sex) {
-                 throw new RuntimeException();
-             }
+            saveEntity(tableName, valuesColumn, null, captionsColumn, data);
 
-             ChartData<ChartValue<String>> data = ChartDataFactory.createChartData(tableData.get(valuesColumn), tableData.get(captionsColumn));
-
-             saveEntity(tableName, valuesColumn, null, captionsColumn, data);
-
-             return data;
-         }
+            return data;
+        }
 
     }
 
     public ChartData<CategorizedChartValue<String, String>> getChartData(User user, String tableName,
-                                                         String valuesColumn, String categoriesColumn, String captionsColumn) throws RuntimeException {
+                                                                         String valuesColumn, String categoriesColumn, String captionsColumn) {
         var mapper = new ObjectMapper();
 
         try {
@@ -157,7 +154,7 @@ public class ChartDataService {
                         tableName, null, user.getLanguage(), null, null, null,
                         valuesColumn + " " + categoriesColumn + " " + Objects.requireNonNullElse(captionsColumn, ""));
             } catch (SOAPExceptionImpl sex) {
-                throw new RuntimeException();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "SAP connection error");
             }
 
             ChartData<CategorizedChartValue<String, String>> data;

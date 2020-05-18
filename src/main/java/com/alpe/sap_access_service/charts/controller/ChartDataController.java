@@ -25,12 +25,10 @@ public class ChartDataController {
                            @RequestParam("values") String valuesColumn,
                            @RequestParam(name = "captions", required = false) String captionsColumn,
                            TokenAuthentication auth) {
-        User user = (User) auth.getPrincipal();
-
         if (captionsColumn == null)
-            return chartDataService.getChartData(user, table, valuesColumn);
+            return chartDataService.getChartData(auth.getUser(), table, valuesColumn);
         else
-            return chartDataService.getChartData(user, table, valuesColumn, captionsColumn);
+            return chartDataService.getChartData(auth.getUser(), table, valuesColumn, captionsColumn);
     }
 
     @GetMapping(path = "/data", params = {"table", "values", "categories"})
@@ -40,15 +38,14 @@ public class ChartDataController {
                                    @RequestParam(name = "categories") String categoriesColumn,
                                    @RequestParam(name = "captions", required = false) String captionsColumn,
                                    TokenAuthentication auth) {
-        User user = (User) auth.getPrincipal();
-        return chartDataService.getChartData(user, table, valuesColumn, categoriesColumn, captionsColumn);
+        return chartDataService.getChartData(auth.getUser(), table,
+                valuesColumn, categoriesColumn, captionsColumn);
     }
 
     @GetMapping(path = "/data", params = {"id"})
     @ResponseBody
     ChartData<?> getChartData(@RequestParam Long id,
                               TokenAuthentication auth) {
-        User user = (User) auth.getPrincipal();
-        return chartDataService.getChartData(user, id);
+        return chartDataService.getChartData(auth.getUser(), id);
     }
 }

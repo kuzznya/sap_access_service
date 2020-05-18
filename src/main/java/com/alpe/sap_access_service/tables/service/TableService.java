@@ -10,7 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.messaging.saaj.SOAPExceptionImpl;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -44,24 +46,19 @@ public class TableService {
     }
 
     // Get existing table by id
-    public SAPTable getTable(User user, long id) throws SOAPExceptionImpl {
-        try {
-            var entity = repository.getOne(id);
-            return getTable(user, entity.getName(), entity.getLanguage(),
-                    entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames());
-        }
-        catch (SOAPExceptionImpl sex) {
-            throw new SOAPExceptionImpl();
-        }
-        catch (Exception ex) {
-            throw new RuntimeException();
-        }
+    public SAPTable getTable(User user, long id) {
+        var entity = repository.findById(id)
+                .or(() -> {throw new ResponseStatusException(HttpStatus.NOT_FOUND);})
+                .get();
+
+        return getTable(user, entity.getName(), entity.getLanguage(),
+                entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames());
     }
 
     // Get all table
     public SAPTable getTable(User user, String name, Character language,
                              String where, String order,
-                             String group, String fieldNames) throws SOAPExceptionImpl {
+                             String group, String fieldNames) {
         var objectMapper = new ObjectMapper();
         SAPTableEntity entity = null;
         try {
@@ -73,10 +70,16 @@ public class TableService {
 
             return objectMapper.readValue(entity.getSapTableJSON(), SAPTable.class);
         } catch (Exception ex) {
-            // Get table from SAP
-            var dataset = getDataset(user, name, null, language,
-                    where, order, group, fieldNames);
-            SAPTable table = new SAPTable(dataset);
+            SAPTable table;
+
+            try {
+                // Get table from SAP
+                var dataset = getDataset(user, name, null, language,
+                        where, order, group, fieldNames);
+                table = new SAPTable(dataset);
+            } catch (SOAPExceptionImpl sex) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "SAP connection error");
+            }
 
             if (entity != null) {
                 // Update table
@@ -92,24 +95,19 @@ public class TableService {
     }
 
     // Get existing table by id
-    public SAPTable getTable(User user, long id, int offset, int count) throws SOAPExceptionImpl {
-        try {
-            var entity = repository.getOne(id);
-            return getTable(user, entity.getName(), offset, count, entity.getLanguage(),
-                    entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames());
-        }
-        catch (SOAPExceptionImpl sex) {
-            throw new SOAPExceptionImpl();
-        }
-        catch (Exception ex) {
-            throw new RuntimeException();
-        }
+    public SAPTable getTable(User user, long id, int offset, int count) {
+        var entity = repository.findById(id)
+                .or(() -> {throw new ResponseStatusException(HttpStatus.NOT_FOUND);})
+                .get();
+
+        return getTable(user, entity.getName(), offset, count, entity.getLanguage(),
+                entity.getWhere(), entity.getOrder(), entity.getGroup(), entity.getFieldNames());
     }
 
     // Get table with subset of records (from - to)
     public SAPTable getTable(User user, String name, int offset, int count, Character language,
                              String where, String order,
-                             String group, String fieldNames) throws SOAPExceptionImpl {
+                             String group, String fieldNames) {
         ObjectMapper objectMapper = new ObjectMapper();
         SAPTableEntity tableEntity = null;
         try {
@@ -139,10 +137,15 @@ public class TableService {
 
             return table.getSubTable(offset, offset + count);
         } catch (Exception ex) {
-            // Get table from SAP
-            LinkedHashMap<String, LinkedList<String>> dataset = getDataset(user, name, offset + count + 1,
-                    language, where, order, group, fieldNames);
-            var table = new SAPTable(dataset);
+            SAPTable table;
+            try {
+                // Get table from SAP
+                var dataset = getDataset(user, name, offset + count + 1,
+                        language, where, order, group, fieldNames);
+                table = new SAPTable(dataset);
+            } catch (SOAPExceptionImpl sex) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
             if (tableEntity == null) {
                 // Save new table entity
@@ -153,7 +156,6 @@ public class TableService {
                 CompletableFuture.runAsync(() -> {
                     // Load more records
                     try {
-//                                SAPTableEntity entity = tableRepository.findSAPTableEntityByAccessTokenAndParams(user.getAccessToken(), name, language, where, order, group, fieldNames);
                         var entity = repository.getOne(table.getId());
                         loadMoreRecordsAndUpdateTable(user, name, offset + count, 100, language, where, order, group, fieldNames, entity);
                     } catch (Exception ignored) {}

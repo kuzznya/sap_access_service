@@ -38,6 +38,10 @@ public class TokenAuthentication implements Authentication {
         return user;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     @Override
     public boolean isAuthenticated() {
         return isAuthenticated;

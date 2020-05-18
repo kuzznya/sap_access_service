@@ -54,7 +54,7 @@ public class SapAccessServiceApplication {
 	public static void main(String[] args) {
 		Args myArgs = new Args();
 
-		JCommander commander = JCommander.newBuilder()
+		var commander = JCommander.newBuilder()
 				.addObject(myArgs)
 				.build();
 

@@ -11,18 +11,13 @@ import javax.transaction.Transactional;
 
 @Repository
 public interface TableRepository extends JpaRepository<SAPTableEntity, Long> {
-
-    @Query(value = "SELECT DISTINCT t FROM SAPTableEntity t WHERE t.accessToken = :access_token AND t.name = :name AND " +
-            "(:language IS NULL OR t.language = :language) AND (:where IS NULL OR t.where = :where) " +
-            "AND (:order IS NULL OR t.order = :order) AND (:group IS NULL OR t.group = :group) AND " +
-            "(:field_names IS NULL OR t.fieldNames = :field_names)")
-    SAPTableEntity findSAPTableEntityByAccessTokenAndParams(@Param("access_token") String accessToken,
-                                                            @Param("name") String tableName,
-                                                            @Param("language") Character language,
-                                                            @Param("where") String where,
-                                                            @Param("order") String order,
-                                                            @Param("group") String group,
-                                                            @Param("field_names") String fieldNames);
+    SAPTableEntity findByUserIdAndNameAndLanguageAndWhereAndOrderAndGroupAndFieldNames(long userId,
+                                                                                       String name,
+                                                                                       Character language,
+                                                                                       String where,
+                                                                                       String order,
+                                                                                       String group,
+                                                                                       String fieldNames);
 
     @Transactional
     @Modifying

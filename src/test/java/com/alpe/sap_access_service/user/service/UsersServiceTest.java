@@ -2,8 +2,6 @@ package com.alpe.sap_access_service.user.service;
 
 import com.alpe.sap_access_service.user.model.User;
 import com.alpe.sap_access_service.user.dao.UserRepository;
-import com.alpe.sap_access_service.user.service.AuthService;
-import com.alpe.sap_access_service.user.service.UsersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -39,12 +37,12 @@ class UsersServiceTest {
     void createUser() {
         String accessToken1 = usersService.createUser(new User("SYS", "username", "password", 'R'));
         String accessToken2 = usersService.createUser(new User("SYS2", "u", "p"));
-        User user1 = userRepository.getUserByAccessToken(accessToken1);
+        User user1 = userRepository.findUserByAccessToken(accessToken1);
         assertEquals(user1.getSystem(), "SYS");
         assertEquals(user1.getUsername(), "username");
         assertEquals(user1.getPassword(), "password");
         assertEquals(user1.getLanguage(),'R');
-        User user2 = userRepository.getUserByAccessToken(accessToken2);
+        User user2 = userRepository.findUserByAccessToken(accessToken2);
         assertEquals(user2.getSystem(), "SYS2");
         assertEquals(user2.getUsername(), "u");
         assertEquals(user2.getPassword(), "p");

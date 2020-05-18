@@ -47,7 +47,7 @@ public class UsersService {
 
     public User getUser(String accessToken) throws NoSuchElementException {
         try {
-            User user = repository.getUserByAccessToken(accessToken);
+            User user = repository.findUserByAccessToken(accessToken);
             user.setLastTimeAccessed(new Date());
             // Asynchronously update lastTimeAccessed field in DB
             CompletableFuture.runAsync(() -> repository.save(user));

@@ -12,8 +12,7 @@ import javax.ws.rs.QueryParam;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query(value = "SELECT DISTINCT u FROM User u WHERE u.accessToken = :accessToken")
-    User getUserByAccessToken(@QueryParam("accessToken") String accessToken);
+    User findUserByAccessToken(String accessToken);
 
     @Transactional
     @Modifying
